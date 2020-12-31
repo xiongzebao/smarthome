@@ -14,12 +14,12 @@ import java.util.List;
 public class StaticData {
      public static List getChannelData(){
         ArrayList list = new ArrayList();
-        list.add(new SelectRecyclerView.DefaultModel("自媒体"));
-        list.add(new SelectRecyclerView.DefaultModel("融媒体"));
-        list.add(new SelectRecyclerView.DefaultModel("代理"));
-        list.add(new SelectRecyclerView.DefaultModel("推手"));
-        list.add(new SelectRecyclerView.DefaultModel("农村电商"));
-        list.add(new SelectRecyclerView.DefaultModel("校园"));
+        list.add(new SelectRecyclerView.BaseModel("自媒体"));
+        list.add(new SelectRecyclerView.BaseModel("融媒体"));
+        list.add(new SelectRecyclerView.BaseModel("代理"));
+        list.add(new SelectRecyclerView.BaseModel("推手"));
+        list.add(new SelectRecyclerView.BaseModel("农村电商"));
+        list.add(new SelectRecyclerView.BaseModel("校园"));
 
         return  list;
     }

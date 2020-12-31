@@ -26,6 +26,17 @@ public class InventoryAdapter extends BaseRecyclerViewAdapter<ReceiptListBean> {
 
     @Override
     protected void onBindData(RecyclerViewHolder holder, ReceiptListBean bean, int position) {
+        TextView tv_project_name = (TextView) holder.getView(R.id.tv_project_name);
+        TextView phone = (TextView) holder.getView(R.id.phone);
+        TextView name = (TextView) holder.getView(R.id.name);
+        TextView receiptTime = (TextView) holder.getView(R.id.receiptTime);
+        TextView tv_recruit_channel = (TextView) holder.getView(R.id.tv_recruit_channel);
+
+        tv_project_name.setText(bean.getFunctionName());
+        phone.setText(bean.getMemCellPhone());
+        name.setText(bean.getMemRealName());
+        receiptTime.setText(bean.getInterviewDate());
+        tv_recruit_channel.setText(bean.getChannelName());
 
 
     }

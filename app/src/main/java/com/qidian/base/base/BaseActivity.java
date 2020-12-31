@@ -77,9 +77,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
 
 
     protected void  onBack(){
-        ActivityManager.peek().finish();
+       finish();
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityManager.pop();
+    }
 
     protected ListFragmentModel model = new ListFragmentModel(this);
 
@@ -93,6 +99,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
     public void onApply(View v) {
 
     }
+
+
 
 
 

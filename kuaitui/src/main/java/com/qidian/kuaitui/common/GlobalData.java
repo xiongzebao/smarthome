@@ -15,11 +15,5 @@ import java.util.List;
 public class GlobalData {
     public static List<ProjectItem> recruits;
 
-    public static List getRecruitData(){
-        ArrayList list = new ArrayList();
-        for (int i =0;i<GlobalData.recruits.size();i++){
-            list.add(new SelectRecyclerView.DefaultModel(GlobalData.recruits.get(i).getProjectName()));
-        }
-        return  list;
-    }
+
 }

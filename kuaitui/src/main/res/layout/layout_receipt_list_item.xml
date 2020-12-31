@@ -34,6 +34,7 @@
 
             <TextView
 
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/receiptTime"
@@ -57,11 +58,12 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_project_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="项目名称"></TextView>
+                android:text="岗位名称"></TextView>
 
             <TextView
                 android:id="@+id/tv_project_name"
@@ -73,6 +75,7 @@
 
             <TextView
                 android:id="@+id/tv_recruit_label"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/tv_recruit_channel"

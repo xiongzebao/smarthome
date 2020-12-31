@@ -38,7 +38,7 @@
             <EditText
                 android:id="@+id/et_name"
                 android:gravity="right"
-                android:text="@{model.name}"
+                android:text="@={model.memRealName}"
                 android:hint="请输入姓名"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
@@ -74,7 +74,7 @@
             <EditText
                 android:id="@+id/et_phone"
                 android:gravity="right"
-                 android:text="@{model.phone}"
+                 android:text="@={model.memCellPhone}"
                 android:hint="请输入电话"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
@@ -110,8 +110,10 @@
             <TextView
                 android:id="@+id/tv_qudao"
                 android:gravity="right"
-                android:text="@{model.channel}"
+                android:ellipsize="end"
+                android:text="@{model.ChannelName}"
                 android:hint="请选择渠道类型  ..."
+                android:lines="1"
                 android:textColorHint="@color/color33"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
@@ -145,9 +147,12 @@
                 android:layout_height="wrap_content">
             </TextView>
             <TextView
+
                 android:id="@+id/tv_project"
                 android:gravity="right|center_vertical"
-                android:text="@{model.recruit}"
+                android:text="@{model.RecruitName}"
+                android:ellipsize="end"
+                android:lines="1"
                 android:hint="请选择项目类型  ..."
                 android:textColorHint="@color/color33"
                 android:layout_marginTop="12dp"

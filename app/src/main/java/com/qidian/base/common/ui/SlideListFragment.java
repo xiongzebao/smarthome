@@ -22,6 +22,9 @@ import com.qidian.base.databinding.FragListBinding;
 import com.qidian.base.databinding.FragListSlideBinding;
 import com.qidian.base.utils.RecyclerViewUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author xiongbin
@@ -32,20 +35,15 @@ import com.qidian.base.utils.RecyclerViewUtils;
 public class SlideListFragment extends BaseFragment implements OnLoadMoreListener, OnRefreshListener {
 
 
-    FragListSlideBinding binding;
-    RecyclerView.Adapter adapter;
-    SwipeToLoadLayout swipeToLoadLayout;
-    OnLoadListener loadListener;
-    PageMo pageMo = new PageMo();
-    ListFragmentModel model = new ListFragmentModel(this);
+    protected FragListSlideBinding binding;
+    protected RecyclerView.Adapter adapter;
+    protected  SwipeToLoadLayout swipeToLoadLayout;
+    protected OnLoadListener loadListener;
+    protected PageMo pageMo = new PageMo();
+    protected ListFragmentModel model = new ListFragmentModel(this);
 
 
 
-    public static SlideListFragment newInstance(BaseQuickAdapter adapter) {
-        SlideListFragment fragment = new SlideListFragment();
-        fragment.adapter = adapter;
-        return fragment;
-    }
 
 
     @Nullable
@@ -77,6 +75,12 @@ public class SlideListFragment extends BaseFragment implements OnLoadMoreListene
         this.adapter =  adapter;
     }
 
+
+
+
+
+
+
     public void loadFinish() {
         this.swipeToLoadLayout.setLoadingMore(false);
         this.swipeToLoadLayout.setRefreshing(false);
@@ -88,9 +92,22 @@ public class SlideListFragment extends BaseFragment implements OnLoadMoreListene
         this.swipeToLoadLayout.setRefreshEnabled(enable);
     }
 
+    public void setLoadEnable(boolean enable){
+        this.swipeToLoadLayout.setLoadMoreEnabled(enable);
+    }
+    public void setRefreshEnable(boolean enable){
+        this.swipeToLoadLayout.setRefreshEnabled(enable);
+    }
+
+
+
     public void setOnLoadListener(OnLoadListener listener) {
         this.loadListener = listener;
     }
+
+
+
+
 
 
     @Override
@@ -100,6 +117,8 @@ public class SlideListFragment extends BaseFragment implements OnLoadMoreListene
             loadListener.onLoadPage(pageMo);
         }
     }
+
+
 
     @Override
     public void onRefresh() {

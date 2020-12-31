@@ -22,6 +22,7 @@ import com.qidian.kuaitui.base.ResBase;
 import com.qidian.kuaitui.common.KTConstant;
 import com.qidian.kuaitui.module.mine.model.LoginBean;
 import com.qidian.kuaitui.module.mine.model.UserInfoBean;
+import com.qidian.kuaitui.utils.ActivityUtils;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -96,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedInfo.getInstance().saveValue(KTConstant.LOGIN_NAME,username);
                 STClient.reCreate();
                 ToastUtil.toast("登录成功");
+
                 ActivityManager.startActivity(MainActivity.class);
             }
 

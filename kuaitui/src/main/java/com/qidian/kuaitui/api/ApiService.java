@@ -6,6 +6,9 @@ import com.qidian.kuaitui.base.Page;
 import com.qidian.kuaitui.base.ResBase;
 import com.qidian.kuaitui.module.home.model.ProjectItem;
 import com.qidian.kuaitui.module.job.model.AddNewUserModel;
+import com.qidian.kuaitui.module.job.model.ChannelBean;
+import com.qidian.kuaitui.module.job.model.ReceiptListBean;
+import com.qidian.kuaitui.module.job.model.ReqInterViewParam;
 import com.qidian.kuaitui.module.main.model.DataShowBean;
 import com.qidian.kuaitui.module.main.model.HomeStaticBean;
 import com.qidian.kuaitui.module.main.model.JobHomeBean;
@@ -71,11 +74,13 @@ public interface ApiService {
 
     //面试列表
     @POST("/Api/OnSite/SearchInterviewList")
-    Call<ResBase<JobHomeBean>> getInterViewList(@Body Page page);
+    Call<ResBase< List<ReceiptListBean>>> getInterViewList(@Body ReqInterViewParam page);
 
 
     @POST("/Api/OnSite/CreateJobMember")
     Call<ResBase> addNewUser(@Body AddNewUserModel addNewUserModel);
 
+    @GET("/Api/OnSite/GetChannelDataInfo")
+    Call<ResBase<List<ChannelBean>>> getChannel();
 
 }

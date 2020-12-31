@@ -2,6 +2,7 @@ package com.qidian.kuaitui.api;
 
 import com.erongdu.wireless.network.converter.RDConverterFactory;
 import com.erongdu.wireless.network.interceptor.HttpLoggingInterceptor;
+import com.erongdu.wireless.tools.log.MyLog;
 import com.qidian.base.common.BaseParams;
 import com.qidian.base.utils.SharedInfo;
 import com.qidian.kuaitui.common.KTConstant;
@@ -10,14 +11,19 @@ import java.io.IOException;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.FormBody;
 import okhttp3.Interceptor;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 
 
 public class STClient {
+
+    static boolean  isRecreate = false;
     // 网络请求超时时间值(s)
     private static final int    DEFAULT_TIMEOUT = 30;
     // 请求地址
@@ -40,9 +46,29 @@ public class STClient {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request original = chain.request();
+                String method=original.method();
+                if("POST".equals(method)){
+                    StringBuilder sb = new StringBuilder();
+                    if (original.body() instanceof FormBody) {
+                        MyLog.d("FormBody");
+                        FormBody body = (FormBody) original.body();
+                        for (int i = 0; i < body.size(); i++) {
+                            sb.append(body.encodedName(i) + "=" + body.encodedValue(i) + ",");
+                        }
+                        sb.delete(sb.length() - 1, sb.length());
+                        MyLog.d(sb.toString());
+                    }
+
+                    if(original.body() instanceof MultipartBody){
+                        MyLog.d("MultipartBody");
+                    }
+                    if(original.body() instanceof RequestBody){
+                        MyLog.d(original.toString());
+
+                    }
+                }
                 Request.Builder requestBuilder = original.newBuilder()
                         .header("token", (String) SharedInfo.getInstance().getValue(KTConstant.TOKEN,""));
-
                 Request request = requestBuilder.build();
                 return chain.proceed(request);
             }
@@ -74,6 +100,7 @@ public class STClient {
     private static STClient getInstance() {
         if(instance==null){
             instance = new STClient();
+
         }
         return instance;
     }
@@ -85,6 +112,7 @@ public class STClient {
     static STClient instance ;
 
     public static void reCreate(){
+        isRecreate = true;
         instance = new STClient();
     }
 
@@ -104,9 +132,12 @@ public class STClient {
      * @return 指定service实例
      */
     public static <T> T getService(Class<T> clazz) {
-        if (getServiceMap().containsKey(clazz.getSimpleName())) {
+
+        if (getServiceMap().containsKey(clazz.getSimpleName())&&!isRecreate) {
+            isRecreate = false;
             return (T) getServiceMap().get(clazz.getSimpleName());
         }
+        MyLog.e("create a new Service");
         T service = STClient.getInstance().retrofit.create(clazz);
         getServiceMap().put(clazz.getSimpleName(), service);
         return service;

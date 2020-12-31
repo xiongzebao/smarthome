@@ -22,6 +22,6 @@
          android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
         android:src="@mipmap/ic_unselect"
-        android:layout_width="32dp"
-        android:layout_height="32dp"/>
+        android:layout_width="16dp"
+        android:layout_height="16dp"/>
 </RelativeLayout>

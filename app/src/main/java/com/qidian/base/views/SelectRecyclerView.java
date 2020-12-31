@@ -26,7 +26,7 @@ public class SelectRecyclerView extends RecyclerView {
 
 
     BaseQuickAdapter adapter;
-    ArrayList<DefaultModel> list = new ArrayList<>();
+    ArrayList<BaseModel> list = new ArrayList<>();
 
     public SelectRecyclerView(@NonNull Context context) {
         super(context);
@@ -64,12 +64,20 @@ public class SelectRecyclerView extends RecyclerView {
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                list.get(position).toggleSelect();
-                adapter.notifyDataSetChanged();
 
+                select(position);
             }
         });
 
+    }
+
+    private void select(int position){
+        for (int i=0;i<list.size();i++){
+            list.get(i).setSelect(false);
+        }
+
+        list.get(position).setSelect(true);
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -83,8 +91,25 @@ public class SelectRecyclerView extends RecyclerView {
         getAdapter().notifyDataSetChanged();
     }
 
-    static public abstract class BaseModel{
+    static public   class BaseModel{
         private  boolean select =false;
+        private  String label;
+
+
+        public BaseModel(){
+
+        }
+        public BaseModel(String label){
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
 
         public boolean isSelect() {
             return select;
@@ -98,46 +123,29 @@ public class SelectRecyclerView extends RecyclerView {
             setSelect(!select);
         }
 
-        abstract String getText();
-    }
-
-   public static   class  DefaultModel extends BaseModel{
-        private  String label;
-
-        public DefaultModel(String label) {
-            this.label = label;
-        }
-
-        public String getLabel() {
+        //子类重写此方法改变显示标签
+        protected   String getText(){
             return label;
         }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
-
-        @Override
-        String getText() {
-                return label;
-        }
     }
 
 
-    public static class DefaultAdpater extends BaseQuickAdapter<DefaultModel , BaseViewHolder>{
 
-        public DefaultAdpater(int layoutResId, List<DefaultModel> data) {
+    public static class DefaultAdpater extends BaseQuickAdapter<BaseModel , BaseViewHolder>{
+
+        public DefaultAdpater(int layoutResId, List<BaseModel> data) {
             super(layoutResId, data);
 
         }
 
         @Override
-        protected void convert(BaseViewHolder baseViewHolder, DefaultModel baseModel) {
+        protected void convert(BaseViewHolder baseViewHolder, BaseModel baseModel) {
               //  baseViewHolder.addOnClickListener(R.)
                 baseViewHolder.setText(R.id.tv_label,baseModel.getText());
                 if(baseModel.isSelect()){
-                    baseViewHolder.setImageResource(R.id.iv_select,R.drawable.icon_clear);
+                    baseViewHolder.setImageResource(R.id.iv_select,R.mipmap.ic_select);
                 }else{
-                    baseViewHolder.setImageResource(R.id.iv_select,R.drawable.icon_delete);
+                    baseViewHolder.setImageResource(R.id.iv_select,R.mipmap.ic_unselect);
                 }
         }
     }

@@ -16,7 +16,7 @@ public class PageMo implements Serializable {
     private int pages;
     /** 当前页数 - 默认第一页 */
     //    @SerializedName(value = "current", alternate = {"current"})
-    private int current  = 0;
+    private int current  = 1;
     /** 每次加载数量 - 默认10条 */
     //    @SerializedName(value = "pageSize", alternate = {"pageSize"})
     private int pageSize = 15;
@@ -53,7 +53,7 @@ public class PageMo implements Serializable {
      * 下拉刷新
      */
     public void refresh() {
-        current = 0;
+        current = 1;
     }
 
     /**

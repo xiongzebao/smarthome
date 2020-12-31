@@ -3,7 +3,6 @@ package com.qidian.kuaitui.module.job.model;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-import com.qidian.base.base.BaseModel;
 import com.qidian.kuaitui.BR;
 
 /**
@@ -13,48 +12,87 @@ import com.qidian.kuaitui.BR;
  */
 
 public class AddNewUserModel extends BaseObservable {
-    public String name;
-    public String phone;
-    public String channel;
-    public String recruit;
+    public String MemRealName;
+    public String MemCellPhone;
+    public String ChannelSource;
+
+
+    public String ChannelName;
+
+    public String RecruitID;
+    public String RecruitName;
 
 
     @Bindable
-    public String getName() {
-        return name;
+    public String getRecruitName() {
+        return RecruitName;
     }
 
-    public void setName(String name) {
-        this.name = name;
-        notifyPropertyChanged(BR.name);
+    public void setRecruitName(String recruitName) {
+        this.RecruitName = recruitName;
+        notifyPropertyChanged(BR.recruitName);
+
+    }
+
+
+    @Bindable
+    public String getChannelName() {
+        return ChannelName;
+    }
+
+    public void setChannelName(String channelName) {
+        ChannelName = channelName;
+        notifyPropertyChanged(BR.channelName);
+    }
+
+    @Bindable
+    public String getMemRealName() {
+        return MemRealName;
+    }
+
+    public void setMemRealName(String memRealName) {
+        this.MemRealName = memRealName;
+        notifyPropertyChanged(BR.memRealName);
 
     }
 
     @Bindable
-    public String getPhone() {
-        return phone;
-    }
-    @Bindable
-    public void setPhone(String phone) {
-        this.phone = phone;
-        notifyPropertyChanged(BR.phone);
-    }
-    @Bindable
-    public String getChannel() {
-        return channel;
+    public String getMemCellPhone() {
+        return MemCellPhone;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
-        notifyPropertyChanged(BR.channel);
+
+
+    public void setMemCellPhone(String memCellPhone) {
+        this.MemCellPhone = memCellPhone;
+        notifyPropertyChanged(BR.memCellPhone);
     }
     @Bindable
-    public String getRecruit() {
-        return recruit;
+    public String getChannelSource() {
+        return ChannelSource;
     }
 
-    public void setRecruit(String recruit) {
-        this.recruit = recruit;
-        notifyPropertyChanged(BR.recruit);
+    public void setChannelSource(String channelSource) {
+        this.ChannelSource = channelSource;
+        notifyPropertyChanged(BR.channelSource);
+    }
+    @Bindable
+    public String getRecruitID() {
+        return RecruitID;
+    }
+
+    public void setRecruitID(String recruitID) {
+        this.RecruitID = recruitID;
+        notifyPropertyChanged(BR.recruitID);
+    }
+
+    @Override
+    public String toString() {
+        return "AddNewUserModel{" +
+                "name='" + MemRealName + '\'' +
+                ", phone='" + MemCellPhone + '\'' +
+                ", channel='" + ChannelSource + '\'' +
+                ", recruit='" + RecruitID + '\'' +
+                '}';
     }
 }

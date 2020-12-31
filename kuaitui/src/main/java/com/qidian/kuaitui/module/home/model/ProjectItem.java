@@ -1,12 +1,14 @@
 package com.qidian.kuaitui.module.home.model;
 
+import com.qidian.base.views.SelectRecyclerView;
+
 /**
  * @author xiongbin
  * @description:
  * @date : 2020/12/29 17:31
  */
 
-public class ProjectItem {
+public class ProjectItem extends SelectRecyclerView.BaseModel {
 
 
 
@@ -39,6 +41,8 @@ public class ProjectItem {
     private String ProvinceName;
     private String CityName;
     private String WorkPlace;
+
+
 
     public String getSiteRecruitId() {
         return SiteRecruitId;
@@ -142,4 +146,9 @@ public class ProjectItem {
 
     public void setWorkPlace(String WorkPlace) {
         this.WorkPlace = WorkPlace;}
+
+    @Override
+    protected String getText() {
+        return getProjectName();
+    }
 }

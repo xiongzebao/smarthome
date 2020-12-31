@@ -1,13 +1,5 @@
 package com.qidian.kuaitui.module.job.view;
-
-import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.view.View;
-
-import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-
-import com.erongdu.wireless.tools.log.MyLog;
 import com.qidian.base.base.BaseActivity;
 import com.qidian.kuaitui.R;
 import com.qidian.kuaitui.databinding.ActReceptDataBinding;
