@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="credit_type">
+        <item>实名认证</item>
+        <item>个人信息</item>
+        <item>手机运营商</item>
+        <item>芝麻信用</item>
+        <item>网银信用卡</item>
+        <item>收款银行</item>
+    </string-array>
+
+    <!-- 附带资料认证 -->
+    <string name="hint_user_account">请输入您的陆金所账号</string>
+    <string name="hint_user_account_password">请输入您的陆金所账号密码</string>
+    <string name="hint_input_remark">请选择备注信息</string>
+    <string name="hint_pick_home_img">请选择首页截图模板</string>
+    <string name="hint_pick_mine_account_img">请选择我的账户截图模板</string>
+    <string name="hint_pick_loan_product_img">请选择贷款产品截图模板</string>
+    <string name="delete_image_confirm">您确定要删除该图片?</string>
+
+</resources>

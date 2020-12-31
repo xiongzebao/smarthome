@@ -1,0 +1,133 @@
+<resources>
+    <array name="guideImagesNew">
+        <item>@drawable/guide_2_1</item>
+        <item>@drawable/guide_2_2</item>
+        <item>@drawable/guide_2_3</item>
+    </array>
+    <string name="app_name">起点在线</string>
+    <string name="app_network_error">网络连接错误，请查看网络是否已连接!</string>
+
+    <string name="app_network_socket_timeout">网络连接超时!</string>
+    <string name="user_login_out">是否退出登录?</string>
+    <string name="kq_zt">还未到下班时间，确定要打早退卡吗?</string>
+    <string name="sp_result">处理成功，是否查看下一条?</string>
+    <string name="base_info">退出后已填写的内容将不会保存,是否确定?</string>
+    <string name="user_login_two">你的账号已在其他设备登录，如非本人操作请及时修改密码</string>
+
+    <string name="user_login_reset">重新登录</string>
+    <string name="dialog_title">提示</string>
+    <string name="dialog_cancel">取消</string>
+
+
+    <!-- iconfonts -->
+    <string name="dialog_confirm">确定</string>
+
+    <!-- 引导页图片 -->
+    <string name="icons">&#xe698; &#xe69d; &#xe6a0; &#xe6a3;&#xe6a4; &#xe6a5; &#xe6ad; &#xe6ae;
+    &#xe6b0; &#xe6b6; &#xe6b5; &#xe612;&#xe613; &#xe614; &#xe615; &#xe616;
+    &#xe618; &#xe619; &#xe61c; &#xe61d;&#xe696; &#xe697; &#xe69c; &#xe60c;
+    &#xe60d; &#xe69b; &#xe69e; &#xe69f;&#xe6a6; &#xe6a7; &#xe6a1; &#xe6a8;
+    &#xe6aa; &#xe6ab; &#xe6af; &#xe6de;&#xe6ea; &#xe6eb; &#xe6e2; &#xe6ee;
+    &#xe6f3; &#xe6f4; &#xe6ff; &#xe700;&#xe703; &#xe704; &#xe707; &#xe70b;
+    &#xe70d; &#xe713; &#xe716; &#xe71c;&#xe71f; &#xe728; &#xe72b; &#xe732;
+    &#xe73e; &#xe748; &#xe604; &#xe609;&#xe60b; &#xe60f; &#xe61e; &#xe62c;
+        &#xe63a; &#xe600; &#xe6df; &#xe6e0;&#xeba4; &#xeba5; &#xeba6; &#xeba7;
+        &#xeba8; &#xeba9; &#xebaa; &#xebab;&#xebac; &#xebad; &#xebae; &#xebaf;
+    </string>
+    <string name="test_icon">&#xe612;</string>
+    <!-- 密码输入 -->
+    <string name="pop_pwd_title">请输入交易密码</string>
+    <string name="pop_pwd_forgot">忘记密码?</string>
+    <string name="pop_pwd_money">借款金额</string>
+    <string name="gps_state">部分功能使用需要打开GPS,是否开启?</string>
+
+    <!-- 银行卡-->
+    <string name="bank_delete">解除绑定该银行卡</string>
+    <string name="bank_moren">设置此卡为默认银行卡</string>
+
+    <string name="empty"></string>
+    <string name="placeholder_empty">暂无数据~</string>
+    <string name="placeholder_empty_message">暂无消息</string>
+    <string name="placeholder_empty_notice">暂无公告</string>
+    <string name="placeholder_empty_record">您还没有借款记录!</string>
+    <string name="placeholder_empty_repay_record">您还没有还款记录!</string>
+    <string name="placeholder_empty_invite_record">暂无邀请记录~</string>
+    <string name="placeholder_empty_feedback_msg">您好，暂无反馈信息~</string>
+    <string name="placeholder_empty_progress_msg">您好，暂无数据~</string>
+    <string name="placeholder_empty_card">暂无银行卡</string>
+    <string name="page_loading">正在加载...</string>
+
+
+    <!--title-->
+    <string name="credit_person">实名认证</string>
+    <string name="credit_person_info">个人信息</string>
+    <string name="credit_person_letter">学信网信息</string>
+    <string name="credit_person_letter_auth">学信网信息认证</string>
+    <string name="credit_phone_info">手机运营商</string>
+    <string name="credit_zhima">芝麻信用</string>
+    <string name="credit_bank_info">网银信用卡</string>
+    <string name="credit_receive_card">收款银行</string>
+    <string name="credit_work_Info">工作信息认证</string>
+    <string name="credit_attach_Info">附带资料认证</string>
+    <string name="credit_bottom_tips">不向学生提供借款服务</string>
+
+    <string name="credit_bank_card">收款银行卡</string>
+    <string name="receive_bank_card_auth">收款银行卡认证</string>
+    <string name="bank_card_certification">银行卡认证</string>
+    <string name="credit_phone">运营商认证</string>
+    <string name="credit_bank">网银信用卡验证</string>
+    <string name="input">请输入</string>
+    <!--<string name="linker_phone_title">请选择%1$s号码</string>-->
+    <string name="yuan">%1$s元</string>
+    <string name="tian">%1$s天</string>
+
+    <string name="yang">¥%1$s</string>
+
+    <string name="pay_time">已还%1$s期</string>
+    <string name="left_time">剩余%1$s期</string>
+
+    <string name="repay_time">第%1$s期</string>
+
+    <string name="loan_detail_lv_des">含本金%1$s+利息%2$s+管理费%3$s+服务费%4$s+逾期费%5$s</string>
+    <string name="per_loan_amt">预估可借额度(元)</string>
+    <string name="total_loan_amt">总额度(元)</string>
+    <string name="progress_search">进度查询</string>
+    <string name="official_notice">官方公告</string>
+    <string name="advice_feedback">意见反馈</string>
+
+    <!-- 首页状态 -->
+    <string name="home_page_installment_borrowing">分期借款</string>
+    <string name="home_page_optimization_product">优选产品</string>
+    <string name="contact_us">联系我们</string>
+    <string name="load_apply">申请借款</string>
+    <string name="borrowing_audit">借款审核</string>
+    <string name="loan">放款</string>
+    <string name="withdraw">提现</string>
+    <string name="home_product_recommend">我们有更适合您的借款产品，满足您的需求</string>
+    <string name="home_tax_divider">税务分期</string>
+    <string name="home_employee_loans">员工贷款</string>
+    <string name="home_handbag_loan">拎包房贷</string>
+    <string name="home_progress_check">进度查询</string>
+    <string name="withdraw_tips">点击提款按钮，输入您的交易密码，即可立即提现至银行卡，若忘记交易密码，请在我的——忘记交易码中找回.</string>
+    <string name="borrowing_record">借款记录</string>
+    <string name="repayment_history">还款记录</string>
+    <string name="message_feedback">信息反馈</string>
+    <string name="feedback_message">反馈信息</string>
+    <string name="message_feedback_tips">您好，您可以先查看帮助中心，若无满意答案，请将您的信息反馈给我们，帮助我们做的更好</string>
+    <string name="message_feedback_tips_sub">查看帮助中心</string>
+    <string name="merchant_code_not_exist">渠道码不存在</string>
+
+    <string name="repay_success">超赞,本期账单还款成功!</string>
+    <string name="all_success">超赞,您的账单已结清!</string>
+    <string name="repay_failer">还款失败</string>
+    <string name="repay_ing">本期账单正在还款中...</string>
+
+    <string name="repay_20">确定</string>
+    <string name="repay_10">再借一笔</string>
+    <string name="repay_30">重新还款</string>
+
+    <string name="select">请选择</string>
+    <string name="other">其他</string>
+
+
+</resources>

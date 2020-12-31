@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="check_detail">查看详情</string>
+    <string name="check_money">提现</string>
+    <string name="tosign">签约</string>
+
+    <!-- 登录 -->
+    <string name="login_btn">马上登录</string>
+    <string name="login_phone_hint">请输入注册／登录手机号</string>
+    <string name="login_pwd_hint">请输入登录密码</string>
+    <string name="login_pwd_forget">忘记密码</string>
+    <string name="login_pwd_more">更多</string>
+    <string name="login_register">免费注册</string>
+    <string name="login_other">切换用户</string>
+
+    <!-- 注册 -->
+    <string name="register_title">注册</string>
+    <string name="register_login">登录</string>
+    <string name="register_phone_hint">手机号码</string>
+    <string name="register_code_hint">请输入验证码</string>
+    <string name="register_gps_state">注册需要打开GPS,是否开启?</string>
+    <string name="register_get_code">获取验证码</string>
+    <string name="register_pwd_hint">请输入6~16登录密码</string>
+    <string name="register_again_pwd_hint">确认密码</string>
+    <string name="pwd_rule_toast">密码为6-16位</string>
+    <string name="register_invent_hint">邀请码(选填)</string>
+    <string name="register_tip1">我已阅读并同意</string>
+    <string name="register_tip2">《成长钱包借款协议》</string>
+    <string name="register_success">恭喜，注册成功！</string>
+    <string name="register_to_mine">进入我的</string>
+
+    <!-- 修改密码 -->
+    <string name="reset_pwd_title">修改密码</string>
+    <string name="reset_pwd_old_pwd_hint">旧密码</string>
+    <string name="reset_pwd_new_pwd_hint">新密码</string>
+    <string name="reset_pwd_confirm_pwd_hint">确认新密码</string>
+    <string name="reset_pwd_confirm">确认修改</string>
+
+    <!-- 忘记密码 -->
+    <string name="forgot_pwd_title_step_1">找回登录密码</string>
+    <string name="forgot_phone_step_1">手机号</string>
+    <string name="forgot_phone_hint_step_1">手机号码</string>
+    <string name="forgot_phone_hint_step_1_error">请输入正确的手机号码</string>
+    <string name="forgot_pwd_code_step_1">短信验证码</string>
+    <string name="forgot_pwd_code_step_1_error">该手机号未注册</string>
+    <string name="forgot_pwd_code_hint_step_1">请输入短信验证码</string>
+    <string name="forgot_get_code_step_1">获取验证码</string>
+    <string name="forgot_pwd_next_step_1">下一步</string>
+    <string name="forgot_pwd_title_step_2">新登录密码</string>
+    <string name="forgot_pwd_new_step_2">新密码</string>
+    <string name="forgot_pwd_new_hint_step_2">请输入新密码</string>
+    <string name="forgot_pwd_confirm_step_2">确认新密码</string>
+    <string name="forgot_pwd_confirm_hint_step_2">确认新密码</string>
+    <string name="pwd_no_confirm">两次密码输入不一致</string>
+    <string name="forgot_pwd_tips">登录密码为6&#8211;16位字符，包括数字和字母</string>
+    <string name="forgot_pwd_confirm_update_step_2">完成</string>
+    <string name="forgot_pwd_person_first">亲，请先填写个人信息哦~</string>
+
+
+    <!-- 修改密码 -->
+    <string name="settings_pwd_title">修改登录密码</string>
+    <string name="seetings_pwd_tips">两次输入的密码不一致</string>
+    <string name="settings_pwd_forget">忘记</string>
+    <string name="settings_pwd_pwd">原密码</string>
+    <string name="settings_pwd_pwd_hint">请输入原密码</string>
+    <string name="settings_pwd_new_pwd">新密码</string>
+    <string name="settings_pwd_new_pwd_hint">请输入新密码</string>
+    <string name="settings_pwd_confirm_pwd">确认新密码</string>
+    <string name="settings_pwd_confirm_pwd_hint">请确认新密码</string>
+    <string name="settings_pwd_desc">密码由6-12位英文数字或符号组成</string>
+    <string name="settings_pwd_error">密码错误</string>
+    <string name="settings_pwd_sub">完成</string>
+    <string name="settints_pay_update_new_title">新交易密码</string>
+    <string name="settints_pay_update_new_tips">请输入6位交易密码</string>
+    <string name="settints_pay_update_confirm_title">确认交易密码</string>
+    <string name="settints_pay_update_confirm_tips">请确认6位交易密码</string>
+    <string name="settints_pay_success">设置交易密码成功!</string>
+    <string name="settints_pay_set_tips">请输入6位交易密码</string>
+
+    <string name="settints_pay_update_tips">请输入您的原交易密码</string>
+    <string name="settings_forgot_pay_title">找回交易密码</string>
+    <string name="settings_forgot_pay_phone">手机号码</string>
+    <string name="settings_forgot_pay_name">真实姓名</string>
+    <string name="settings_forgot_pay_no">身份证号</string>
+    <string name="settings_forgot_pay_code">短信验证码</string>
+    <string name="settings_forgot_pay_phone_tip">请填写手机号码</string>
+    <string name="settings_forgot_pay_name_tip">请填写真实姓名</string>
+    <string name="settings_forgot_pay_name_not_chinese">真实姓名仅为中文</string>
+    <string name="settings_forgot_pay_no_tip">请填写身份证号</string>
+    <string name="settings_forgot_pay_code_tip">请输入短信验证码</string>
+
+    <!--信息反馈-->
+    <string name="message_feedback_question_tips">请输入问题类型</string>
+    <string name="message_feedback_product_tips">请选择借款产品</string>
+    <string name="message_feedback_content_tips">请输入问题描述</string>
+</resources>

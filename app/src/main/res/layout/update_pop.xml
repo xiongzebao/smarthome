@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bangeng"
+        android:gravity="center_horizontal"
+        android:paddingBottom="40dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_marginTop="155dp"
+            android:gravity="center"
+            android:text="发现新版本"
+            android:textSize="18sp"
+            android:textColor="#3894ef"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/tv1"
+            android:text="界面重大优化，建议升级"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="#999999"
+            />
+
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:paddingLeft="35dp"
+            android:paddingRight="35dp"
+            android:orientation="horizontal">
+
+            <com.erongdu.wireless.views.NoDoubleClickButton
+                android:id="@+id/bt1"
+                android:visibility="visible"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="34dp"
+                android:gravity="center"
+                android:layout_marginRight="15dp"
+                android:text="暂不更新"
+                android:background="@drawable/web_bt1"
+                android:textSize="16sp"
+                android:textColor="#4294f0"/>
+
+
+            <com.erongdu.wireless.views.NoDoubleClickButton
+                android:id="@+id/bt2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="34dp"
+                android:gravity="center"
+                android:text="立即去更新"
+                android:background="@drawable/web_bt2"
+                android:textSize="16sp"
+                android:textColor="#fffefe"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

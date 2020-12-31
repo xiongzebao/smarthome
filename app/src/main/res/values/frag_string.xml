@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--mine_frag-->
+    <string name="hello">您好!</string>
+    <string name="withdrawal_record">提现记录</string>
+    <string name="forget_trade_password">忘记交易码</string>
+    <string name="feedback_record">反馈记录</string>
+    <string name="debit_card">收款银行卡</string>
+    <string name="help_center">帮助中心</string>
+    <string name="setting">设置</string>
+    <string name="credit_center">认证中心</string>
+
+    <!--repay_frag-->
+    <string name="repay_no_record">您现在没有要还的款项哦~</string>
+    <string name="repay_apply">马上申请</string>
+    <string name="support_repay_method">支持多种还款方式</string>
+    <string name="yuqi_repay_msg">已逾期%1$s天</string>
+    <string name="yuqi_repay_msg_qs">已逾期%1$s期</string>
+</resources>

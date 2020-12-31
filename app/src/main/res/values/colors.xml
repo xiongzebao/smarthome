@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 起点人力主色调 -->
+    <color name="main_blue">#487bff</color>
+    <color name="main_red">#e84343</color>
+    <color name="button_blue">#b8d3ff</color>
+    <color name="fu_orange">#ff7212</color>
+    <color name="fu_green">#58B174</color>
+    <color name="putongchidao">#ff9114</color>
+    <color name="yanzhong">#f5222d</color>
+    <!-- 默认背景色 -->
+    <color name="mask_color">#7f000000</color>
+    <color name="backgroundColor">#f4f4f4</color>
+    <color name="background_line_color">#f1f5f4</color>
+    <color name="background_line_color_new">#f1f5f4</color>
+    <color name="background_line_color_new2">#f1f1f1</color>
+    <color name="main_font_color">#333333</color>
+    <color name="other_font_color">#999999</color>
+    <color name="lxfxxq">#EEF2FF</color>
+    <!-- ltc 跟进状态颜色 -->
+    <color name="qqyd">#ff8c4e</color>
+    <color name="nomal">#5dbd63</color>
+    <color name="chidao">#ff5548</color>
+
+    <color name="color_gray_e6">#E6E6E6</color>
+<!--    <color name="background_line_color">#dddddd</color>-->
+
+    <!--分割线-->
+    <color name="common_color">#000000</color>
+    <color name="default_blue">#1D9FFF</color>
+    <color name="head_bg">#ff5f4a</color>
+    <color name="Gainsboro">#DCDCDC</color>
+    <color name="Black">#000000</color>
+    <color name="divide_line">#f3f4f8</color>
+    <color name="orange">#f08519</color>
+    <color name="orange_f">#DF631F</color>
+    <color name="drak55">#555555</color>
+    <color name="line">#F3F3F3</color>
+    <color name="grey8f">#8f8f8f</color>
+    <color name="orange8f">#FEC155</color>
+    <color name="tab_text_normal">#666666</color>
+    <color name="grey9f">#999999</color>
+    <color name="grey8">#888888</color>
+    <color name="grey9">#9f9f9f</color>
+    <color name="orange1">#FFBA39</color>
+    <color name="orange2">#FF925A</color>
+    <color name="orange3">#df631f</color>
+    <color name="orange4">#7d5720</color>
+    <color name="pink">#FF7087</color>
+    <color name="left_text_color">#979797</color>
+    <color name="cz_blue">#7d8ff3</color>
+    <color name="cz_blue1">#8EAAE6</color>
+    <color name="light_brownness">#7d5720</color>
+    <color name="gray_1">#bbbbbb</color>
+    <color name="gray_2">#767676</color>
+    <color name="gray_3">#dddddd</color>
+    <color name="gray_4">#bcbcbc</color>
+    <color name="gray_5">#808080</color>
+    <color name="gray_6">#c3c3c3</color>
+
+
+
+    <!-- 地图颜色 -->
+    <color name="amap_transparent_theme_color">#664ab6fa</color>
+    <color name="app_color_green">#4abe89</color>
+
+
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:widget="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparentGrey"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/y30"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:paddingTop="@dimen/y30">
+
+    <ImageView
+        android:id="@+id/loadingImageView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/cutscenes2"
+        android:contentDescription="@string/empty" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/loadingMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/page_loading"
+        android:textColor="#0097C9"
+        android:textSize="@dimen/x30" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/download_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="（温馨提示：下载完成前请您切勿关闭app!）"
+        android:textColor="#0097C9"
+        android:textSize="14sp" />
+
+    <com.qidian.base.views.NumberProgressBar
+        android:visibility="gone"
+        android:id="@+id/upprogress"
+        android:layout_width="wrap_content"
+        android:padding="20dp"
+        style="@style/NumberProgressBar_Default"
+        android:layout_height="wrap_content"
+        />
+</LinearLayout>

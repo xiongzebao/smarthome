@@ -1,0 +1,27 @@
+apply from: "config.gradle"
+buildscript {
+    repositories {
+        jcenter()
+        google()
+        maven { url 'https://jitpack.io' }
+        maven { url "https://maven.google.com" }
+        maven { url 'https://developer.huawei.com/repo/'}
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.0.1"
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+        maven { url 'https://jitpack.io' }
+        maven { url "https://maven.google.com" }
+        maven { url 'https://developer.huawei.com/repo/'}
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

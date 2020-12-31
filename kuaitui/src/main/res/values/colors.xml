@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/color4e61</color>
+    <color name="colorPrimaryDark">@color/color4e61</color>
+    <color name="colorAccent">#4E61E4</color>
+
+    <color name="color33">#333333</color>
+    <color name="color10">#101010</color>
+    <color name="colorf6">#F6F6F6</color>
+    <color name="color_ea">#EAEAEA</color>
+    <color name="color4e61">#4E61E4</color>
+
+
+    <color name="color_gray_e6">#E6E6E6</color>
+    <color name="color_4e">#4E61E4</color>
+</resources>

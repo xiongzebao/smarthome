@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 设置 -->
+    <string name="mine_settings_title">设置</string>
+    <string name="mine_settings_about">关于我们</string>
+    <string name="mine_settings_idea">意见反馈</string>
+    <string name="mine_settings_idea_tip1">请输入您的反馈意见,我们会为您不断进步。</string>
+    <string name="mine_settings_idea_tip2">160/160</string>
+    <string name="mine_settings_idea_tip3">客服工作时间</string>
+    <string name="mine_settings_idea_tip4">9:00 ~ 18:00</string>
+    <string name="mine_settings_idea_submit">提交</string>
+    <string name="mine_settings_update_pwd">修改登录密码</string>
+    <string name="mine_settings_update_pwd_forget">忘记</string>
+    <string name="mine_settings_set_pwd">设置交易密码</string>
+    <string name="mine_settings_update_paypaw">修改交易密码</string>
+    <string name="mine_settings_exit">退出登录</string>
+
+
+    <string name="credit_no_complete">未完善</string>
+    <string name="credit_no_credit">未认证</string>
+    <string name="credit_completeing">认证中</string>
+    <string name="credit_complete">已认证</string>
+    <string name="credit_must">(必填)</string>
+    <string name="credit_no_must">(选填)</string>
+    <string name="credit_keep_crediting">继续认证</string>
+    <string name="credit_security">银行级数据加密保护</string>
+    <string name="credit_letter_security">认证信息由学信网提供</string>
+
+    <string name="lendrecord_item_money">提现 %1$s元</string>
+    <string name="credit_no_dic">尚未获取该数据字典，请退出应用后重启再尝试填写！</string>
+    <string name="credit_scan_error">今日操作过于频繁，请明日再试</string>
+    <string name="credit_confirm_toast">请再次确认您的身份信息\n\n姓名：%1$s \n身份证号：%2$s</string>
+    <string name="credit_back_update">返回修改</string>
+    <string name="credit_confirm_submit">确认提交</string>
+    <string name="person_first">请先完成实名认证</string>
+
+    <!-- 手机运营商认证 -->
+    <string name="credit_phone_title">手机运营商认证</string>
+    <string name="credit_phone_pwd_hint">请输入手机服务密码</string>
+    <string name="credit_phone_toast">运营商认证需要2-3分钟...</string>
+    <string name="phone_credited">已认证</string>
+    <string name="phone_crediting">认证中</string>
+    <string name="phone_go_credit">去认证</string>
+    <string name="phone_credited_tips">运营商认证已完成</string>
+    <string name="phone_crediting_tips">运营商认证中</string>
+    <string name="phone_no_credit_tips">运营商未认证</string>
+    <string name="phone_delay_credit_tips">您的认证信息已过期请重新认证</string>
+
+    <string name="credit_bank_title">网银信用卡认证</string>
+
+    <string name="card_credited_tips">网银信用卡认证已完成</string>
+    <string name="card_crediting_tips">网银信用卡认证中</string>
+    <string name="card_no_credit_tips">网银信用卡未认证</string>
+
+
+    <string name="bankcard_credited_tips">收款银行卡认证已认证</string>
+    <string name="bankcard_crediting_tips">收款银行卡认证中</string>
+    <string name="bankcard_no_credit_tips">收款银行卡未认证</string>
+    <string name="bankcard_unfinished_tips">银行卡认证未完成</string>
+
+    <string name="letter_credited_tips">学信网信息认证已完成</string>
+    <string name="letter_crediting_tips">学信网信息认证中</string>
+    <string name="letter_no_credit_tips">学信网信息未认证</string>
+
+    <!-- 紧急联系人 -->
+    <string name="credit_linker_title">紧急联系人</string>
+    <string name="credit_lineal_kin">直系亲属</string>
+    <string name="credit_other_kin">其他联系人</string>
+    <string name="linker_relation">与本人关系</string>
+    <string name="linker_name">紧急联系人</string>
+    <string name="linker_phone_title">请选择%1$s号码</string>
+    <string name="linker_no_phone_num">无号码</string>
+    <string name="contact_person_illegality">请选择两个不同的紧急联系人</string>
+
+</resources>

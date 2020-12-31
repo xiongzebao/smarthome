@@ -1,0 +1,9 @@
+include ':searchview'
+include ':bottom-navigation-bar'
+include ':bottom-navigation-bar'
+include ':kuaitui'
+include ':views'
+include ':tools'
+include ':network'
+include ':app'
+rootProject.name = "base"

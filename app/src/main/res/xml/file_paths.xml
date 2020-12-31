@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <paths>
+        <root-path
+            name="camera_photos"
+            path="" />
+
+        <files-path path="Android/data/com.qd768626281.ybs/files/" name="qdrl" />
+        <external-path name="external_files" path="."/>
+        <external-files-path path="files/qdrl" name="images"/>
+        <root-path name="name" path="" />
+    </paths>
+</resources>

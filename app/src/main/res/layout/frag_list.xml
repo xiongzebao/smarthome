@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="model"
+            type="com.qidian.base.common.ui.ListFragmentModel" />
+    </data>
+
+    <RelativeLayout
+        android:background="@color/backgroundColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
+            android:id="@+id/swipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/backgroundColor">
+
+            <include
+                android:id="@id/swipe_refresh_header"
+                layout="@layout/layout_weibo_header" />
+            
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/swipe_target"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+            <include
+                android:id="@id/swipe_load_more_footer"
+                layout="@layout/layout_load_more_footer" />
+        </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
+
+
+        <com.erongdu.wireless.views.PlaceholderLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            app:placeholderListener="@{model.placeholderListener}"
+            app:placeholderState="@{model.placeholderState}" />
+
+
+    </RelativeLayout>
+
+
+</layout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="glide_tag" type="id" />
+    <item name="badge_view_tag" type="id" />
+    <item name="drop_down_menu_content" type="id" />
+    <item name="sectioning_adapter_tag_key_view_viewholder" type="id" />
+    <item name="select_view" type="id" />
+    <item name="sticky_head" type="id" />
+    <item name="sticky_content" type="id" />
+    <item name="photo_item" type="id" />
+
+    <item name="iconics_tag_id" type="id" />
+
+    <item name="iv_back" type="id" />
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 信息反馈 -->
+    <string name="msg_feedback_submit">提交</string>
+    <string name="msg_feedback_register">注册</string>
+    <string name="msg_feedback_borrow">借款</string>
+    <string name="msg_feedback_repayment">还款</string>
+    <string name="msg_feedback_submit_succeed">提交成功</string>
+    <string name="msg_feedback_tips">谢谢您的反馈，我们会尽快回复您！</string>
+    <string name="msg_feedback_confirm">确定</string>
+
+
+</resources>
