@@ -18,9 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp">
             <TextView
-
+                android:visibility="gone"
                 android:text="上传头像"
-
                 android:background="@drawable/bg_avator"
                 android:layout_centerInParent="true"
                 android:gravity="center"
@@ -28,9 +27,113 @@
                 android:textColor="@color/color10"
                 android:layout_width="100dp"
                 android:layout_height="100dp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/ic_avator"
+                app:civ_border_width="0dp"
+                app:civ_border_color="#FF000000"/>
+
         </RelativeLayout>
 
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/rl_leave_confirm"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_mine_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@mipmap/ic_leave"
+                android:id="@+id/mine_logo1"
+                android:layout_width="30dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="19dp"
+                android:layout_centerVertical="true"
+                android:layout_height="30dp">
 
+            </ImageView>
+            <TextView
+                android:text="离职确认"
+                android:textSize="14sp"
+                android:layout_marginLeft="50dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/mine_logo1"
+                android:textColor="@color/color33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_exception_upload"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_mine_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@mipmap/ic_exception"
+                android:id="@+id/mine_logo2"
+                android:layout_width="30dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="19dp"
+                android:layout_centerVertical="true"
+                android:layout_height="30dp">
+
+            </ImageView>
+            <TextView
+                android:text="异常上报"
+                android:textSize="14sp"
+                android:layout_marginLeft="50dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/mine_logo2"
+                android:textColor="@color/color33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_version_update"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_mine_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@mipmap/ic_setting"
+                android:id="@+id/mine_logo3"
+                android:layout_width="30dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="19dp"
+                android:layout_centerVertical="true"
+                android:layout_height="30dp">
+
+            </ImageView>
+            <TextView
+                android:text="版本更新"
+                android:textSize="14sp"
+                android:layout_marginLeft="50dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/mine_logo3"
+                android:textColor="@color/color33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+        </RelativeLayout>
     </LinearLayout>
 
 

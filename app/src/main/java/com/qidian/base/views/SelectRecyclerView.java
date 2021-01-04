@@ -26,7 +26,7 @@ public class SelectRecyclerView extends RecyclerView {
 
 
     BaseQuickAdapter adapter;
-    ArrayList<BaseModel> list = new ArrayList<>();
+    public ArrayList<BaseModel> list = new ArrayList<>();
 
     public SelectRecyclerView(@NonNull Context context) {
         super(context);
@@ -57,9 +57,10 @@ public class SelectRecyclerView extends RecyclerView {
     }
 
     private void initView(){
-        RecyclerViewUtils.setVerticalLayout(getContext(),this);
-        RecyclerViewUtils.addItemDecoration(getContext(),this);
+    /*    RecyclerViewUtils.setVerticalLayout(getContext(),this);
+        RecyclerViewUtils.addItemDecoration(getContext(),this);*/
         this.adapter = getMyAdapter();
+        this.adapter.setNewData(list);
         setAdapter(adapter);
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override

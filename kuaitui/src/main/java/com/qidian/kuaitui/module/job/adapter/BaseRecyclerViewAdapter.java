@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 
-abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder> implements View.OnClickListener {
+abstract public class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerViewHolder> implements View.OnClickListener {
 
     private Context mContext;
     private List<T> mData;
@@ -19,7 +19,7 @@ abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerV
 
     private OnItemClickListener mListener;
 
-    BaseRecyclerViewAdapter(Context context, List<T> data, int layoutId) {
+    public BaseRecyclerViewAdapter(Context context, List<T> data, int layoutId) {
         this.mContext = context;
         this.mData = data;
         this.mLayoutId = layoutId;

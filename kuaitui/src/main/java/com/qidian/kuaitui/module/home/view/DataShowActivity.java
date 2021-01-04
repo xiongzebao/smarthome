@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
 import com.erongdu.wireless.tools.log.MyLog;
@@ -164,8 +165,16 @@ public class DataShowActivity extends BaseActivity {
 
 
 
-    private void parseData(DataShowBean bean){
-       progressView.setData(bean.getPassNum(),bean.getSumNum());
+    private void parseData(final DataShowBean bean){
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressView.setData(bean.getPassNum(),bean.getSumNum());
+            }
+        },500);
+
+
         dataFragment.setTitles(getTitles());
         dataFragment.setListDatas(getLists(bean.getChannelDateList()));
     }

@@ -41,8 +41,8 @@ public class STClient {
         builder.readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         builder.writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-        // 添加签名参数
-        builder.addInterceptor(new Interceptor() {
+
+        Interceptor interceptor = new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request original = chain.request();
@@ -67,12 +67,18 @@ public class STClient {
 
                     }
                 }
+
+                MyLog.e("add token");
                 Request.Builder requestBuilder = original.newBuilder()
                         .header("token", (String) SharedInfo.getInstance().getValue(KTConstant.TOKEN,""));
                 Request request = requestBuilder.build();
                 return chain.proceed(request);
             }
-        });
+        };
+
+
+        // 添加签名参数
+        builder.addInterceptor(interceptor);
         // 打印参数
         builder.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
 
@@ -82,8 +88,6 @@ public class STClient {
 
         //修改服务器地址的Url
      //   String inputUrl = (String) SharedInfo.getInstance().getValue("input_url", "");
-
-
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
@@ -100,7 +104,7 @@ public class STClient {
     private static STClient getInstance() {
         if(instance==null){
             instance = new STClient();
-
+            MyLog.e("new STClient()");
         }
         return instance;
     }
@@ -113,7 +117,13 @@ public class STClient {
 
     public static void reCreate(){
         isRecreate = true;
-        instance = new STClient();
+        try {
+            instance = new STClient();
+        }catch (Exception e){
+            MyLog.e(e.getMessage());
+        }
+
+        MyLog.e("STClient reCreate");
     }
 
 

@@ -4,13 +4,8 @@
 
     <!-- 填充的颜色 -->
 
-    <padding
-        android:left="15dp"
-        android:top="10dp"
-        android:right="10dp"
-        android:bottom="10dp" />
 
-    <size android:height="48dp">
+    <size android:height="34dp">
 
     </size>
     <solid
@@ -24,7 +19,7 @@
 
     <!-- android:radius 圆角的半径 -->
     <corners
-        android:radius="10dp"
+        android:radius="5dp"
         />
 
 </shape>

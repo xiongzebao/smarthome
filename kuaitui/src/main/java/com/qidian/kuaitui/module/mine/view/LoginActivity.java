@@ -3,6 +3,7 @@ package com.qidian.kuaitui.module.mine.view;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 
@@ -97,8 +98,13 @@ public class LoginActivity extends AppCompatActivity {
                 SharedInfo.getInstance().saveValue(KTConstant.LOGIN_NAME,username);
                 STClient.reCreate();
                 ToastUtil.toast("登录成功");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ActivityManager.startActivity(MainActivity.class);
+                    }
+                },500);
 
-                ActivityManager.startActivity(MainActivity.class);
             }
 
             @Override

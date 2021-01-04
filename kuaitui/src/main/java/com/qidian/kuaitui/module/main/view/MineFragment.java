@@ -9,11 +9,13 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
 import com.erongdu.wireless.tools.utils.ActivityManager;
+import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.qidian.base.base.BaseFragment;
 import com.qidian.kuaitui.R;
 import com.qidian.kuaitui.databinding.FragHomeBinding;
 import com.qidian.kuaitui.databinding.FragMineBinding;
 import com.qidian.kuaitui.module.mine.model.LoginBean;
+import com.qidian.kuaitui.module.mine.view.ExceptionActivity;
 import com.qidian.kuaitui.module.mine.view.LoginActivity;
 
 public class MineFragment extends BaseFragment {
@@ -41,6 +43,27 @@ public class MineFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 ActivityManager.startActivity(LoginActivity.class);
+            }
+        });
+
+        binding.rlLeaveConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        binding.rlExceptionUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityManager.startActivity(ExceptionActivity.class);
+            }
+        });
+
+        binding.rlVersionUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.toast("当前版本已是最新版本");
             }
         });
     }

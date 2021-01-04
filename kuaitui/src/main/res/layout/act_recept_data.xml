@@ -23,11 +23,13 @@
             android:layout_height="wrap_content">
         <com.qidian.base.views.EditText_Clear
             android:id="@+id/et_search"
+            android:textSize="13sp"
+            android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="34dp"
             android:layout_margin="15dp"
             android:background="@drawable/bg_edit"
-            android:drawablePadding="8dp"
+
             android:gravity="start|center_vertical"
             android:imeOptions="actionSearch"
             android:singleLine="true"

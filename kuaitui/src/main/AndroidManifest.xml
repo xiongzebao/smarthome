@@ -78,6 +78,7 @@
         </activity>
         <activity android:name=".module.job.view.ReceiptDataActivity" />
         <activity android:name=".module.job.view.AddNewUserActivity" />
+        <activity android:name=".module.mine.view.ExceptionActivity" />
     </application>
 
 </manifest>

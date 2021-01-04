@@ -17,8 +17,8 @@ public class ActivityUtils {
 
     public static void startLoginActivity(Activity activity){
         Intent intent = new Intent(activity, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+       // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+       // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
     }
 

@@ -28,6 +28,20 @@ public class ReceiptListBean {
    private String FunctionName;
    private String ChannelSource;
    private String ChannelName;
+   /**
+    * ReceptionStatus : 2
+    * InterviewStatus : 1
+    * EntryStatus : 1
+    * LeaveStatus : 1
+    * StatusName : 未到场
+    */
+
+   private int ReceptionStatus;
+   private int InterviewStatus;
+   private int EntryStatus;
+   private int LeaveStatus;
+   private String StatusName;
+
 
    public String getInterviewId() {
       return InterviewId;
@@ -115,5 +129,45 @@ public class ReceiptListBean {
 
    public void setChannelName(String ChannelName) {
       this.ChannelName = ChannelName;
+   }
+
+   public int getReceptionStatus() {
+      return ReceptionStatus;
+   }
+
+   public void setReceptionStatus(int ReceptionStatus) {
+      this.ReceptionStatus = ReceptionStatus;
+   }
+
+   public int getInterviewStatus() {
+      return InterviewStatus;
+   }
+
+   public void setInterviewStatus(int InterviewStatus) {
+      this.InterviewStatus = InterviewStatus;
+   }
+
+   public int getEntryStatus() {
+      return EntryStatus;
+   }
+
+   public void setEntryStatus(int EntryStatus) {
+      this.EntryStatus = EntryStatus;
+   }
+
+   public int getLeaveStatus() {
+      return LeaveStatus;
+   }
+
+   public void setLeaveStatus(int LeaveStatus) {
+      this.LeaveStatus = LeaveStatus;
+   }
+
+   public String getStatusName() {
+      return StatusName;
+   }
+
+   public void setStatusName(String StatusName) {
+      this.StatusName = StatusName;
    }
 }

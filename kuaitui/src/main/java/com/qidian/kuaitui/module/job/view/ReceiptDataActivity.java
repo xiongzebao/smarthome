@@ -3,6 +3,7 @@ import androidx.databinding.DataBindingUtil;
 import com.qidian.base.base.BaseActivity;
 import com.qidian.kuaitui.R;
 import com.qidian.kuaitui.databinding.ActReceptDataBinding;
+import com.qidian.kuaitui.module.job.adapter.ReceiptListAdapter;
 import com.qidian.kuaitui.module.job.vm.ReceiptViewModel;
 import com.qidian.kuaitui.utils.CommenSetUtils;
 
@@ -19,6 +20,8 @@ public class ReceiptDataActivity extends BaseActivity {
     @Override
     protected void bindView() {
         binding =    DataBindingUtil.setContentView(this, R.layout.act_recept_data);
+
+
         binding.setViewModel(new ReceiptViewModel(binding,this));
         setTitle(CommenSetUtils.getProjectTitle());
 

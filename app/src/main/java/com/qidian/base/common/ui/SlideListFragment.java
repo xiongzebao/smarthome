@@ -43,16 +43,12 @@ public class SlideListFragment extends BaseFragment implements OnLoadMoreListene
     protected ListFragmentModel model = new ListFragmentModel(this);
 
 
-
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_list_slide, null, false);
         RecyclerViewUtils.setVerticalLayout(getContext(), binding.swipeTarget);
-
-        binding.setModel(model );
+        binding.setModel(model);
         this.swipeToLoadLayout = binding.swipe;
         this.swipeToLoadLayout.setOnLoadMoreListener(this);
         this.swipeToLoadLayout.setOnRefreshListener(this);

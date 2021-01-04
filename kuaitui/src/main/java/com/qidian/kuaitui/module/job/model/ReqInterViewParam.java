@@ -9,6 +9,7 @@ import com.qidian.kuaitui.base.Page;
  */
 
 public class ReqInterViewParam   {
+    public String recruitId;
     public String RecruitID="";
     public String KeyValue="";
     public int TypeStatus=1;

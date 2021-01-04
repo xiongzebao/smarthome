@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.erongdu.wireless.tools.log.MyLog;
+
 /**
  * @author xiongbin
  * @description:这是一个类似QQ侧滑滑出顶置和删除的自定义RecyclerView
@@ -29,6 +31,7 @@ public class SlideRecyclerView extends RecyclerView {
     private static final int INVALID_CHILD_WIDTH = -1;  // 子ItemView不含两个子View
     private static final int SNAP_VELOCITY = 600;   // 最小滑动速度
 
+    private   boolean canSlide = true;
     private VelocityTracker mVelocityTracker;   // 速度追踪器
     private int mTouchSlop; // 认为是滑动的最小距离（一般由系统提供）
     private Rect mTouchFrame;   // 子View所在的矩形范围
@@ -95,7 +98,11 @@ public class SlideRecyclerView extends RecyclerView {
                 if (Math.abs(xVelocity) > SNAP_VELOCITY && Math.abs(xVelocity) > Math.abs(yVelocity)
                         || Math.abs(x - mFirstX) >= mTouchSlop
                         && Math.abs(x - mFirstX) > Math.abs(y - mFirstY)) {
-                    mIsSlide = true;
+
+                    if(canSlide){
+                        mIsSlide = true;
+                    }
+
                     return true;
                 }
                 break;
@@ -109,17 +116,24 @@ public class SlideRecyclerView extends RecyclerView {
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if (mIsSlide && mPosition != INVALID_POSITION) {
+            if(!canSlide){
+                return true;
+            }
             float x = e.getX();
             obtainVelocity(e);
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:   // 因为没有拦截，所以不会被调用到
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    if(!canSlide){
+                        return true;
+                    }
                     // 随手指滑动
                     if (mMenuViewWidth != INVALID_CHILD_WIDTH) {
                         float dx = mLastX - x;
                         if (mFlingView.getScrollX() + dx <= mMenuViewWidth
                                 && mFlingView.getScrollX() + dx > 0) {
+
                             mFlingView.scrollBy((int) dx, 0);
                         }
                         mLastX = x;
@@ -169,6 +183,12 @@ public class SlideRecyclerView extends RecyclerView {
             mVelocityTracker.recycle();
             mVelocityTracker = null;
         }
+    }
+
+    public void setCanSlide(boolean canSlide) {
+        this.canSlide = canSlide;
+        MyLog.e("canSlide:"+canSlide);
+
     }
 
     private void obtainVelocity(MotionEvent event) {

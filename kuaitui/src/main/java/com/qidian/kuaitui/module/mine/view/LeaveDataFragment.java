@@ -1,4 +1,4 @@
-package com.qidian.kuaitui.module.job.view;
+package com.qidian.kuaitui.module.mine.view;
 
 import android.os.Bundle;
 import android.view.View;
@@ -14,24 +14,21 @@ import com.qidian.base.common.ui.OnLoadListener;
 import com.qidian.base.common.ui.SlideListFragment;
 import com.qidian.base.network.NetworkUtil;
 import com.qidian.base.network.RequestCallBack;
-import com.qidian.base.views.SlideRecyclerView;
-import com.qidian.kuaitui.R;
 import com.qidian.kuaitui.api.ApiService;
 import com.qidian.kuaitui.api.STClient;
 import com.qidian.kuaitui.base.KTRequestCallBack;
 import com.qidian.kuaitui.base.ResBase;
 import com.qidian.kuaitui.common.KTConstant;
 import com.qidian.kuaitui.module.job.adapter.InventoryAdapter;
-import com.qidian.kuaitui.module.job.model.ChannelBean;
 import com.qidian.kuaitui.module.job.model.ReceiptListBean;
 import com.qidian.kuaitui.module.job.model.ReqInterViewParam;
+import com.qidian.kuaitui.module.job.view.ReceiptDataActivity;
 import com.qidian.kuaitui.utils.CommenSetUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -40,7 +37,7 @@ import retrofit2.Response;
  * @date : 2020/12/31 11:33
  */
 
-public class ReceiptDataFragment extends SlideListFragment implements OnLoadListener {
+public class LeaveDataFragment extends SlideListFragment implements OnLoadListener {
 
     List<ReceiptListBean> list = new ArrayList();
     private String searchKey;
@@ -58,13 +55,14 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         type = ActivityManager.peek().getIntent().getIntExtra(KTConstant.TYPE, 1);
+        setSlidable();
+
         InventoryAdapter adapter = new InventoryAdapter(getContext(), list, type);
         adapter.setOnDeleteClickListener(new InventoryAdapter.OnDeleteClickLister() {
             @Override
             public void onDeleteClick(View view, int position, int status) {
                 String id = list.get(position).getInterviewId();
                 requestOperation(id, status);
-                binding.swipeTarget.closeMenu();
             }
         });
         setAdapter(adapter);
@@ -88,18 +86,10 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
                 requestModifyEntryStatus(id, status);
                 break;
             }
-
-            case ReceiptDataActivity.HISTORY: {
-                requestModifyLeaveStatus(id);
-                break;
-            }
-
-
         }
     }
 
 
-/*
     public void setSlidable() {
         if ( type == ReceiptDataActivity.HISTORY) {
             binding.swipeTarget.setCanSlide(false);
@@ -107,7 +97,6 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
             binding.swipeTarget.setCanSlide(true);
         }
     }
-*/
 
 
     public void requestModifyReceptionStatus(String id, int status) {
@@ -184,35 +173,10 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
         });
     }
 
-    public void requestModifyLeaveStatus(String id) {
-        Call<ResBase> login = STClient.getService(ApiService.class).modifyLeaveStatus(id);
-        NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase>() {
-            @Override
-            public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
-                ToastUtil.toast(response.body().message);
-                requestData(1);
-            }
-
-            @Override
-            public void onFailed(Call<ResBase> call, Response<ResBase> response) {
-                super.onFailed(call, response);
-                ToastUtil.toast(response.body().message);
-            }
-
-            @Override
-            public void onFailure(Call<ResBase> call, Throwable t) {
-                super.onFailure(call, t);
-                ToastUtil.toast(t.getMessage());
-            }
-        });
-    }
-
-
-
 
     public void search(String searchKey) {
         this.searchKey = searchKey;
+        MyLog.e(this.searchKey);
         requestData(1);
 
     }
@@ -222,12 +186,13 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
         final ReqInterViewParam param = new ReqInterViewParam();
         String recruitId = CommenSetUtils.getRecruitID();
         param.RecruitID = recruitId;
-        param.recruitId = recruitId;
         param.TypeStatus = type;
         param.pageIndex = pageIndex;
         param.KeyValue = searchKey;
 
-        Callback<ResBase<List<ReceiptListBean>>> callback =  new KTRequestCallBack<ResBase<List<ReceiptListBean>>>(binding.swipe, getPlaceHolderState()) {
+        Call<ResBase<List<ReceiptListBean>>> login = STClient.getService(ApiService.class).getInterViewList(param);
+        NetworkUtil.showCutscenes(login);
+        login.enqueue(new KTRequestCallBack<ResBase<List<ReceiptListBean>>>(binding.swipe, getPlaceHolderState()) {
             @Override
             public void onSuccess(Call<ResBase<List<ReceiptListBean>>> call, Response<ResBase<List<ReceiptListBean>>> response) {
                 List<ReceiptListBean> listData = response.body().resultdata;
@@ -263,16 +228,7 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
                 super.onFailure(call, t);
                 ToastUtil.toast(t.getMessage());
             }
-        };
-        if(type==4){
-            Call<ResBase<List<ReceiptListBean>>> login = STClient.getService(ApiService.class).getHistoryDataInfo(param);
-            NetworkUtil.showCutscenes(login);
-            login.enqueue(callback);
-            return;
-        }
-        Call<ResBase<List<ReceiptListBean>>> login = STClient.getService(ApiService.class).getInterViewList(param);
-        NetworkUtil.showCutscenes(login);
-        login.enqueue(callback);
+        });
     }
 
     @Override

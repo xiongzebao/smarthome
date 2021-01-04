@@ -12,6 +12,8 @@ import com.qidian.kuaitui.module.job.model.ReqInterViewParam;
 import com.qidian.kuaitui.module.main.model.DataShowBean;
 import com.qidian.kuaitui.module.main.model.HomeStaticBean;
 import com.qidian.kuaitui.module.main.model.JobHomeBean;
+import com.qidian.kuaitui.module.mine.model.ExceptionBean;
+import com.qidian.kuaitui.module.mine.model.ExceptionModel;
 import com.qidian.kuaitui.module.mine.model.LoginBean;
 import com.qidian.kuaitui.module.mine.model.UserInfoBean;
 
@@ -35,7 +37,6 @@ import retrofit2.http.Query;
  */
 public interface ApiService {
 
-
     @GET("/Api/OnSite/GetLogin")
     Call<ResBase<LoginBean>> login(@Query("name") String name, @Query("password") String password);
 
@@ -47,8 +48,6 @@ public interface ApiService {
 
     @GET("/Api/OnSite/HomePageStatisticsInfo")
     Call<ResBase<HomeStaticBean>> getHomePageStatics(@Query("recruitId") String recruitId);
-
-
 
     //DataShowActivity
     @GET("/Api/OnSite/HomePageReceptionInfo")
@@ -65,22 +64,47 @@ public interface ApiService {
     @GET("/Api/OnSite/HomePageLeaveInfo")
     Call<ResBase<DataShowBean>> getLeaveInfo(@Query("recruitId") String recruitId);
 
-
-
     //在职页面数据统计
     @GET("/Api/OnSite/HomePageJobDataSumInfo")
     Call<ResBase<JobHomeBean>> getJobDataSumInfo(@Query("recruitId") String recruitId);
-
 
     //面试列表
     @POST("/Api/OnSite/SearchInterviewList")
     Call<ResBase< List<ReceiptListBean>>> getInterViewList(@Body ReqInterViewParam page);
 
 
+
+
+    @POST("/Api/OnSite/HistoryDataInfo")
+    Call<ResBase< List<ReceiptListBean>>> getHistoryDataInfo(@Body ReqInterViewParam page);
+
+
+
     @POST("/Api/OnSite/CreateJobMember")
     Call<ResBase> addNewUser(@Body AddNewUserModel addNewUserModel);
 
+
     @GET("/Api/OnSite/GetChannelDataInfo")
     Call<ResBase<List<ChannelBean>>> getChannel();
+
+
+    @GET("/Api/OnSite/ModifyReceptionStatus")
+    Call<ResBase>modifyReceptionStatus(@Query("interviewId") String interviewId,@Query("status") String status);
+
+    @GET("/Api/OnSite/ModifyLeaveStatus")
+    Call<ResBase>modifyLeaveStatus(@Query("interviewId") String interviewId);
+
+    @GET(" /Api/OnSite/ModifyEntryStatus")
+    Call<ResBase>modifyEntryStatus(@Query("interviewId") String interviewId,@Query("status") String status);
+
+    @GET("/Api/OnSite/ModifyInterviewStatus")
+    Call<ResBase>modifyInterviewStatus(@Query("interviewId") String interviewId,@Query("status") String status);
+
+
+    @GET("/Api/OnSite/GetAnomalyTypeInfo")
+    Call<ResBase<List<ExceptionBean>>> getAnomalyTypeInfo();
+    //POST /Api/OnSite/CreateAnomalyInfo
+    @POST("/Api/OnSite/CreateAnomalyInfo")
+    Call<ResBase>createAnomalyInfo(@Body ExceptionModel model);
 
 }

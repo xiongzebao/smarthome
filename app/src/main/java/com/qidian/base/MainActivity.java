@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
+import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.qidian.base.base.BaseActivity;
 import com.qidian.base.model.NoticeListRec;
 import com.qidian.base.network.RDClient;
@@ -22,10 +23,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityManager.push(this);
         setContentView(R.layout.activity_main);
-
         reqNotices();
-
     }
 
 
@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityManager.pop();
+    }
 }
