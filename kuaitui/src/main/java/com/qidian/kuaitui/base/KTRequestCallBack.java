@@ -45,7 +45,6 @@ public abstract class KTRequestCallBack<T> implements Callback<T> {
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         NetworkUtil.dismissCutscenes();
-
         if (swipeLayout != null && swipeLayout.isRefreshing()) {
             swipeLayout.setRefreshing(false);
         }
@@ -63,8 +62,7 @@ public abstract class KTRequestCallBack<T> implements Callback<T> {
     }
 
     public void onFailed(Call<T> call, Response<T> response) {
-
-
+        NetworkUtil.dismissCutscenes();
         if (response.code() >= 400) {
              if(KTExceptionHandling.operate(response.code())){
                  return;
@@ -97,7 +95,7 @@ public abstract class KTRequestCallBack<T> implements Callback<T> {
         }
 
         if (t instanceof IOException) {
-           // toast(R.string.app_network_socket_timeout);
+            ToastUtil.toast(R.string.app_network_socket_timeout);
         }
         t.printStackTrace();
     }

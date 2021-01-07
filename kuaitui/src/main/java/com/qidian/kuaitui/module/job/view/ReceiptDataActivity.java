@@ -1,4 +1,7 @@
 package com.qidian.kuaitui.module.job.view;
+import android.content.Intent;
+
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import com.qidian.base.base.BaseActivity;
 import com.qidian.kuaitui.R;
@@ -14,6 +17,8 @@ public class ReceiptDataActivity extends BaseActivity {
     public static final int INTERVIEW=2;
     public static final int ENTRY=3;
     public static final int HISTORY=4;
+    public static final int SUMENTRY=5;
+    public static final int REFRESH=4;
 
     ActReceptDataBinding binding;
 
@@ -27,8 +32,11 @@ public class ReceiptDataActivity extends BaseActivity {
 
     }
 
-
-
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==REFRESH){
+            binding.getViewModel().search();
+        }
+    }
 }

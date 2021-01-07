@@ -34,6 +34,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:onClick="@{viewModel.onLookReceptPeople}"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="0dp"
                     app:contentPadding="16dp">
@@ -62,7 +63,7 @@
                             style="@style/NormalText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:onClick="@{viewModel.onLookReceptPeople}"
+                            android:visibility="gone"
                             android:text="查看接待列表" />
                     </LinearLayout>
 
@@ -96,6 +97,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:onClick="@{viewModel.onLookInterViewPeople}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -126,7 +128,7 @@
                             style="@style/NormalText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:onClick="@{viewModel.onLookInterViewPeople}"
+                            android:visibility="gone"
                             android:text="查看面试列表" />
                     </LinearLayout>
 
@@ -142,6 +144,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     app:cardCornerRadius="10dp"
+                    android:onClick="@{viewModel.onLookEntryPeople}"
                     app:cardElevation="0dp"
                     app:contentPadding="16dp">
 
@@ -166,7 +169,7 @@
 
                         <TextView
                             style="@style/NormalText"
-                            android:onClick="@{viewModel.onLookEntryPeople}"
+                         android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="查看入职列表" />
@@ -182,6 +185,50 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:onClick="@{viewModel.onLookSumEntryPeople}"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:contentPadding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/NormalText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="当前在职人数" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.model.entrySumNum+'人'}"
+                            android:textColor="@color/color10"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            style="@style/NormalText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="查看在职列表"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:src="@mipmap/ic_entry" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{viewModel.onLookHistoryPeople}"
                     android:layout_marginTop="16dp"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="0dp"
@@ -208,7 +255,7 @@
 
                         <TextView
                             style="@style/NormalText"
-                            android:onClick="@{viewModel.onLookHistoryPeople}"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="查看历史列表" />

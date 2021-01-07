@@ -5,9 +5,6 @@
     <!-- 填充的颜色 -->
 
 
-    <size android:height="34dp">
-
-    </size>
     <solid
         android:color="#ffffff" />
 

@@ -22,6 +22,7 @@ public class KTExceptionHandling {
                 SingletonDialog.showDialog(ActivityManager.peek(), "账号过期，请重新登录", new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
+
                         ActivityUtils.startLoginActivity(ActivityManager.peek());
                         sweetAlertDialog.dismiss();
                     }

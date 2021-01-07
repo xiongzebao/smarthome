@@ -59,12 +59,39 @@ public class HomeFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         dataFragment = (DataFragment) getChildFragmentManager().findFragmentById(R.id.frag_main_list_data);
-
         setOnClickListener();
-        requestProjectData();
+        dataFragment.setTitles(getTitles());
+        requestData();
     }
 
-    private void requestProjectData() {
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            requestData();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+     requestData();
+
+    }
+
+
+    private void requestData(){
+        ProjectItem item =  SharedInfo.getInstance().getEntity(ProjectItem.class);
+        if(item!=null&&item.getRecruitID()!=null){
+            requestHomeStatics(item.getRecruitID());
+        }else{
+            requestProjectData();
+        }
+
+    }
+
+    public void requestProjectData() {
         Call<ResBase<List<ProjectItem>>> login = STClient.getService(ApiService.class).getProjectList(Page.getPage());
         NetworkUtil.showCutscenes(login);
         login.enqueue(new KTRequestCallBack<ResBase<List<ProjectItem>>>() {
@@ -75,6 +102,7 @@ public class HomeFragment extends BaseFragment {
                 ProjectItem item = response.body().resultdata.get(0);
                 SharedInfo.getInstance().saveEntity(item);
                 setTitle(item.getPostType() + "\n" + item.getProjectName());
+
                 requestHomeStatics(item.getRecruitID());
             }
 
@@ -94,9 +122,9 @@ public class HomeFragment extends BaseFragment {
 
 
     private void parseData(HomeStaticBean bean){
-        dataFragment.setTitles(getTitles());
         dataFragment.setListDatas(getLists(bean.getChannelDateList()));
-
+        binding.tv.setText(bean.getTomorrowPlanReceptionNum());
+        binding.tv0.setText(bean.getToDayPlanReceptionNum());
         binding.tv1.setText(bean.getTodayReceptionNum());
         binding.tv2.setText(bean.getTodayInterviewNum());
         binding.tv3.setText(bean.getTodayEntryNum());
@@ -212,6 +240,6 @@ private void requestHomeStatics(final String recruitId){
 
 
     public void onClick(View v) {
-        MyLog.e("onclick");
+
     }
 }

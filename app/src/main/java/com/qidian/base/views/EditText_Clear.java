@@ -146,7 +146,7 @@ public class EditText_Clear extends AppCompatEditText {
         int canvasHeight = canvas.getHeight();
         float translateY = canvasHeight / 2;
         float textHeight = paint.getFontMetrics().descent - paint.getFontMetrics().ascent;
-        float baseY = translateY + textHeight / 2;
+        float baseY = translateY + textHeight / 2-getPaddingTop() / 2;
 
         //设置居中对齐
         paint.setTextAlign(Paint.Align.CENTER);//设置居中对齐

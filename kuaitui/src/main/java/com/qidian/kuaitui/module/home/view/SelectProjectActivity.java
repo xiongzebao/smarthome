@@ -11,7 +11,7 @@ import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.qidian.base.base.BaseActivity;
 import com.qidian.base.common.ui.ListFragment;
 import com.qidian.base.network.NetworkUtil;
-import com.qidian.base.network.RequestCallBack;
+
 import com.qidian.base.utils.SharedInfo;
 import com.qidian.kuaitui.R;
 import com.qidian.kuaitui.api.ApiService;
@@ -92,7 +92,7 @@ class SelectProjectAdapter extends BaseQuickAdapter<ProjectItem, BaseViewHolder>
 
     @Override
     protected void convert(@NonNull BaseViewHolder helper, ProjectItem item) {
-        helper.setText(R.id.tv_type,item.getPostType());
+        helper.setText(R.id.tv_type,item.getFunctionName());
         helper.setText(R.id.tv_project_name,item.getProjectName());
     }
 }

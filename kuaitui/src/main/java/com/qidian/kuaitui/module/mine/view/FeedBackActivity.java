@@ -24,12 +24,12 @@ import com.qidian.kuaitui.api.STClient;
 import com.qidian.kuaitui.base.KTRequestCallBack;
 import com.qidian.kuaitui.base.ResBase;
 import com.qidian.kuaitui.databinding.ActivityExceptionUploadBinding;
+import com.qidian.kuaitui.databinding.ActivityFeedbackUploadBinding;
 import com.qidian.kuaitui.module.mine.adapter.ExceptionAdapter;
 import com.qidian.kuaitui.module.mine.model.ExceptionBean;
 import com.qidian.kuaitui.module.mine.model.ExceptionModel;
+import com.qidian.kuaitui.module.mine.model.FeedBackModel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -43,20 +43,20 @@ import retrofit2.Response;
  * @date : 2021/1/4 15:22
  */
 
-public class ExceptionActivity extends BaseActivity {
+public class FeedBackActivity extends BaseActivity {
 
-    ActivityExceptionUploadBinding binding;
+    ActivityFeedbackUploadBinding binding;
     ExceptionAdapter adapter;
-    ExceptionModel model = new ExceptionModel();
+    FeedBackModel model = new FeedBackModel();
 
     @Override
     protected void bindView() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_exception_upload);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_feedback_upload);
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
         layoutManager.setFlexDirection(FlexDirection.ROW);
         layoutManager.setJustifyContent(JustifyContent.FLEX_START);
 
-        setTitle("异常确认");
+        setTitle("回访确认");
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.setModel(model);
         requestExceptionData();
@@ -74,21 +74,21 @@ public class ExceptionActivity extends BaseActivity {
             public void onClick(View v) {
                List<ExceptionBean> list =  binding.recyclerView.getSelectData();
                if(list==null||list.size()==0){
-                   ToastUtil.toast("请选择异常类型");
+                   ToastUtil.toast("请选择回访类型");
                    return;
                }
-                model.AnomalyTypeName = list.get(0).Name;
-               model.AnomalyTypeValue = list.get(0).Value;
-               if(TextUtil.isEmpty_new(model.AnomalyDate)){
-                   ToastUtil.toast("请选择异常时间");
+                model.VisitTypeName = list.get(0).Name;
+               model.VisitTypeValue = list.get(0).Value;
+               if(TextUtil.isEmpty_new(model.VisitDate)){
+                   ToastUtil.toast("请选择回访时间");
                    return;
                }
-                if(TextUtil.isEmpty_new(model.AnomalyTitle)){
-                    ToastUtil.toast("请输入异常标题");
+                if(TextUtil.isEmpty_new(model.VisitTitle)){
+                    ToastUtil.toast("请输入回访标题");
                     return;
                 }
 
-                if(TextUtil.isEmpty_new(model.AnomalyDesc)){
+                if(TextUtil.isEmpty_new(model.VisitDesc)){
                     ToastUtil.toast("请输入问题描述");
                     return;
                 }
@@ -134,7 +134,7 @@ public class ExceptionActivity extends BaseActivity {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
                String formatter =  DateUtil.formatter(DateUtil.Format.DATE,date);
-                model.setAnomalyDate( formatter);
+                model.setVisitDate( formatter);
             }
         })
                 .setType(new boolean[]{true, true, true, false, false, false})// 默认全部显示
@@ -188,7 +188,7 @@ public class ExceptionActivity extends BaseActivity {
 
 
     private void requestUploadException() {
-        Call<ResBase> login = STClient.getService(ApiService.class).createAnomalyInfo(model);
+        Call<ResBase> login = STClient.getService(ApiService.class).createVisitInfo(model);
         NetworkUtil.showCutscenes(login);
         login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override

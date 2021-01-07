@@ -21,6 +21,15 @@ public class JobHomeBean {
     private String InterviewNum;
     private String EntryNum;
     private String HistoryNum;
+    private String EntrySumNum;
+
+    public String getEntrySumNum() {
+        return EntrySumNum;
+    }
+
+    public void setEntrySumNum(String entrySumNum) {
+        EntrySumNum = entrySumNum;
+    }
 
     public String getPredictNum() {
         return PredictNum;

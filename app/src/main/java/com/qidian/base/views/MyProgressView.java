@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.DensityUtil;
 import com.qidian.base.R;
 
@@ -67,6 +68,7 @@ public class MyProgressView extends View {
 
     private Context mContext;
 
+    private String label1;
 
 
 
@@ -83,7 +85,7 @@ public class MyProgressView extends View {
 
 
     private int useNum=0;
-    private int totalNum = 100;
+    private int totalNum = 0;
 
 
 
@@ -118,8 +120,8 @@ public class MyProgressView extends View {
         mUsePaint = new Paint();
         mUsePaint.setAntiAlias(true);
         mUsePaint.setStyle(Paint.Style.FILL);
-        mUsePaint.setColor(getResources().getColor(R.color.darkorchid));
-        mUsePaint.setTextSize(DensityUtil.sp2px(mContext, 10));
+        mUsePaint.setColor(getResources().getColor(R.color.white));
+        mUsePaint.setTextSize(DensityUtil.sp2px(mContext, 18));
 
         //圆环画笔设置
         mRingDefaultPaint = new Paint();
@@ -138,8 +140,8 @@ public class MyProgressView extends View {
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setStyle(Paint.Style.FILL);
-        mTextPaint.setColor(Color.BLACK);
-        mTextPaint.setTextSize(DensityUtil.sp2px(mContext, 22));
+        mTextPaint.setColor(Color.WHITE);
+        mTextPaint.setTextSize(DensityUtil.sp2px(mContext, 24));
 
         mLinePaint = new Paint();
         mLinePaint.setColor(Color.WHITE);
@@ -156,8 +158,13 @@ public class MyProgressView extends View {
         this.useNum = useNum;
         this.totalNum = totalNum;
         float per = (float) useNum/totalNum;
-        setProgress((int) (per*100));
-        setmShowProgress((int) (per*100));
+        int progress = (int) (per*100);
+        setProgress(progress);
+        setmShowProgress(progress);
+    }
+
+    public void setLabel1(String label1){
+        this.label1 = label1;
     }
 
 
@@ -181,6 +188,8 @@ public class MyProgressView extends View {
         canvas.drawArc(oval, -90, ((float) mProgress / mTotalProgress) * 360, false, mRingPaint);
         //文字绘制
         String txt = mProgress + "%";
+
+        txt = useNum+"/"+totalNum;
         //文字的长度
         mTxtWidth = mTextPaint.measureText(txt, 0, txt.length());
         canvas.drawText(txt, mXCenter - mTxtWidth / 2, mYCenter + mTxtHeight / 9, mTextPaint);
@@ -188,11 +197,11 @@ public class MyProgressView extends View {
 
 
         Rect _pb = new Rect();
-        String sup = "接待总数";
-        mUsePaint.getTextBounds(sup, 0, sup.length(), _pb);
+
+        mUsePaint.getTextBounds(label1, 0, label1.length(), _pb);
         int perX = mXCenter - _pb.width() / 2;
        // canvas.drawText(sup, perX, mYCenter / 2, mUsePaint);
-        canvas.drawText(sup, perX, canvas.getHeight()-120, mUsePaint);
+        canvas.drawText(label1, perX, canvas.getHeight()-120, mUsePaint);
         if (!TextUtils.isEmpty(usedFlow)) {
             mUsePaint.getTextBounds(usedFlow, 0, usedFlow.length(), _pb);
             perX = mXCenter - _pb.width() / 2;
@@ -237,23 +246,24 @@ public class MyProgressView extends View {
         public void run() {
             // TODO Auto-generated method stub
             while(!Thread.currentThread().isInterrupted()){
+
                 try {
-                    Thread.sleep(50);
-                    m++;
-                    Message msg = new Message();
-                    msg.what = 1;
-                    if(i < mShowProgress){
-                        i += m;
-                    }else{
-                        i = mShowProgress;
-                        return;
-                    }
-                    msg.obj = i;
-                    circleHandler.sendMessage(msg);
+                    Thread.sleep(5);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+
+                Message msg = new Message();
+                    msg.what = 1;
+                    if(m <mShowProgress){
+                        m++;
+                    }else{
+                        m = mShowProgress;
+                        return;
+                    }
+                    msg.obj = m;
+                    circleHandler.sendMessage(msg);
+
             }
         }
 

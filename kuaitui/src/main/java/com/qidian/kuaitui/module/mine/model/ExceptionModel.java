@@ -28,6 +28,23 @@ public class ExceptionModel  extends BaseObservable {
     public String AnomalyTitle;
     public String AnomalyDesc;
 
+    public String showNumber="0/500";
+
+
+
+
+
+
+    @Bindable
+    public String getShowNumber() {
+        return showNumber;
+    }
+
+    public void setShowNumber(String showNumber) {
+        this.showNumber = showNumber;
+        notifyPropertyChanged(BR.showNumber);
+    }
+
     @Bindable
     public String getAnomalyTypeValue() {
         return AnomalyTypeValue;

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.util.Log;
-
+import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.qidian.base.views.CutscenesProgress;
 
@@ -17,6 +17,7 @@ import com.qidian.base.views.CutscenesProgress;
  * Description: 网络请求工具类
  */
 public class NetworkUtil {
+
     private static CutscenesProgress cutscenesProgress = null;
     /**
      * 请求返回后是否自动关闭
@@ -88,7 +89,7 @@ public class NetworkUtil {
             @Override
             public void onCancel(DialogInterface dialog) {
                 cutscenesProgress.dismiss();
-                cutscenesProgress = null;
+               // cutscenesProgress = null;
                 if (null != call) {
                     call.cancel();
                 }
@@ -106,7 +107,7 @@ public class NetworkUtil {
             @Override
             public void onCancel(DialogInterface dialog) {
                 cutscenesProgress.dismiss();
-                cutscenesProgress = null;
+                //cutscenesProgress = null;
                 if (null != call) {
                     call.cancel();
                 }
@@ -131,13 +132,13 @@ public class NetworkUtil {
                     cutscenesProgress = init(context, title, content, cancelable, listener);
                     cutscenesProgress.show();
                 } else {
-                    if (cutscenesProgress.isShowing()) {
+                /*    if (cutscenesProgress.isShowing()) {
                         return;
-                    } else {
+                    } else {*/
                         cutscenesProgress.show();
                     }
                 }
-            }
+           // }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -186,6 +187,7 @@ public class NetworkUtil {
             Context context = ActivityManager.peek();
             if (null != context) {
                 if (null == cutscenesProgress) {
+                    MyLog.e("create cutscenesProgress");
                     cutscenesProgress = init(context, title, content, cancelable, listener,progress,total);
                     cutscenesProgress.show();
                 } else {
@@ -264,7 +266,7 @@ public class NetworkUtil {
         if (null != cutscenesProgress && automatic) {
             Log.d("automatic", "dismissCutscenes");
             cutscenesProgress.dismiss();
-            cutscenesProgress = null;
+
         }
     }
 

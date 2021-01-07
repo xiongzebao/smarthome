@@ -12,7 +12,7 @@
 
         <TextView
             android:id="@+id/tv_cancel"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textColor="#101010"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text=" " />
         <TextView
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textColor="#101010"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
@@ -43,7 +43,7 @@
     <com.qidian.base.views.SelectRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="300dp">
 
     </com.qidian.base.views.SelectRecyclerView>
 </LinearLayout>

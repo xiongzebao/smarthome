@@ -1,13 +1,14 @@
 package com.qidian.kuaitui.base;
 
+import android.app.Application;
 import android.content.Context;
-import androidx.multidex.MultiDex;
-import androidx.multidex.MultiDexApplication;
+
+
 
 import com.erongdu.wireless.tools.log.MyLog;
 
 
-public class MyApplication extends MultiDexApplication {
+public class MyApplication extends Application {
 
     @Override
     public void onCreate() {
@@ -23,7 +24,8 @@ public class MyApplication extends MultiDexApplication {
 
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
+      //  MultiDex.install(this);
+
     }
 
 }

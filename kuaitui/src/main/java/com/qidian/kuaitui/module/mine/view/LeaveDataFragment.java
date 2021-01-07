@@ -13,9 +13,10 @@ import com.erongdu.wireless.views.PlaceholderLayout;
 import com.qidian.base.common.ui.OnLoadListener;
 import com.qidian.base.common.ui.SlideListFragment;
 import com.qidian.base.network.NetworkUtil;
-import com.qidian.base.network.RequestCallBack;
+
 import com.qidian.kuaitui.api.ApiService;
 import com.qidian.kuaitui.api.STClient;
+import com.qidian.kuaitui.base.KTRequestCallBack;
 import com.qidian.kuaitui.base.KTRequestCallBack;
 import com.qidian.kuaitui.base.ResBase;
 import com.qidian.kuaitui.common.KTConstant;
@@ -102,7 +103,7 @@ public class LeaveDataFragment extends SlideListFragment implements OnLoadListen
     public void requestModifyReceptionStatus(String id, int status) {
         Call<ResBase> login = STClient.getService(ApiService.class).modifyReceptionStatus(id, status + "");
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase>() {
+        login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
                 ToastUtil.toast(response.body().message);
@@ -127,7 +128,7 @@ public class LeaveDataFragment extends SlideListFragment implements OnLoadListen
     public void requestModifyInterViewStatus(String id, int status) {
         Call<ResBase> login = STClient.getService(ApiService.class).modifyInterviewStatus(id, status + "");
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase>() {
+        login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
                 ToastUtil.toast(response.body().message);
@@ -152,7 +153,7 @@ public class LeaveDataFragment extends SlideListFragment implements OnLoadListen
     public void requestModifyEntryStatus(String id, int status) {
         Call<ResBase> login = STClient.getService(ApiService.class).modifyEntryStatus(id, status + "");
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase>() {
+        login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
                 ToastUtil.toast(response.body().message);

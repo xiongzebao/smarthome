@@ -10,12 +10,16 @@ import com.erongdu.wireless.tools.utils.TextUtil;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.qidian.base.base.BaseActivity;
 import com.qidian.base.network.NetworkUtil;
-import com.qidian.base.network.RequestCallBack;
+
 import com.qidian.base.utils.BottomSheetDialogUtils;
+import com.qidian.base.utils.SharedInfo;
 import com.qidian.base.views.SelectRecyclerView;
 import com.qidian.kuaitui.R;
 import com.qidian.kuaitui.api.ApiService;
 import com.qidian.kuaitui.api.STClient;
+import com.qidian.kuaitui.base.KTRequestCallBack;
+import com.qidian.kuaitui.base.KTRequestCallBack;
+import com.qidian.kuaitui.base.Page;
 import com.qidian.kuaitui.base.ResBase;
 import com.qidian.kuaitui.common.GlobalData;
 import com.qidian.kuaitui.common.StaticData;
@@ -63,7 +67,7 @@ public class AddNewUserActivity extends BaseActivity {
         binding.tvProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    showRecruit();
+                     requestProjectData();
             }
         });
     }
@@ -108,8 +112,39 @@ public class AddNewUserActivity extends BaseActivity {
         });
     }
 
-    private void showRecruit() {
-        BottomSheetDialogUtils.showSelectSheetDialog(ActivityManager.peek(), "请选择项目类型", GlobalData.recruits, new BottomSheetDialogUtils.onClickListener() {
+
+    public void requestProjectData() {
+        Call<ResBase<List<ProjectItem>>> login = STClient.getService(ApiService.class).getProjectList(Page.getPage());
+        NetworkUtil.showCutscenes(login);
+        login.enqueue(new KTRequestCallBack<ResBase<List<ProjectItem>>>() {
+            @Override
+            public void onSuccess(Call<ResBase<List<ProjectItem>>> call, Response<ResBase<List<ProjectItem>>> response) {
+
+                 showRecruit(response.body().resultdata);
+
+            }
+
+            @Override
+            public void onFailed(Call<ResBase<List<ProjectItem>>> call, Response<ResBase<List<ProjectItem>>> response) {
+                super.onFailed(call, response);
+
+            }
+
+            @Override
+            public void onFailure(Call<ResBase<List<ProjectItem>>> call, Throwable t) {
+                super.onFailure(call, t);
+                ToastUtil.toast(t.getMessage());
+            }
+        });
+    }
+
+
+
+
+
+    private void showRecruit(List data) {
+
+        BottomSheetDialogUtils.showSelectSheetDialog(ActivityManager.peek(), "请选择项目类型", data, new BottomSheetDialogUtils.onClickListener() {
             @Override
             public void onConfirm(List data) {
                 if(data==null||data.isEmpty()){
@@ -125,10 +160,11 @@ public class AddNewUserActivity extends BaseActivity {
     private void getChannelData(){
         Call<ResBase<List<ChannelBean>>> login = STClient.getService(ApiService.class).getChannel();
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase<List<ChannelBean>>>() {
+        login.enqueue(new KTRequestCallBack<ResBase<List<ChannelBean>>>() {
             @Override
             public void onSuccess(Call<ResBase<List<ChannelBean>>> call, Response<ResBase<List<ChannelBean>>> response) {
                 showChannel(response.body().resultdata);
+
             }
 
             @Override
@@ -149,10 +185,12 @@ public class AddNewUserActivity extends BaseActivity {
 
         Call<ResBase> login = STClient.getService(ApiService.class).addNewUser(model);
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase>() {
+        login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
                  ToastUtil.toast(response.body().message);
+                 setResult(ReceiptDataActivity.REFRESH);
+                 finish();
 
             }
 

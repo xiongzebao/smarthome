@@ -1,5 +1,6 @@
 package com.qidian.kuaitui.module.job.vm;
 
+import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -47,7 +48,7 @@ public class ReceiptViewModel extends BaseVM  {
     ImageView iv_right;
     EditText_Clear searchView;
 
-    public ReceiptViewModel(ActReceptDataBinding binding, ReceiptDataActivity act) {
+    public ReceiptViewModel(final ActReceptDataBinding binding, final ReceiptDataActivity act) {
         this.binding = binding;
         searchView = binding.etSearch;
         listFragment = (ReceiptDataFragment) act.getSupportFragmentManager().findFragmentById(R.id.receipt_list_fragment);
@@ -56,7 +57,11 @@ public class ReceiptViewModel extends BaseVM  {
         iv_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityManager.startActivity(AddNewUserActivity.class);
+
+
+                Intent intent = new Intent(act,AddNewUserActivity.class);
+                act.startActivityForResult(intent,1);
+
             }
         });
 
@@ -64,11 +69,15 @@ public class ReceiptViewModel extends BaseVM  {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== 3){
-                   listFragment.search(v.getText().toString());
+                 search();
                 }
                 return false;
             }
         });
+    }
+
+    public void search(){
+        listFragment.search(searchView.getText().toString());
     }
 
 }

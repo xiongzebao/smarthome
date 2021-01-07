@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.qidian.kuaitui">
+
+
+
     <!-- 地图相关 -->
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 允许获取Wi-Fi网络状态改变信息 -->
@@ -63,13 +66,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
+
         tools:replace="android:appComponentFactory,allowBackup,icon,label">
         <activity android:name=".module.home.view.SelectProjectActivity"></activity>
         <activity
             android:name=".module.mine.view.LoginActivity"
             android:theme="@style/LoginTheme"></activity>
         <activity android:name=".module.home.view.DataShowActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+             android:launchMode="singleTask"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -78,7 +84,15 @@
         </activity>
         <activity android:name=".module.job.view.ReceiptDataActivity" />
         <activity android:name=".module.job.view.AddNewUserActivity" />
-        <activity android:name=".module.mine.view.ExceptionActivity" />
+        <activity
+            android:name="com.king.zxing.CaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CaptureTheme"/>
+
+        <activity
+            android:windowSoftInputMode="stateVisible|adjustPan"
+            android:name=".module.mine.view.ExceptionActivity"/>
+        <activity android:name=".module.mine.view.FeedBackActivity" />
     </application>
 
 </manifest>

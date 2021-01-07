@@ -21,6 +21,17 @@ public class JobFragmentModel extends BaseObservable {
     public String InterviewNum="0";
     public String EntryNum="0";
     public String HistoryNum="0";
+     public String EntrySumNum="0";
+
+    @Bindable
+    public String getEntrySumNum() {
+        return EntrySumNum;
+    }
+
+    public void setEntrySumNum(String entrySumNum) {
+        EntrySumNum = entrySumNum;
+        notifyPropertyChanged(BR.entrySumNum);
+    }
 
     @Bindable
     public String getPredictNum() {
@@ -29,7 +40,7 @@ public class JobFragmentModel extends BaseObservable {
 
     public void setPredictNum(String PredictNum) {
         this.PredictNum = PredictNum;
-        notifyPropertyChanged(BR.predictDcNum);
+        notifyPropertyChanged(BR.predictNum);
     }
 
     @Bindable

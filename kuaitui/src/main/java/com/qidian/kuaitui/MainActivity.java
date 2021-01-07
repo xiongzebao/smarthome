@@ -1,10 +1,12 @@
 package com.qidian.kuaitui;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
@@ -13,7 +15,9 @@ import androidx.fragment.app.FragmentTransaction;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.erongdu.wireless.tools.log.MyLog;
+import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.king.zxing.CameraScan;
 import com.qidian.base.base.BaseActivity;
 import com.qidian.base.base.BaseFragment;
 import com.qidian.base.utils.BottomSheetDialogUtils;
@@ -24,6 +28,7 @@ import com.qidian.kuaitui.module.home.model.ProjectItem;
 import com.qidian.kuaitui.module.main.view.HomeFragment;
 import com.qidian.kuaitui.module.main.view.JobFragment;
 import com.qidian.kuaitui.module.main.view.MineFragment;
+import com.qidian.kuaitui.utils.ApiUtils;
 import com.qidian.kuaitui.utils.CommenSetUtils;
 
 import java.util.ArrayList;
@@ -47,9 +52,11 @@ public class MainActivity extends BaseActivity {
             switch (position) {
                 case 0:
                     showFragment(homeFrag, TAG_HOME);
+
                     break;
                 case 1:
                     showFragment(jobFragment, TAG_JOB);
+
                     break;
                 case 2:
                     showFragment(mineFragment, TAG_MINE);
@@ -124,11 +131,17 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
-     homeFrag.setTitle(CommenSetUtils.getProjectTitle());
+        String topTitle = CommenSetUtils.getProjectTitle();
+        if (homeFrag != null) {
+            homeFrag.setTitle(topTitle);
+        }
+        if (jobFragment != null) {
+            jobFragment.setTitle(topTitle);
+        }
+
     }
 
     @Override
@@ -147,8 +160,8 @@ public class MainActivity extends BaseActivity {
                 .setBarBackgroundColor(R.color.white)
                 .addItem(new BottomNavigationItem(R.drawable.menu_home_fill, "首页")//这里表示选中的图片
                         .setInactiveIcon(ContextCompat.getDrawable(this, R.drawable.menu_home)))
-                .addItem(new BottomNavigationItem(R.drawable.menu_mail__fill, "在职")//这里表示选中的图片
-                        .setInactiveIcon(ContextCompat.getDrawable(this, R.drawable.menu_book)))//非选中的图片)
+                .addItem(new BottomNavigationItem(R.drawable.ic_task_select, "任务")//这里表示选中的图片
+                        .setInactiveIcon(ContextCompat.getDrawable(this, R.drawable.ic_task_unselect)))//非选中的图片)
                 .addItem(new BottomNavigationItem(R.drawable.menu_user_fill, "我的")//这里表示选中的图片
                         .setInactiveIcon(ContextCompat.getDrawable(this, R.drawable.menu_user)))//非选中的图片)
                 .setTabSelectedListener(listener)
@@ -158,6 +171,24 @@ public class MainActivity extends BaseActivity {
         this.binding.tabs.selectTab(0);
 
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK && data!=null){
+            switch (requestCode){
+                case MineFragment.REQUEST_CODE_SCAN:
+                    String result = CameraScan.parseScanResult(data);
+
+                     ApiUtils.uploadMemUserID(result);
+                    break;
+
+            }
+
+        }
     }
 
 

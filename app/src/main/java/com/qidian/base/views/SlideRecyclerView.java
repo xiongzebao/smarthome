@@ -187,7 +187,7 @@ public class SlideRecyclerView extends RecyclerView {
 
     public void setCanSlide(boolean canSlide) {
         this.canSlide = canSlide;
-        MyLog.e("canSlide:"+canSlide);
+
 
     }
 

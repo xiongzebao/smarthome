@@ -57,8 +57,7 @@ public class SelectRecyclerView extends RecyclerView {
     }
 
     private void initView(){
-    /*    RecyclerViewUtils.setVerticalLayout(getContext(),this);
-        RecyclerViewUtils.addItemDecoration(getContext(),this);*/
+
         this.adapter = getMyAdapter();
         this.adapter.setNewData(list);
         setAdapter(adapter);
@@ -87,9 +86,9 @@ public class SelectRecyclerView extends RecyclerView {
     }
 
 
-    public void setData(List list){
-        this.list.addAll(list);
-        getAdapter().notifyDataSetChanged();
+    public void setData(List data_list){
+        this.list.addAll(data_list);
+        adapter.notifyDataSetChanged();
     }
 
     static public   class BaseModel{

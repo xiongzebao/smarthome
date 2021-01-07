@@ -23,13 +23,51 @@ import retrofit2.Retrofit;
 
 public class STClient {
 
-    static boolean  isRecreate = false;
+    static boolean isRecreate = false;
     // 网络请求超时时间值(s)
-    private static final int    DEFAULT_TIMEOUT = 30;
+    private static final int DEFAULT_TIMEOUT = 30;
     // 请求地址
-    private static final String BASE_URL        = BaseParams.URI;
+    private static final String BASE_URL = BaseParams.URI;
     // retrofit实例
     private Retrofit retrofit;
+    OkHttpClient client;
+
+    Interceptor authorInterceptor = new Interceptor() {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request original = chain.request();
+            String method = original.method();
+            if ("POST".equals(method)) {
+                StringBuilder sb = new StringBuilder();
+                if (original.body() instanceof FormBody) {
+                    MyLog.d("FormBody");
+                    FormBody body = (FormBody) original.body();
+                    for (int i = 0; i < body.size(); i++) {
+                        sb.append(body.encodedName(i) + "=" + body.encodedValue(i) + ",");
+                    }
+                    sb.delete(sb.length() - 1, sb.length());
+                    MyLog.d(sb.toString());
+                }
+
+                if (original.body() instanceof MultipartBody) {
+                    MyLog.d("MultipartBody");
+                }
+                if (original.body() instanceof RequestBody) {
+                    MyLog.d(original.toString());
+
+                }
+            }
+
+            Request.Builder requestBuilder = original.newBuilder()
+                    .header("token", (String) SharedInfo.getInstance().getValue(KTConstant.TOKEN, ""));
+            Request request = requestBuilder.build();
+            return chain.proceed(request);
+        }
+    };
+
+
+
+
 
     /**
      * 私有化构造方法
@@ -41,44 +79,8 @@ public class STClient {
         builder.readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         builder.writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-
-        Interceptor interceptor = new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request original = chain.request();
-                String method=original.method();
-                if("POST".equals(method)){
-                    StringBuilder sb = new StringBuilder();
-                    if (original.body() instanceof FormBody) {
-                        MyLog.d("FormBody");
-                        FormBody body = (FormBody) original.body();
-                        for (int i = 0; i < body.size(); i++) {
-                            sb.append(body.encodedName(i) + "=" + body.encodedValue(i) + ",");
-                        }
-                        sb.delete(sb.length() - 1, sb.length());
-                        MyLog.d(sb.toString());
-                    }
-
-                    if(original.body() instanceof MultipartBody){
-                        MyLog.d("MultipartBody");
-                    }
-                    if(original.body() instanceof RequestBody){
-                        MyLog.d(original.toString());
-
-                    }
-                }
-
-                MyLog.e("add token");
-                Request.Builder requestBuilder = original.newBuilder()
-                        .header("token", (String) SharedInfo.getInstance().getValue(KTConstant.TOKEN,""));
-                Request request = requestBuilder.build();
-                return chain.proceed(request);
-            }
-        };
-
-
         // 添加签名参数
-        builder.addInterceptor(interceptor);
+        builder.addInterceptor(authorInterceptor);
         // 打印参数
         builder.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
 
@@ -86,23 +88,24 @@ public class STClient {
         // 失败后尝试重新请求
         builder.retryOnConnectionFailure(true);
 
-        //修改服务器地址的Url
-     //   String inputUrl = (String) SharedInfo.getInstance().getValue("input_url", "");
+        client = builder.build();
 
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .client(builder.build())
-                    .addConverterFactory(RDConverterFactory.create())
 
-                    .build();
-
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(RDConverterFactory.create())
+                .build();
     }
+
+
+
 
     /**
      * 调用单例对象
      */
-    private static STClient getInstance() {
-        if(instance==null){
+    public static STClient getInstance() {
+        if (instance == null) {
             instance = new STClient();
             MyLog.e("new STClient()");
         }
@@ -113,13 +116,13 @@ public class STClient {
      * 创建单例对象
      */
 
-    static STClient instance ;
+    static STClient instance;
 
-    public static void reCreate(){
+    public static void reCreate() {
         isRecreate = true;
         try {
             instance = new STClient();
-        }catch (Exception e){
+        } catch (Exception e) {
             MyLog.e(e.getMessage());
         }
 
@@ -143,12 +146,14 @@ public class STClient {
      */
     public static <T> T getService(Class<T> clazz) {
 
-        if (getServiceMap().containsKey(clazz.getSimpleName())&&!isRecreate) {
+        if (getServiceMap().containsKey(clazz.getSimpleName()) && !isRecreate) {
             isRecreate = false;
             return (T) getServiceMap().get(clazz.getSimpleName());
         }
         MyLog.e("create a new Service");
         T service = STClient.getInstance().retrofit.create(clazz);
+
+
         getServiceMap().put(clazz.getSimpleName(), service);
         return service;
     }

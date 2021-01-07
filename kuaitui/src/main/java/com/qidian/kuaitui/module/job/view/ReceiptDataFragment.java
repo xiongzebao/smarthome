@@ -13,9 +13,7 @@ import com.erongdu.wireless.views.PlaceholderLayout;
 import com.qidian.base.common.ui.OnLoadListener;
 import com.qidian.base.common.ui.SlideListFragment;
 import com.qidian.base.network.NetworkUtil;
-import com.qidian.base.network.RequestCallBack;
-import com.qidian.base.views.SlideRecyclerView;
-import com.qidian.kuaitui.R;
+
 import com.qidian.kuaitui.api.ApiService;
 import com.qidian.kuaitui.api.STClient;
 import com.qidian.kuaitui.base.KTRequestCallBack;
@@ -64,6 +62,8 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
             public void onDeleteClick(View view, int position, int status) {
                 String id = list.get(position).getInterviewId();
                 requestOperation(id, status);
+
+
                 binding.swipeTarget.closeMenu();
             }
         });
@@ -89,31 +89,24 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
                 break;
             }
 
-            case ReceiptDataActivity.HISTORY: {
+            case ReceiptDataActivity.SUMENTRY: {
                 requestModifyLeaveStatus(id);
                 break;
             }
 
 
+
         }
     }
 
 
-/*
-    public void setSlidable() {
-        if ( type == ReceiptDataActivity.HISTORY) {
-            binding.swipeTarget.setCanSlide(false);
-        } else {
-            binding.swipeTarget.setCanSlide(true);
-        }
-    }
-*/
+
 
 
     public void requestModifyReceptionStatus(String id, int status) {
         Call<ResBase> login = STClient.getService(ApiService.class).modifyReceptionStatus(id, status + "");
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase>() {
+        login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
                 ToastUtil.toast(response.body().message);
@@ -138,7 +131,7 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
     public void requestModifyInterViewStatus(String id, int status) {
         Call<ResBase> login = STClient.getService(ApiService.class).modifyInterviewStatus(id, status + "");
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase>() {
+        login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
                 ToastUtil.toast(response.body().message);
@@ -163,7 +156,7 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
     public void requestModifyEntryStatus(String id, int status) {
         Call<ResBase> login = STClient.getService(ApiService.class).modifyEntryStatus(id, status + "");
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase>() {
+        login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
                 ToastUtil.toast(response.body().message);
@@ -187,7 +180,7 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
     public void requestModifyLeaveStatus(String id) {
         Call<ResBase> login = STClient.getService(ApiService.class).modifyLeaveStatus(id);
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase>() {
+        login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
                 ToastUtil.toast(response.body().message);
@@ -266,6 +259,12 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
         };
         if(type==4){
             Call<ResBase<List<ReceiptListBean>>> login = STClient.getService(ApiService.class).getHistoryDataInfo(param);
+            NetworkUtil.showCutscenes(login);
+            login.enqueue(callback);
+            return;
+        }
+        if(type==5){
+            Call<ResBase<List<ReceiptListBean>>> login = STClient.getService(ApiService.class).getEntryDataInfo(param);
             NetworkUtil.showCutscenes(login);
             login.enqueue(callback);
             return;

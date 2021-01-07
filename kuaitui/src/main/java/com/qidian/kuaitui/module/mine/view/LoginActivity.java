@@ -11,14 +11,16 @@ import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.TextUtil;
 import com.erongdu.wireless.tools.utils.ToastUtil;
+import com.qidian.base.base.BaseActivity;
 import com.qidian.base.network.NetworkUtil;
-import com.qidian.base.network.RequestCallBack;
+
 import com.qidian.base.utils.SharedInfo;
 import com.qidian.base.utils.SystemBarUtils;
 import com.qidian.kuaitui.MainActivity;
 import com.qidian.kuaitui.R;
 import com.qidian.kuaitui.api.ApiService;
 import com.qidian.kuaitui.api.STClient;
+import com.qidian.kuaitui.base.KTRequestCallBack;
 import com.qidian.kuaitui.base.ResBase;
 import com.qidian.kuaitui.common.KTConstant;
 import com.qidian.kuaitui.module.mine.model.LoginBean;
@@ -28,20 +30,18 @@ import com.qidian.kuaitui.utils.ActivityUtils;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     EditText userNameView;
     EditText passwordView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void bindView() {
         setContentView(R.layout.activity_login);
         SystemBarUtils.setAndroidNativeLightStatusBar(this,true);
         userNameView = findViewById(R.id.username);
         passwordView = findViewById(R.id.password);
         userNameView.setText( (String)SharedInfo.getInstance().getValue(KTConstant.LOGIN_NAME,"") );
-        ActivityManager.push(this);
     }
 
     public void onClick(View view){
@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     private void getUserInfo(){
         Call<ResBase<UserInfoBean>> login = STClient.getService(ApiService.class).getUserInfo();
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase<UserInfoBean>>() {
+        login.enqueue(new KTRequestCallBack<ResBase<UserInfoBean>>() {
             @Override
             public void onSuccess(Call<ResBase<UserInfoBean>> call, Response<ResBase<UserInfoBean>> response) {
                 MyLog.e(response.body().toString());
@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
     public void login(final String username, String password) {
         Call<ResBase<LoginBean>> login = STClient.getService(ApiService.class).login(username.trim(),password.trim());
         NetworkUtil.showCutscenes(login);
-        login.enqueue(new RequestCallBack<ResBase<LoginBean>>() {
+        login.enqueue(new KTRequestCallBack<ResBase<LoginBean>>() {
             @Override
             public void onSuccess(Call<ResBase<LoginBean>> call, Response<ResBase<LoginBean>> response) {
                 if(!response.body().resultdata.isSuccess()){
@@ -96,12 +96,16 @@ public class LoginActivity extends AppCompatActivity {
                 SharedInfo.getInstance().saveValue(KTConstant.TOKEN,response.body().resultdata.getToken());
                 SharedInfo.getInstance().saveEntity(response.body());
                 SharedInfo.getInstance().saveValue(KTConstant.LOGIN_NAME,username);
-                STClient.reCreate();
+               // STClient.reCreate();
+
+               // STClient.getInstance().updateToken();
                 ToastUtil.toast("登录成功");
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         ActivityManager.startActivity(MainActivity.class);
+
+
                     }
                 },500);
 
@@ -122,9 +126,5 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ActivityManager.pop();
-    }
+
 }

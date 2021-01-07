@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.qidian.base.views.SelectRecyclerView;
 import com.qidian.kuaitui.R;
 import com.qidian.kuaitui.module.mine.model.ExceptionBean;
@@ -40,10 +41,10 @@ public class ExceptionAdapter extends BaseQuickAdapter<SelectRecyclerView.BaseMo
         ExceptionBean bean = (ExceptionBean) item;
         helper.setText(R.id.tv,bean.Name);
         if(item.isSelect()){
-            helper.setTextColor(R.id.tv, Color.BLUE);
+            helper.setTextColor(R.id.tv, ActivityManager.peek().getResources().getColor(R.color.color_4e));
             helper.setBackgroundRes(R.id.tv,R.drawable.bg_text_item_select);
         }else{
-            helper.setTextColor(R.id.tv, Color.RED);
+            helper.setTextColor(R.id.tv, ActivityManager.peek().getResources().getColor(R.color.color66));
             helper.setBackgroundRes(R.id.tv,R.drawable.bg_text_item_unselect);
         }
     }

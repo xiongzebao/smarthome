@@ -14,6 +14,7 @@ import com.qidian.kuaitui.module.main.model.HomeStaticBean;
 import com.qidian.kuaitui.module.main.model.JobHomeBean;
 import com.qidian.kuaitui.module.mine.model.ExceptionBean;
 import com.qidian.kuaitui.module.mine.model.ExceptionModel;
+import com.qidian.kuaitui.module.mine.model.FeedBackModel;
 import com.qidian.kuaitui.module.mine.model.LoginBean;
 import com.qidian.kuaitui.module.mine.model.UserInfoBean;
 
@@ -78,7 +79,8 @@ public interface ApiService {
     @POST("/Api/OnSite/HistoryDataInfo")
     Call<ResBase< List<ReceiptListBean>>> getHistoryDataInfo(@Body ReqInterViewParam page);
 
-
+    @POST("/Api/OnSite/EntryDataInfo")
+    Call<ResBase< List<ReceiptListBean>>> getEntryDataInfo(@Body ReqInterViewParam page);
 
     @POST("/Api/OnSite/CreateJobMember")
     Call<ResBase> addNewUser(@Body AddNewUserModel addNewUserModel);
@@ -103,8 +105,14 @@ public interface ApiService {
 
     @GET("/Api/OnSite/GetAnomalyTypeInfo")
     Call<ResBase<List<ExceptionBean>>> getAnomalyTypeInfo();
-    //POST /Api/OnSite/CreateAnomalyInfo
+
     @POST("/Api/OnSite/CreateAnomalyInfo")
     Call<ResBase>createAnomalyInfo(@Body ExceptionModel model);
 
+    @POST("/Api/OnSite/CreateVisitInfo")
+    Call<ResBase>createVisitInfo(@Body FeedBackModel model);
+
+
+    @GET("/Api/OnSite/RichScanInfo")
+    Call<ResBase> getUploadMemUserId(@Query("memUserId") String memUserId );
 }

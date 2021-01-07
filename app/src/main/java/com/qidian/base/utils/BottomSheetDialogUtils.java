@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.erongdu.wireless.tools.log.MyLog;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.qidian.base.R;
@@ -33,6 +34,9 @@ public class BottomSheetDialogUtils {
 
     public  static  void showSelectSheetDialog(Context context, String title, List data, final onClickListener listener){
 
+        if(data==null||data.size()==0){
+            return;
+        }
         View v = LayoutInflater.from(context).inflate(R.layout.layout_select_dialog,null);
 
         TextView cancelView = v.findViewById(R.id.tv_cancel);
@@ -41,12 +45,15 @@ public class BottomSheetDialogUtils {
 
         titleView.setText(title);
         final SelectRecyclerView selectRecyclerView  = v.findViewById(R.id.recycler_view);
-        selectRecyclerView.setData(data);
+        RecyclerViewUtils.setVerticalLayout(context,selectRecyclerView);
+        RecyclerViewUtils.addItemDecoration(context,selectRecyclerView);
 
+        selectRecyclerView.setData(data);
 
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog( context, R.style.CustomSelectDialog);
         bottomSheetDialog.setContentView(v);
         final BottomSheetBehavior mDialogBehavior = BottomSheetBehavior.from((View) v.getParent());
+
         mDialogBehavior.setPeekHeight(getWindowHeight(context));//dialog的高度
         mDialogBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override

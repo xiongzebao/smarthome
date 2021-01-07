@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
+import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.qidian.base.base.BaseFragment;
 import com.qidian.base.network.NetworkUtil;
@@ -50,8 +51,31 @@ public class JobFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setTitle(CommenSetUtils.getProjectTitle());
-        binding.getViewModel().startRequest();
 
+        requestData();
+    }
+
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            requestData();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        requestData();
+    }
+
+
+    public void requestData(){
+
+
+        binding.getViewModel().startRequest();
     }
 
 

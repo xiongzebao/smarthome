@@ -25,6 +25,25 @@ public class HomeStaticBean {
     private String TodayInterviewNum;
     private String TodayEntryNum;
     private String TodayLeaveNum;
+    private String ToDayPlanReceptionNum;
+    private String TomorrowPlanReceptionNum;
+
+    public String getToDayPlanReceptionNum() {
+        return ToDayPlanReceptionNum;
+    }
+
+    public void setToDayPlanReceptionNum(String toDayPlanReceptionNum) {
+        ToDayPlanReceptionNum = toDayPlanReceptionNum;
+    }
+
+    public String getTomorrowPlanReceptionNum() {
+        return TomorrowPlanReceptionNum;
+    }
+
+    public void setTomorrowPlanReceptionNum(String tomorrowPlanReceptionNum) {
+        TomorrowPlanReceptionNum = tomorrowPlanReceptionNum;
+    }
+
     private List<ChannelDateListBean> ChannelDateList;
 
     public String getRecruitID() {

@@ -1,6 +1,7 @@
 package com.qidian.kuaitui.module.job.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,8 +43,8 @@ public class InventoryAdapter extends BaseRecyclerViewAdapter<ReceiptListBean> {
                 break;
             }
             case 2: {
-                tv_btn1.setText("已接待");
-                tv_btn2.setText("未接待");
+                tv_btn1.setText("已通过");
+                tv_btn2.setText("未通过");
                 break;
             }
             case 3: {
@@ -51,7 +52,16 @@ public class InventoryAdapter extends BaseRecyclerViewAdapter<ReceiptListBean> {
                 tv_btn2.setText("未入职");
                 break;
             }
-            case 4: {
+
+            case 4://历史汇总
+                tv_btn1.setVisibility(View.GONE);
+                tv_btn2.setVisibility(View.GONE);
+                LinearLayout ll1 = (LinearLayout) holder.getView(R.id.ll_slide_bar);
+                LinearLayout.LayoutParams lp1 = (LinearLayout.LayoutParams) ll1.getLayoutParams();
+                lp1.width = DensityUtil.dp2px(ActivityManager.peek(), 0);
+                ll1.setLayoutParams(lp1);
+                break;
+            case 5: {//离职
                 LinearLayout ll = (LinearLayout) holder.getView(R.id.ll_slide_bar);
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ll.getLayoutParams();
                 lp.width = DensityUtil.dp2px(ActivityManager.peek(), 100);
@@ -67,15 +77,28 @@ public class InventoryAdapter extends BaseRecyclerViewAdapter<ReceiptListBean> {
         tv_project_name.setText(bean.getFunctionName());
         phone.setText(bean.getMemCellPhone());
         name.setText(bean.getMemRealName());
+
+
         if (type == 4) {
-            // receiptTime.setText(bean.get);
             receiptTime.setText(bean.getStatusName());
+            switch (bean.getStatusName()) {
+                case "已到场":
+                    receiptTime.setTextColor(Color.BLACK);
+                    break;
+                case "已通过":
+                    receiptTime.setTextColor(Color.BLUE);
+                    break;
+                case "已入职":
+                    receiptTime.setTextColor(Color.GREEN);
+                    break;
+                case "已离职":
+                    receiptTime.setTextColor(Color.RED);
+                    break;
+            }
         } else {
             receiptTime.setText(bean.getInterviewDate());
         }
         tv_recruit_channel.setText(bean.getChannelName());
-
-
         tv_btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

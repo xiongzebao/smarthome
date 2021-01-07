@@ -14,7 +14,7 @@ public class CommenSetUtils {
         ProjectItem item = SharedInfo.getInstance().getEntity(ProjectItem.class);
         if(item!=null){
 
-            return item.getPostType()+"\n"+item.getProjectName();
+            return item.getFunctionName()+"\n"+item.getProjectName();
         }
 
         return "";

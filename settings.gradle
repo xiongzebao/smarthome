@@ -1,3 +1,6 @@
+include ':lib'
+include ':zxinglite'
+include ':zxinglite'
 include ':searchview'
 include ':bottom-navigation-bar'
 include ':bottom-navigation-bar'

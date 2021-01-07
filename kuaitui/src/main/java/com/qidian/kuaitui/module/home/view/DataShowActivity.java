@@ -53,14 +53,26 @@ public class DataShowActivity extends BaseActivity {
     }
 
 
+
+
+
+
     private void requestData(){
         String recruitId = CommenSetUtils.getRecruitID();
         int type = getIntent().getIntExtra(DATA_TYPE,INTERVIEW);
         switch (type){
-            case INTERVIEW:requestReceptionInfo(recruitId);break;
-            case PASSED:requestInterviewInfo(recruitId);break;
-            case ENTRY:requestEntryInfo(recruitId);break;
-            case SEPARATE:requestLeaveInfo(recruitId);break;
+            case INTERVIEW:requestReceptionInfo(recruitId);
+                progressView.setLabel1("接待总数");
+            break;
+            case PASSED:requestInterviewInfo(recruitId);
+                progressView.setLabel1("面试总数");
+            break;
+            case ENTRY:requestEntryInfo(recruitId);
+                progressView.setLabel1("入职总数");
+            break;
+            case SEPARATE:requestLeaveInfo(recruitId);
+                progressView.setLabel1("离职总数");
+            break;
         }
     }
 
@@ -170,7 +182,9 @@ public class DataShowActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+
                 progressView.setData(bean.getPassNum(),bean.getSumNum());
+
             }
         },500);
 
@@ -210,7 +224,7 @@ public class DataShowActivity extends BaseActivity {
 
 
     public void onInterView(View v){
-        MyLog.e("当日一同股");
+
     }
 
 
