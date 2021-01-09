@@ -1,7 +1,10 @@
 package com.qidian.kuaitui.utils;
 
+import com.qidian.base.common.Constant;
 import com.qidian.base.utils.SharedInfo;
+import com.qidian.kuaitui.common.KTConstant;
 import com.qidian.kuaitui.module.home.model.ProjectItem;
+import com.qidian.kuaitui.module.mine.model.LoginBean;
 
 /**
  * @author xiongbin
@@ -29,6 +32,11 @@ public class CommenSetUtils {
     }
 
 
+    public static void signOut(){
+        SharedInfo.getInstance().remove(KTConstant.TOKEN);
+        SharedInfo.getInstance().remove(LoginBean.class);
+        SharedInfo.getInstance().remove(ProjectItem.class);
+    }
 
 
 }

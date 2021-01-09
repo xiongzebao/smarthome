@@ -4,6 +4,7 @@ import androidx.databinding.ObservableInt;
 
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.erongdu.wireless.network.exception.ApiException;
+import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.erongdu.wireless.views.PlaceholderLayout;
 import com.qidian.base.R;
@@ -44,6 +45,7 @@ public abstract class KTRequestCallBack<T> implements Callback<T> {
 
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
+
         NetworkUtil.dismissCutscenes();
         if (swipeLayout != null && swipeLayout.isRefreshing()) {
             swipeLayout.setRefreshing(false);
@@ -91,7 +93,7 @@ public abstract class KTRequestCallBack<T> implements Callback<T> {
             swipeLayout.setLoadingMore(false);
         }
         if (t instanceof ApiException) {
-            ExceptionHandling.operate(((ApiException) t).getResult());
+           // KTExceptionHandling.operate(((ApiException) t).getResult());
         }
 
         if (t instanceof IOException) {

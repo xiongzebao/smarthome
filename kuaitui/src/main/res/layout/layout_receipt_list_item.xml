@@ -3,11 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_list_item"
-    android:layout_margin="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <LinearLayout
+        android:id="@+id/ll1"
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,6 +26,7 @@
             <TextView
                 android:id="@+id/name"
                 android:textSize="16sp"
+                android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:textColor="@color/color33"
                 android:layout_width="wrap_content"
@@ -30,6 +37,7 @@
             <TextView
                 android:id="@+id/phone"
                 android:textSize="13sp"
+                android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/color99"
@@ -48,7 +56,9 @@
                 android:text="接待时间"></TextView>
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/receiptTime"
+                android:layout_marginRight="40dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -101,7 +111,24 @@
                 android:layout_alignParentRight="true"
                 android:text="自媒体"></TextView>
         </RelativeLayout>
+
+
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_status"
+        android:visibility="gone"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:gravity="center"
+        android:background="@mipmap/ic_yitonguo"
+        android:layout_gravity="right|top"
+        android:layout_width="50dp"
+        android:layout_height="20dp">
+
+    </TextView>
+    </FrameLayout>
+
     <LinearLayout
         android:id="@+id/ll_slide_bar"
         android:layout_width="200dp"

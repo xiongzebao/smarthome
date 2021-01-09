@@ -5,6 +5,7 @@ import com.erongdu.wireless.network.interceptor.HttpLoggingInterceptor;
 import com.erongdu.wireless.tools.log.MyLog;
 import com.qidian.base.common.BaseParams;
 import com.qidian.base.utils.SharedInfo;
+import com.qidian.kuaitui.base.KTAppConfig;
 import com.qidian.kuaitui.common.KTConstant;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class STClient {
     // 网络请求超时时间值(s)
     private static final int DEFAULT_TIMEOUT = 30;
     // 请求地址
-    private static final String BASE_URL = BaseParams.URI;
+    private static final String BASE_URL = KTAppConfig.getHost();
     // retrofit实例
     private Retrofit retrofit;
     OkHttpClient client;
@@ -57,7 +58,6 @@ public class STClient {
 
                 }
             }
-
             Request.Builder requestBuilder = original.newBuilder()
                     .header("token", (String) SharedInfo.getInstance().getValue(KTConstant.TOKEN, ""));
             Request request = requestBuilder.build();
@@ -83,14 +83,9 @@ public class STClient {
         builder.addInterceptor(authorInterceptor);
         // 打印参数
         builder.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
-
-
         // 失败后尝试重新请求
         builder.retryOnConnectionFailure(true);
-
         client = builder.build();
-
-
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)

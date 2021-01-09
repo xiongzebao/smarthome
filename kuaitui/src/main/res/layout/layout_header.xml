@@ -34,9 +34,10 @@
         android:id="@+id/iv_right"
         android:src="@mipmap/ic_add"
         android:visibility="gone"
+        android:layout_marginRight="10dp"
         android:layout_gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="50dp"
+        android:layout_height="25dp">
 
     </ImageView>
 </LinearLayout>

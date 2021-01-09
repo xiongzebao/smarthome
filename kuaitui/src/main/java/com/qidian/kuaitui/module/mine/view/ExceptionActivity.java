@@ -27,6 +27,7 @@ import com.qidian.kuaitui.databinding.ActivityExceptionUploadBinding;
 import com.qidian.kuaitui.module.mine.adapter.ExceptionAdapter;
 import com.qidian.kuaitui.module.mine.model.ExceptionBean;
 import com.qidian.kuaitui.module.mine.model.ExceptionModel;
+import com.qidian.kuaitui.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,7 +66,14 @@ public class ExceptionActivity extends BaseActivity {
         binding.tvExceptionTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePicker();
+              //  showTimePicker();
+                ViewUtils.showTimePicker(ExceptionActivity.this, "请选择异常发生时间", false, new OnTimeSelectListener() {
+                    @Override
+                    public void onTimeSelect(Date date, View v) {
+                        String formatter =  DateUtil.formatter(DateUtil.Format.DATE,date);
+                        model.setAnomalyDate( formatter);
+                    }
+                });
             }
         });
 

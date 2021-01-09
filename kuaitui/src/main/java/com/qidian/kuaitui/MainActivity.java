@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.erongdu.wireless.tools.log.MyLog;
+import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.king.zxing.CameraScan;
@@ -23,11 +24,15 @@ import com.qidian.base.base.BaseFragment;
 import com.qidian.base.utils.BottomSheetDialogUtils;
 import com.qidian.base.utils.SharedInfo;
 import com.qidian.base.views.SelectRecyclerView;
+import com.qidian.kuaitui.base.MyApplication;
+import com.qidian.kuaitui.common.KTConstant;
 import com.qidian.kuaitui.databinding.ActivityMainBinding;
 import com.qidian.kuaitui.module.home.model.ProjectItem;
 import com.qidian.kuaitui.module.main.view.HomeFragment;
 import com.qidian.kuaitui.module.main.view.JobFragment;
 import com.qidian.kuaitui.module.main.view.MineFragment;
+import com.qidian.kuaitui.module.mine.view.LoginActivity;
+import com.qidian.kuaitui.utils.ActivityUtils;
 import com.qidian.kuaitui.utils.ApiUtils;
 import com.qidian.kuaitui.utils.CommenSetUtils;
 
@@ -47,16 +52,16 @@ public class MainActivity extends BaseActivity {
     final String TAG_MINE = "tag_mine";
 
     public BottomNavigationBar.OnTabSelectedListener listener = new BottomNavigationBar.OnTabSelectedListener() {
+
+
         @Override
         public void onTabSelected(int position) {
             switch (position) {
                 case 0:
                     showFragment(homeFrag, TAG_HOME);
-
                     break;
                 case 1:
                     showFragment(jobFragment, TAG_JOB);
-
                     break;
                 case 2:
                     showFragment(mineFragment, TAG_MINE);
@@ -146,6 +151,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void bindView() {
+        MyApplication.mainActivity = this;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initTab();
     }
@@ -158,12 +164,12 @@ public class MainActivity extends BaseActivity {
                 .setInActiveColor(R.color.tab_text_normal)
                 .setLabelTextSize(10)
                 .setBarBackgroundColor(R.color.white)
-                .addItem(new BottomNavigationItem(R.drawable.menu_home_fill, "首页")//这里表示选中的图片
-                        .setInactiveIcon(ContextCompat.getDrawable(this, R.drawable.menu_home)))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_home_select, "首页")//这里表示选中的图片
+                        .setInactiveIcon(ContextCompat.getDrawable(this,  R.mipmap.ic_home_unselect)))
                 .addItem(new BottomNavigationItem(R.drawable.ic_task_select, "任务")//这里表示选中的图片
                         .setInactiveIcon(ContextCompat.getDrawable(this, R.drawable.ic_task_unselect)))//非选中的图片)
-                .addItem(new BottomNavigationItem(R.drawable.menu_user_fill, "我的")//这里表示选中的图片
-                        .setInactiveIcon(ContextCompat.getDrawable(this, R.drawable.menu_user)))//非选中的图片)
+                .addItem(new BottomNavigationItem(R.mipmap.ic_mine_select, "我的")//这里表示选中的图片
+                        .setInactiveIcon(ContextCompat.getDrawable(this,R.mipmap.ic_mine_unselect)))//非选中的图片)
                 .setTabSelectedListener(listener)
                 .setFirstSelectedPosition(0)
 
@@ -177,18 +183,39 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == RESULT_OK && data!=null){
-            switch (requestCode){
-                case MineFragment.REQUEST_CODE_SCAN:
+        switch (requestCode) {
+            case MineFragment.REQUEST_CODE_SCAN:
+                if (resultCode == RESULT_OK && data != null) {
                     String result = CameraScan.parseScanResult(data);
-
-                     ApiUtils.uploadMemUserID(result);
-                    break;
-
-            }
-
+                    ApiUtils.uploadMemUserID(result);
+                }
+                break;
+            case KTConstant.LOGIN:
+                if (resultCode != RESULT_OK) {
+                    MyLog.e("LOGIN Main exit");
+                    finish();
+                }else{
+                    homeFrag.requestProjectData();
+                }
+                break;
+            case MineFragment.RC_CAMERA:
+                MyLog.e("获取相机权限");
+                mineFragment.startScanCode();
+                break;
         }
+    }
+
+
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MyApplication.mainActivity = null;
     }
 
 

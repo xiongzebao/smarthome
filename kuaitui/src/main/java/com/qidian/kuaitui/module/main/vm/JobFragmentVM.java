@@ -62,7 +62,7 @@ public class JobFragmentVM extends BaseVM {
 
     private void requestData(final String recruitId) {
         Call<ResBase<JobHomeBean>> login = STClient.getService(ApiService.class).getJobDataSumInfo(recruitId);
-        NetworkUtil.showCutscenes(login);
+       // NetworkUtil.showCutscenes(login);
         login.enqueue(new KTRequestCallBack<ResBase<JobHomeBean>>() {
             @Override
             public void onSuccess(Call<ResBase<JobHomeBean>> call, Response<ResBase<JobHomeBean>> response) {

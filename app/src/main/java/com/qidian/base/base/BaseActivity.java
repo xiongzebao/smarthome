@@ -1,6 +1,7 @@
 package com.qidian.base.base;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
     @Override
    final  protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyLog.e("  onCreate");
         ActivityManager.push(this);
         setSystemBar();
         bindView();
@@ -36,6 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
     @Override
    final public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
+        MyLog.e("  onCreate");
         ActivityManager.push(this);
         setSystemBar();
         bindView();
@@ -101,9 +104,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-
-
-
+    }
 }
 

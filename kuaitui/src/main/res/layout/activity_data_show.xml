@@ -19,18 +19,18 @@
             android:layout_width="match_parent"
             android:layout_height="230dp"
             android:padding="20dp"
-            android:background="@color/color_4e">
+            android:background="@color/colorPrimaryDark">
 
             <com.qidian.base.views.MyProgressView
-                app:strokeWidth = "6dp"
-                app:radius = "86dp"
-                app:circleColor = "@color/colorPrimaryDark"
-                app:ringColor = "#b3bdff"
                 android:id="@+id/progressView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:circleColor="@color/colorPrimaryDark"
+                app:radius="86dp"
+                app:ringColor="#b3bdff"
+                app:strokeWidth="6dp"
 
-                android:layout_centerInParent="true">
+                >
 
             </com.qidian.base.views.MyProgressView>
         </RelativeLayout>

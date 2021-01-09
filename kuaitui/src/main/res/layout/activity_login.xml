@@ -9,24 +9,39 @@
     android:orientation="vertical"
     android:background="@color/white"
     tools:context=".module.mine.view.LoginActivity">
-    <TextView
-        android:text="欢迎登录"
-        android:textColor="@color/color10"
-        android:textSize="24dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="92dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
-    </TextView>
+
+    <FrameLayout
+        android:background="@mipmap/ic_login_header"
+        android:layout_width="match_parent"
+        android:layout_height="308dp">
+        <ImageView
+            android:src="@mipmap/ic_mine_logo"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="55dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"/>
+        <TextView
+            android:text="欢迎登录"
+            android:textColor="@color/white"
+            android:textSize="24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="200dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+    </FrameLayout>
+
 
     <EditText
+         android:drawableLeft="@mipmap/ic_user"
         android:id="@+id/username"
         android:textSize="14sp"
+        android:drawablePadding="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/prompt_email"
         android:padding="10dp"
@@ -34,9 +49,11 @@
         android:selectAllOnFocus="true"/>
 
     <EditText
+        android:drawableLeft="@mipmap/ic_password"
+        android:drawablePadding="10dp"
         android:id="@+id/password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"

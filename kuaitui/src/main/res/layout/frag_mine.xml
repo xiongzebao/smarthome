@@ -13,8 +13,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <RelativeLayout
-            android:id="@+id/rl_avator"
-            android:background="@color/colorPrimaryDark"
+
+            android:background="@mipmap/ic_mine_header"
             android:layout_width="match_parent"
             android:layout_height="200dp">
             <TextView
@@ -33,11 +33,77 @@
                 android:id="@+id/profile_image"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_centerInParent="true"
+                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
                 android:src="@mipmap/ic_avator"
                 app:civ_border_width="0dp"
                 app:civ_border_color="#FF000000"/>
 
+            <LinearLayout
+                android:layout_toRightOf="@+id/profile_image"
+                android:orientation="vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:visibility="visible"
+                    android:text=" "
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/tv_phone"
+                    android:visibility="visible"
+                    android:text=""
+                    android:layout_marginTop="10dp"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_scan"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:background="@color/transparent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/tv_scan"
+                    android:src="@mipmap/ic_scan"
+                    android:layout_width="30dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="14dp"
+                    android:layout_marginLeft="19dp"
+                    android:layout_centerVertical="true"
+                    android:layout_height="30dp">
+
+                </ImageView>
+                <TextView
+                    android:text="扫一扫"
+                    android:visibility="gone"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/tv_scan"
+                    android:textColor="@color/color33"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </TextView>
+            </RelativeLayout>
         </RelativeLayout>
 
         <RelativeLayout
@@ -135,37 +201,7 @@
 
             </TextView>
         </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/rl_scan"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_mine_item"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/tv_scan"
-                android:src="@mipmap/ic_scan"
-                android:layout_width="30dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:layout_marginLeft="19dp"
-                android:layout_centerVertical="true"
-                android:layout_height="30dp">
 
-            </ImageView>
-            <TextView
-                android:text="扫一扫"
-                android:textSize="14sp"
-                android:layout_marginLeft="50dp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/tv_scan"
-                android:textColor="@color/color33"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-            </TextView>
-        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_version_update"
@@ -192,6 +228,39 @@
                 android:layout_marginLeft="50dp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/mine_logo3"
+                android:textColor="@color/color33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:visibility="visible"
+            android:id="@+id/rl_exit_login"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_mine_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@mipmap/ic_exit"
+                android:id="@+id/mine_logo5"
+                android:layout_width="30dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="19dp"
+                android:layout_centerVertical="true"
+                android:layout_height="30dp">
+
+            </ImageView>
+            <TextView
+                android:text="退出登录"
+                android:textSize="14sp"
+                android:layout_marginLeft="50dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/mine_logo5"
                 android:textColor="@color/color33"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -82,7 +83,8 @@ public class JobFragment extends BaseFragment {
 
     public void setTitle(String title) {
         TextView tv = binding.header.findViewById(R.id.tv_title);
-        tv.setCompoundDrawables(null,null,null,null);
+        ImageView iv_right = binding.header.findViewById(R.id.iv_right);
+        iv_right.setVisibility(View.GONE);
         tv.setText(title);
     }
 

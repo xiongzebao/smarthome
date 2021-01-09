@@ -29,6 +29,7 @@ import com.qidian.kuaitui.module.mine.adapter.ExceptionAdapter;
 import com.qidian.kuaitui.module.mine.model.ExceptionBean;
 import com.qidian.kuaitui.module.mine.model.ExceptionModel;
 import com.qidian.kuaitui.module.mine.model.FeedBackModel;
+import com.qidian.kuaitui.utils.ViewUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -65,7 +66,13 @@ public class FeedBackActivity extends BaseActivity {
         binding.tvExceptionTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePicker();
+                ViewUtils.showTimePicker(FeedBackActivity.this, "请选择回访时间", false, new OnTimeSelectListener() {
+                    @Override
+                    public void onTimeSelect(Date date, View v) {
+                        String formatter =  DateUtil.formatter(DateUtil.Format.DATE,date);
+                        model.setVisitDate( formatter);
+                    }
+                });
             }
         });
 

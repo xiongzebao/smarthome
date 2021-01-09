@@ -23,7 +23,7 @@ public class KTExceptionHandling {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
 
-                        ActivityUtils.startLoginActivity(ActivityManager.peek());
+                        ActivityUtils.signOutloginNoTip(ActivityManager.peek());
                         sweetAlertDialog.dismiss();
                     }
                 }, false);

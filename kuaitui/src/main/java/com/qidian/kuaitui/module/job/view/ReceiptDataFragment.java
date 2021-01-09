@@ -5,9 +5,11 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.erongdu.wireless.network.entity.PageMo;
 import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
+import com.erongdu.wireless.tools.utils.DateUtil;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.erongdu.wireless.views.PlaceholderLayout;
 import com.qidian.base.common.ui.OnLoadListener;
@@ -24,8 +26,10 @@ import com.qidian.kuaitui.module.job.model.ChannelBean;
 import com.qidian.kuaitui.module.job.model.ReceiptListBean;
 import com.qidian.kuaitui.module.job.model.ReqInterViewParam;
 import com.qidian.kuaitui.utils.CommenSetUtils;
+import com.qidian.kuaitui.utils.ViewUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -60,10 +64,21 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
         adapter.setOnDeleteClickListener(new InventoryAdapter.OnDeleteClickLister() {
             @Override
             public void onDeleteClick(View view, int position, int status) {
+
+                if(type==ReceiptDataActivity.SUMENTRY){
+                    ViewUtils.showTimePicker(getContext(), "请选择离职日期",true, new OnTimeSelectListener() {
+                        @Override
+                        public void onTimeSelect(Date date, View v) {
+                            String formatDate =  DateUtil.formatter(DateUtil.Format.DATE,date);
+                            String id = list.get(position).getInterviewId();
+                            requestOperation(id, status,formatDate);
+                            binding.swipeTarget.closeMenu();
+                        }
+                    });
+                    return;
+                }
                 String id = list.get(position).getInterviewId();
-                requestOperation(id, status);
-
-
+                requestOperation(id, status,"");
                 binding.swipeTarget.closeMenu();
             }
         });
@@ -73,7 +88,7 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
     }
 
 
-    public void requestOperation(String id, int status) {
+    public void requestOperation(String id, int status,String time) {
         switch (type) {
             case ReceiptDataActivity.RECEIPT: {
                 requestModifyReceptionStatus(id, status);
@@ -90,7 +105,7 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
             }
 
             case ReceiptDataActivity.SUMENTRY: {
-                requestModifyLeaveStatus(id);
+                requestModifyLeaveStatus(id,time);
                 break;
             }
 
@@ -177,8 +192,8 @@ public class ReceiptDataFragment extends SlideListFragment implements OnLoadList
         });
     }
 
-    public void requestModifyLeaveStatus(String id) {
-        Call<ResBase> login = STClient.getService(ApiService.class).modifyLeaveStatus(id);
+    public void requestModifyLeaveStatus(String id,String time) {
+        Call<ResBase> login = STClient.getService(ApiService.class).modifyLeaveStatus(id,time);
         NetworkUtil.showCutscenes(login);
         login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override

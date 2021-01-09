@@ -31,6 +31,7 @@ public class InventoryAdapter extends BaseRecyclerViewAdapter<ReceiptListBean> {
         TextView phone = (TextView) holder.getView(R.id.phone);
         TextView name = (TextView) holder.getView(R.id.name);
         TextView receiptTime = (TextView) holder.getView(R.id.receiptTime);
+        TextView tv_status = (TextView) holder.getView(R.id.tv_status);
         TextView tv_recruit_channel = (TextView) holder.getView(R.id.tv_recruit_channel);
 
         TextView tv_btn1 = (TextView) holder.getView(R.id.tv_btn1);
@@ -73,32 +74,34 @@ public class InventoryAdapter extends BaseRecyclerViewAdapter<ReceiptListBean> {
                 break;
             }
         }
-
         tv_project_name.setText(bean.getFunctionName());
         phone.setText(bean.getMemCellPhone());
         name.setText(bean.getMemRealName());
-
-
+        receiptTime.setText(bean.getChannelName());
         if (type == 4) {
-            receiptTime.setText(bean.getStatusName());
+            tv_status.setVisibility(View.VISIBLE);
+            tv_status.setText(bean.getStatusName());
             switch (bean.getStatusName()) {
                 case "已到场":
-                    receiptTime.setTextColor(Color.BLACK);
+                    tv_status.setBackgroundResource(R.mipmap.ic_yidaochang);
                     break;
                 case "已通过":
-                    receiptTime.setTextColor(Color.BLUE);
+                    tv_status.setBackgroundResource(R.mipmap.ic_yitonguo);
                     break;
                 case "已入职":
-                    receiptTime.setTextColor(Color.GREEN);
+                    tv_status.setBackgroundResource(R.mipmap.ic_yiruzhi);
                     break;
                 case "已离职":
-                    receiptTime.setTextColor(Color.RED);
+                    tv_status.setBackgroundResource(R.mipmap.ic_yilizhi);
+                    break;
+                default:
+                    tv_status.setBackgroundResource(R.mipmap.ic_status_default);
                     break;
             }
         } else {
-            receiptTime.setText(bean.getInterviewDate());
+            tv_status.setVisibility(View.GONE);
         }
-        tv_recruit_channel.setText(bean.getChannelName());
+        tv_recruit_channel.setText(bean.getInterviewDate());
         tv_btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

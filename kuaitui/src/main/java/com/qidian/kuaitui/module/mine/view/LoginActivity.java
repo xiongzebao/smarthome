@@ -42,6 +42,7 @@ public class LoginActivity extends BaseActivity {
         userNameView = findViewById(R.id.username);
         passwordView = findViewById(R.id.password);
         userNameView.setText( (String)SharedInfo.getInstance().getValue(KTConstant.LOGIN_NAME,"") );
+
     }
 
     public void onClick(View view){
@@ -94,16 +95,16 @@ public class LoginActivity extends BaseActivity {
                     return;
                 }
                 SharedInfo.getInstance().saveValue(KTConstant.TOKEN,response.body().resultdata.getToken());
-                SharedInfo.getInstance().saveEntity(response.body());
+                SharedInfo.getInstance().saveEntity(response.body().resultdata);
                 SharedInfo.getInstance().saveValue(KTConstant.LOGIN_NAME,username);
-               // STClient.reCreate();
 
-               // STClient.getInstance().updateToken();
                 ToastUtil.toast("登录成功");
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        ActivityManager.startActivity(MainActivity.class);
+                        setResult(RESULT_OK);
+                      //  ActivityManager.startActivity(MainActivity.class);
+                        finish();
 
 
                     }
@@ -126,5 +127,9 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+    }
 }

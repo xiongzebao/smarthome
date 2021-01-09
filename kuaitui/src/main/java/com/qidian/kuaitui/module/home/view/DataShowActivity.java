@@ -18,6 +18,7 @@ import com.qidian.kuaitui.api.ApiService;
 import com.qidian.kuaitui.api.STClient;
 import com.qidian.kuaitui.base.KTRequestCallBack;
 import com.qidian.kuaitui.base.ResBase;
+import com.qidian.kuaitui.common.StaticData;
 import com.qidian.kuaitui.databinding.ActivityDataShowBinding;
 import com.qidian.kuaitui.module.main.model.DataShowBean;
 import com.qidian.kuaitui.module.main.model.HomeStaticBean;
@@ -63,15 +64,19 @@ public class DataShowActivity extends BaseActivity {
         switch (type){
             case INTERVIEW:requestReceptionInfo(recruitId);
                 progressView.setLabel1("接待总数");
+                dataFragment.setTitles(StaticData.getReceiptTitle());
             break;
             case PASSED:requestInterviewInfo(recruitId);
                 progressView.setLabel1("面试总数");
+                dataFragment.setTitles(StaticData.getInterViewTitle());
             break;
             case ENTRY:requestEntryInfo(recruitId);
                 progressView.setLabel1("入职总数");
+                dataFragment.setTitles(StaticData.getEntryTitle());
             break;
             case SEPARATE:requestLeaveInfo(recruitId);
                 progressView.setLabel1("离职总数");
+                dataFragment.setTitles(StaticData.getLeaveTitle());
             break;
         }
     }
@@ -187,9 +192,6 @@ public class DataShowActivity extends BaseActivity {
 
             }
         },500);
-
-
-        dataFragment.setTitles(getTitles());
         dataFragment.setListDatas(getLists(bean.getChannelDateList()));
     }
 
@@ -208,26 +210,6 @@ public class DataShowActivity extends BaseActivity {
         }
         return lists;
     }
-
-
-    private List<String> getTitles() {
-        ArrayList list = new ArrayList();
-        list.add("渠道名称");
-        list.add("接待总数");
-        list.add("已到场数");
-        list.add("未到场数");
-        list.add("到场率");
-        return list;
-    }
-
-
-
-
-    public void onInterView(View v){
-
-    }
-
-
 
 
 

@@ -17,7 +17,7 @@ public class ReceiptDataActivity extends BaseActivity {
     public static final int INTERVIEW=2;
     public static final int ENTRY=3;
     public static final int HISTORY=4;
-    public static final int SUMENTRY=5;
+    public static final int SUMENTRY=5;//在职
     public static final int REFRESH=4;
 
     ActReceptDataBinding binding;
@@ -25,7 +25,6 @@ public class ReceiptDataActivity extends BaseActivity {
     @Override
     protected void bindView() {
         binding =    DataBindingUtil.setContentView(this, R.layout.act_recept_data);
-
 
         binding.setViewModel(new ReceiptViewModel(binding,this));
         setTitle(CommenSetUtils.getProjectTitle());

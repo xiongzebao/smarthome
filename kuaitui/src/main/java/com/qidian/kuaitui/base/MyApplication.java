@@ -6,10 +6,12 @@ import android.content.Context;
 
 
 import com.erongdu.wireless.tools.log.MyLog;
+import com.qidian.kuaitui.MainActivity;
 
 
 public class MyApplication extends Application {
 
+   public static MainActivity mainActivity;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -17,7 +19,7 @@ public class MyApplication extends Application {
     }
 
     private void init(){
-        MyLog.init(true,"xiong",false,1,2);
+        MyLog.init(KTAppConfig.isDebug,"xiong",false,1,2);
 
     }
 

@@ -1,8 +1,10 @@
 package com.qidian.kuaitui.module.main.view;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,11 @@ import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.king.zxing.CaptureActivity;
 import com.qidian.base.base.BaseFragment;
+import com.qidian.base.common.Constant;
+import com.qidian.base.utils.DialogUtils;
+import com.qidian.base.utils.SharedInfo;
 import com.qidian.kuaitui.R;
+import com.qidian.kuaitui.base.MyApplication;
 import com.qidian.kuaitui.databinding.FragHomeBinding;
 import com.qidian.kuaitui.databinding.FragMineBinding;
 import com.qidian.kuaitui.module.mine.model.LoginBean;
@@ -26,6 +32,7 @@ import com.qidian.kuaitui.module.mine.view.FeedBackActivity;
 import com.qidian.kuaitui.module.mine.view.LoginActivity;
 import com.qidian.kuaitui.utils.ActivityUtils;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -37,7 +44,7 @@ public class MineFragment extends BaseFragment {
     public static final String KEY_IS_QR_CODE = "key_code";
     public static final String KEY_IS_CONTINUOUS = "key_continuous_scan";
 
-    public static final int REQUEST_CODE_SCAN = 0X01;
+    public static final int REQUEST_CODE_SCAN = 0X03;
     public static final int REQUEST_CODE_PHOTO = 0X02;
 
 
@@ -70,11 +77,11 @@ public class MineFragment extends BaseFragment {
      * 检测拍摄权限
      */
     @AfterPermissionGranted(RC_CAMERA)
-    private void checkCameraPermissions(){
+    public void checkCameraPermissions(){
         String[] perms = {Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(getContext(), perms)) {//有权限
             try {
-                startScan(CaptureActivity.class, "扫描二位码");
+                startScanCode();
             }catch (Exception e){
                 MyLog.e(e.getMessage());
             }
@@ -85,7 +92,12 @@ public class MineFragment extends BaseFragment {
         }
     }
 
-    private void startScan(Class<?> cls,String title){
+
+    public void startScanCode(){
+        startScan(CaptureActivity.class, "扫描二位码");
+    }
+
+    public void startScan(Class<?> cls,String title){
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeCustomAnimation(getContext(),R.anim.in,R.anim.out);
         Intent intent = new Intent(getContext(), cls);
         intent.putExtra(KEY_TITLE,title);
@@ -94,15 +106,19 @@ public class MineFragment extends BaseFragment {
     }
 
 
+
+    private void setUserInfo(){
+        LoginBean loginBean =  SharedInfo.getInstance().getEntity(LoginBean.class);
+        if(loginBean!=null){
+            binding.tvName.setText(loginBean.getStaffName());
+            binding.tvPhone.setText(loginBean.getStaffPhone());
+        }
+
+    }
+
     private void setBinding(){
-        binding.rlAvator.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                ActivityUtils.startLoginActivity(getActivity());
-
-            }
-        });
+        setUserInfo();
 
         binding.rlLeaveConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,11 +157,22 @@ public class MineFragment extends BaseFragment {
             }
         });
 
+        binding.rlExitLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityUtils.signOutToLogin(getActivity());
+            }
+        });
+
 
 
     }
 
+ 
 
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUserInfo();
+    }
 }

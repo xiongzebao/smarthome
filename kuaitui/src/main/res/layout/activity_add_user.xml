@@ -76,6 +76,8 @@
                 android:gravity="right"
                  android:text="@={model.memCellPhone}"
                 android:hint="请输入电话"
+                android:maxLength="11"
+                android:inputType="phone"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
                 android:layout_marginLeft="16dp"

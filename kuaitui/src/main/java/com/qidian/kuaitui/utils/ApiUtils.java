@@ -26,6 +26,15 @@ public class ApiUtils {
         login.enqueue(new KTRequestCallBack<ResBase>() {
             @Override
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
+
+                if(response.body()==null){
+                    return;
+                }
+
+                if(response.body().type!=1){
+                    ToastUtil.toast(response.body().message);
+                    return;
+                }
                 DialogUtils.showDialog(ActivityManager.peek(), response.body().message, new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
@@ -40,12 +49,17 @@ public class ApiUtils {
             public void onFailed(Call<ResBase> call, Response<ResBase> response) {
                 super.onFailed(call, response);
 
-                DialogUtils.showDialog(ActivityManager.peek(), response.body().message, new SweetAlertDialog.OnSweetClickListener() {
+                String tip = "失败";
+                if(response.body()!=null){
+                    tip = response.body().message;
+                }
+                ToastUtil.toast(tip);
+              /*  DialogUtils.showDialog(ActivityManager.peek(), tip, new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismissWithAnimation();
                     }
-                },false);
+                },false);*/
             }
 
             @Override

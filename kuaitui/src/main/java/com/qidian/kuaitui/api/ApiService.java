@@ -94,7 +94,7 @@ public interface ApiService {
     Call<ResBase>modifyReceptionStatus(@Query("interviewId") String interviewId,@Query("status") String status);
 
     @GET("/Api/OnSite/ModifyLeaveStatus")
-    Call<ResBase>modifyLeaveStatus(@Query("interviewId") String interviewId);
+    Call<ResBase>modifyLeaveStatus(@Query("interviewId") String interviewId,@Query("leaveDate") String leaveDate);
 
     @GET(" /Api/OnSite/ModifyEntryStatus")
     Call<ResBase>modifyEntryStatus(@Query("interviewId") String interviewId,@Query("status") String status);

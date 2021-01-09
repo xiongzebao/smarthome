@@ -15,22 +15,18 @@
             android:layout_marginTop="9dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <LinearLayout
+           <!-- <RelativeLayout
                 android:id="@+id/ll_view"
                 android:background="@color/white"
                 android:layout_weight="1"
-                android:orientation="horizontal"
                 android:layout_width="0dp"
                 android:layout_marginRight="5dp"
                 android:layout_height="72dp">
                 <TextView
-
-                    android:text="明日预计接待"
+                    android:text="明日\n预计接待"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="17dp"
@@ -41,16 +37,47 @@
                 <TextView
                     android:id="@+id/tv"
                     android:layout_marginLeft="15dp"
-
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:textSize="36sp"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="17dp"
+                    android:textSize="30sp"
                     android:textColor="@color/color99"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
                 </TextView>
-            </LinearLayout>
-            <LinearLayout
+            </RelativeLayout>-->
+            <RelativeLayout
+                android:background="@color/white"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:id="@+id/ll_view"
+                android:layout_marginRight="5dp"
+                android:layout_height="72dp">
+                <TextView
+                    android:text="明日\n预计接待"
+                    android:textSize="14sp"
+                    android:textColor="@color/color99"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="17dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                </TextView>
+                <TextView
+                    android:id="@+id/tv"
+                    android:layout_marginLeft="15dp"
+                    android:textColor="@color/color99"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:textSize="30sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="17dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                </TextView>
+            </RelativeLayout>
+            <RelativeLayout
                 android:background="@color/white"
                 android:layout_weight="1"
                 android:orientation="horizontal"
@@ -58,12 +85,12 @@
                 android:id="@+id/ll_view0"
                 android:layout_height="72dp">
                 <TextView
-                    android:text="今日预计接待"
+                    android:text="今日\n预计接待"
                     android:textSize="14sp"
                     android:textColor="@color/color99"
                     android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
                     android:layout_marginLeft="17dp"
-
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
                 </TextView>
@@ -73,11 +100,13 @@
                     android:textColor="@color/color99"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
-                    android:textSize="36sp"
+                    android:textSize="30sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="17dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
                 </TextView>
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="9dp"
@@ -88,7 +117,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_view1"
                 android:background="@color/white"
                 android:layout_weight="1"
@@ -98,7 +127,7 @@
                 android:layout_height="72dp">
                 <TextView
 
-                    android:text="当日已接待"
+                    android:text="当日\n已接待"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="17dp"
@@ -112,12 +141,14 @@
                     android:textColor="@color/color10"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
-                    android:textSize="36sp"
+                    android:textSize="30sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="17dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
                 </TextView>
-            </LinearLayout>
-            <LinearLayout
+            </RelativeLayout>
+            <RelativeLayout
                 android:background="@color/white"
                 android:layout_weight="1"
                 android:orientation="horizontal"
@@ -125,7 +156,7 @@
                 android:id="@+id/ll_view2"
                 android:layout_height="72dp">
                 <TextView
-                    android:text="当日已通过"
+                    android:text="当日\n已通过"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="17dp"
@@ -139,11 +170,13 @@
                     android:textColor="@color/color10"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
-                    android:textSize="36sp"
+                    android:textSize="30sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="17dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
                 </TextView>
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
         <LinearLayout
              android:layout_marginLeft="10dp"
@@ -151,7 +184,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_view3"
                 android:background="@color/white"
                 android:layout_weight="1"
@@ -160,7 +193,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_height="72dp">
                 <TextView
-                    android:text="当日已入职"
+                    android:text="当日\n已入职"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="17dp"
@@ -174,12 +207,14 @@
                     android:textColor="@color/color10"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
-                    android:textSize="36sp"
+                    android:textSize="30sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="17dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
                 </TextView>
-            </LinearLayout>
-            <LinearLayout
+            </RelativeLayout>
+            <RelativeLayout
                 android:clickable="true"
                 android:id="@+id/ll_view4"
                 android:background="@color/white"
@@ -188,7 +223,7 @@
                 android:layout_width="0dp"
                 android:layout_height="72dp">
                 <TextView
-                    android:text="当日已离职"
+                    android:text="当日\n已离职"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="17dp"
@@ -202,11 +237,13 @@
                     android:textColor="@color/color10"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
-                    android:textSize="36sp"
+                    android:textSize="30sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="17dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
                 </TextView>
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
         
         <fragment

@@ -30,6 +30,7 @@ import com.qidian.kuaitui.module.home.model.ProjectItem;
 import com.qidian.kuaitui.module.home.view.DataShowActivity;
 import com.qidian.kuaitui.module.home.view.SelectProjectActivity;
 import com.qidian.kuaitui.module.main.model.HomeStaticBean;
+import com.qidian.kuaitui.utils.CommenSetUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-     requestData();
+        requestData();
 
     }
 
@@ -84,6 +85,8 @@ public class HomeFragment extends BaseFragment {
     private void requestData(){
         ProjectItem item =  SharedInfo.getInstance().getEntity(ProjectItem.class);
         if(item!=null&&item.getRecruitID()!=null){
+            String topTitle = CommenSetUtils.getProjectTitle();
+            setTitle(topTitle);
             requestHomeStatics(item.getRecruitID());
         }else{
             requestProjectData();
@@ -93,7 +96,7 @@ public class HomeFragment extends BaseFragment {
 
     public void requestProjectData() {
         Call<ResBase<List<ProjectItem>>> login = STClient.getService(ApiService.class).getProjectList(Page.getPage());
-        NetworkUtil.showCutscenes(login);
+       // NetworkUtil.showCutscenes(login);
         login.enqueue(new KTRequestCallBack<ResBase<List<ProjectItem>>>() {
             @Override
             public void onSuccess(Call<ResBase<List<ProjectItem>>> call, Response<ResBase<List<ProjectItem>>> response) {
@@ -101,6 +104,7 @@ public class HomeFragment extends BaseFragment {
                 GlobalData.recruits = response.body().resultdata;
                 ProjectItem item = response.body().resultdata.get(0);
                 SharedInfo.getInstance().saveEntity(item);
+
                 setTitle(item.getPostType() + "\n" + item.getProjectName());
 
                 requestHomeStatics(item.getRecruitID());
@@ -134,7 +138,7 @@ public class HomeFragment extends BaseFragment {
 
 private void requestHomeStatics(final String recruitId){
     Call<ResBase<HomeStaticBean> > login = STClient.getService(ApiService.class).getHomePageStatics(recruitId);
-    NetworkUtil.showCutscenes(login);
+   // NetworkUtil.showCutscenes(login);
     login.enqueue(new KTRequestCallBack<ResBase<HomeStaticBean>>() {
         @Override
         public void onSuccess(Call<ResBase<HomeStaticBean>> call, Response<ResBase<HomeStaticBean>> response) {
@@ -231,10 +235,10 @@ private void requestHomeStatics(final String recruitId){
     private List<String> getTitles() {
         ArrayList list = new ArrayList();
         list.add("渠道名称");
-        list.add("接待总数");
-        list.add("已到场数");
-        list.add("未到场数");
-        list.add("到场率");
+        list.add("当日面试");
+        list.add("当日通过");
+        list.add("当日入职");
+        list.add("当日离职");
         return list;
     }
 
