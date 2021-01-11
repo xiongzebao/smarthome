@@ -1,0 +1,78 @@
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainFragment">
+<RelativeLayout
+    android:layout_alignParentBottom="true"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+    <RelativeLayout
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatButton
+            android:text="左转"
+            android:onClick="onClick"
+
+            android:layout_centerVertical="true"
+            android:id="@+id/turn_left"
+            android:layout_width="100dp"
+            android:layout_height="50dp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/turn_right"
+            android:text="右转"
+            android:onClick="onClick"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_width="100dp"
+            android:layout_height="50dp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:text="向前"
+            android:onClick="onClick"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/forward"
+            android:layout_width="100dp"
+            android:layout_height="50dp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:text="向后"
+            android:onClick="onClick"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/back"
+            android:layout_width="100dp"
+            android:layout_height="50dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="100dp"
+        android:layout_height="200dp">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/speed_up"
+            android:text="加速"
+            android:onClick="onClick"
+            android:layout_width="100dp"
+            android:layout_height="50dp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/speed_down"
+            android:layout_below="@+id/speed_up"
+            android:text="减速"
+            android:onClick="onClick"
+            android:layout_width="100dp"
+            android:layout_height="50dp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/stop"
+            android:text="停止"
+            android:onClick="onClick"
+            android:layout_alignParentBottom="true"
+            android:layout_width="100dp"
+            android:layout_height="50dp" />
+    </RelativeLayout>
+</RelativeLayout>
+
+</RelativeLayout>

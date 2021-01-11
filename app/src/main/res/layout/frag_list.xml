@@ -5,7 +5,7 @@
     <data>
         <variable
             name="model"
-            type="com.qidian.base.common.ui.ListFragmentModel" />
+            type="com.ihome.base.common.ui.ListFragmentModel" />
     </data>
 
     <RelativeLayout

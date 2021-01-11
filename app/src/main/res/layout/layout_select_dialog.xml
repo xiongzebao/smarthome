@@ -40,10 +40,10 @@
 
     </RelativeLayout>
 
-    <com.qidian.base.views.SelectRecyclerView
+    <com.ihome.base.views.SelectRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="300dp">
 
-    </com.qidian.base.views.SelectRecyclerView>
+    </com.ihome.base.views.SelectRecyclerView>
 </LinearLayout>

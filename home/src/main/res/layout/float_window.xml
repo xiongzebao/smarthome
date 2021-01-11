@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/dragBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:src="@mipmap/ic_update"
+            android:text="按住拖动"
+            android:textColor="@color/red"
+            android:textSize="8dp"></TextView>
+
+        <TextView
+            android:id="@+id/clearBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="right|top"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:src="@mipmap/ic_update"
+            android:text="清除"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="10dp"></TextView>
+
+        <TextView
+            android:id="@+id/closeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/clearBtn"
+            android:gravity="center"
+            android:src="@mipmap/ic_update"
+            android:text="关闭"
+            android:textColor="@color/red"
+            android:textSize="10dp"></TextView>
+
+
+    </FrameLayout>
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="" />
+
+    </ScrollView>
+</LinearLayout>

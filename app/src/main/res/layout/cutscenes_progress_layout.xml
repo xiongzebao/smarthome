@@ -38,7 +38,7 @@
         android:textColor="#0097C9"
         android:textSize="14sp" />
 
-    <com.qidian.base.views.NumberProgressBar
+    <com.ihome.base.views.NumberProgressBar
         android:visibility="gone"
         android:id="@+id/upprogress"
         android:layout_width="wrap_content"

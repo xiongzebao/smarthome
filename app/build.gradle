@@ -38,7 +38,7 @@ dependencies {
     api project(':network')
     api project(':tools')
     api project(':views')
-
+    api 'org.greenrobot:eventbus:3.2.0'
     api 'com.github.f0ris.sweetalert:library:1.5.1'
     api  'me.shaohui:bottomdialog:1.1.9'
     api  'com.github.SmartCyl:BottomDialog:1.0.4'

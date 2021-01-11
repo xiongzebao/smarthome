@@ -5,7 +5,7 @@
     <data>
         <variable
             name="model"
-            type="com.qidian.base.common.ui.ListFragmentModel" />
+            type="com.ihome.base.common.ui.ListFragmentModel" />
     </data>
 
     <RelativeLayout
@@ -24,7 +24,7 @@
                 android:id="@id/swipe_refresh_header"
                 layout="@layout/layout_weibo_header" />
             
-                    <com.qidian.base.views.SlideRecyclerView
+                    <com.ihome.base.views.SlideRecyclerView
                         android:background="@color/color_gray_e6"
                         android:id="@+id/swipe_target"
                         android:layout_width="match_parent"
