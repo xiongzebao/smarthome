@@ -1,8 +1,11 @@
 package com.ihome.base;
 
+
+import com.erongdu.wireless.tools.log.MyLog;
+
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -12,6 +15,8 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+       String test = "abcdefg";
+
+         System.out.println(test.substring(3));
     }
 }

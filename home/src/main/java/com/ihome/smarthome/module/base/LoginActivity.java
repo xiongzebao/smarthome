@@ -2,6 +2,8 @@ package com.ihome.smarthome.module.base;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,13 +23,18 @@ import androidx.databinding.DataBindingUtil;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.erongdu.wireless.tools.log.MyLog;
+import com.erongdu.wireless.tools.utils.ActivityManager;
+import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
 import com.ihome.base.base.BaseActivity;
+import com.ihome.base.utils.ScenceUtils;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.databinding.ActivityLogin1Binding;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
 import com.ihome.smarthome.module.base.communicate.MySocketManager;
+import com.ihome.smarthome.receiver.BluetoothMonitorReceiver;
 import com.ihome.smarthome.utils.EventBusUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,14 +45,15 @@ import org.greenrobot.eventbus.EventBus;
  */
 public class LoginActivity extends BaseActivity implements ICommunicate.onMessageLisenter {
     private User user = new User("xiongbin", "123456");
-    private ICommunicate communicateDevice;
+    private MyBluetoothManager communicateDevice;
     //private String communicateMode = SPUtils.getInstance().getString(Constants.COMMUNICATE_MODE);
     public static boolean isStart = false;
     private String communicateMode = Constants.BLUETOOTH_MODE;
-    int PERMISSION_REQUEST_COARSE_LOCATION = 1001;
+      final int PERMISSION_REQUEST_COARSE_LOCATION = 1001;
     private FloatingToolbar mFloatingToolbar;
     ActivityLogin1Binding binding;
     HomeKeyEventBroadCastReceiver homeReceiver;
+    private BluetoothMonitorReceiver bleListenerReceiver = null;
 
     class HomeKeyEventBroadCastReceiver extends BroadcastReceiver {
         static final String SYSTEM_REASON = "reason";
@@ -61,7 +69,7 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
                     if (reason.equals(SYSTEM_HOME_KEY)) {
 
                     } else if (reason.equals(SYSTEM_RECENT_APPS)) {
-                     //   stopFloatingService();
+                        //   stopFloatingService();
                     }
                 }
             }
@@ -79,6 +87,23 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
         }
     }
 
+
+    private void registerMonitorReceiver(){
+        // 初始化广播
+        this.bleListenerReceiver = new BluetoothMonitorReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        // 监视蓝牙关闭和打开的状态
+        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
+        // 监视蓝牙设备与APP连接的状态
+        intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+
+        // 注册广播
+        registerReceiver(this.bleListenerReceiver, intentFilter);
+    }
+
+
     @Override
     protected void bindView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login1);
@@ -90,13 +115,20 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
             }
         }
 
+
+
         binding.cvCooker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // ActivityManager.startActivity(BoilerActivity.class);
-                EventBusUtils.sendDeBugLog("debugjuhkjkjkll");
-                EventBusUtils.sendFailLog("failed");
-                EventBusUtils.sendSucessLog("success;ll;lkjklkljkj");
+               // MyBluetoothManager.Instance(LoginActivity.this).requestDiscoverable();
+                communicateDevice.startScan();
+          /*      if(communicateDevice.isConnected("cooker")){
+                    ActivityManager.startActivity(BoilerActivity.class);
+                    return;
+                }
+                ScenceUtils.showCutscence(LoginActivity.this,"正在连接蓝牙设备...");
+                communicateDevice.connect("cooker");*/
+
             }
         });
 
@@ -106,10 +138,12 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
         homeReceiver = new HomeKeyEventBroadCastReceiver();
         registerReceiver(homeReceiver, new IntentFilter(
                 Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+        registerMonitorReceiver();
 
         startFloatingService();
 
     }
+
 
 
     @SuppressLint("ShowToast")
@@ -163,45 +197,51 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
 
 
     private void initCommunicateDevice(String communicateMode) {
-        if (communicateMode.equals(Constants.BLUETOOTH_MODE)) {
-            communicateDevice = new MyBluetoothManager(this);
-            // ((MyBluetoothManager) communicateDevice).requestDiscoverable();
-            ((MyBluetoothManager) communicateDevice).startBluetoothServer();
-        } else {
-            communicateDevice = new MySocketManager(this);
-        }
+        communicateDevice =   MyBluetoothManager.Instance(this);
+        communicateDevice.startBluetoothServer();
         communicateDevice.setOnMessageLisenter(this);
     }
 
 
     @Override
     public void onMessage(String name, String msg) {
-        LogUtils.eTag("xiong", msg);
+        EventBusUtils.sendDeBugLog(name+"->:"+msg);
         ToastUtils.showShort(name + ":" + msg);
+        EventBusUtils.sendDeBugLog("receive msg:"+name + ":" + msg);
     }
 
     @Override
     public void onConnect(String name, String type) {
-        ToastUtils.showShort(name + ":" + type);
+        ScenceUtils.closeCutScence(this);
+        ToastUtil.toast("连接"+name+"成功！");
+        ActivityManager.startActivity(BoilerActivity.class);
+    }
+
+
+
+    @Override
+    public void onDisConnect(String name ,String msg) {
+        String tip = name+"#"+msg;
+        ToastUtils.showShort(tip);
+        EventBusUtils.sendDeBugLog(tip);
+        ScenceUtils.closeCutScence(this);
     }
 
     @Override
-    public void onDisConnect(String msg) {
-        ToastUtils.showShort(msg);
-    }
-
-    @Override
-    public void onError(String err_msg) {
-        ToastUtils.showShort(err_msg);
+    public void onError(String name,String err_msg) {
+        String tip = name+"#"+err_msg;
+        ToastUtils.showShort(tip);
+        EventBusUtils.sendFailLog(tip);
+        ScenceUtils.closeCutScence(this);
     }
 
 
     public void onClickLogin(View view) {
-        if (communicateDevice == null || !communicateDevice.isConnected()) {
+        if (communicateDevice == null || !communicateDevice.isConnected("")) {
             ToastUtils.showShort("通信未连接");
             return;
         }
-        communicateDevice.sendMessage(user.username);
+        communicateDevice.sendMessage("",user.username);
     }
 
 
@@ -232,6 +272,7 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(homeReceiver);
+        unregisterReceiver(this.bleListenerReceiver);
         communicateDevice.destroy();
 
     }
@@ -257,6 +298,19 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
         }
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_COARSE_LOCATION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // TODO request success
+                    communicateDevice.startScan();
+                }
+                break;
+
+        }
+    }
 }
 
 

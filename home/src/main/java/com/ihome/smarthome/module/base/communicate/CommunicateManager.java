@@ -8,12 +8,12 @@ public class CommunicateManager implements ICommunicate {
 
 
     @Override
-    public void connect() {
+    public void connect(String name) {
 
     }
 
     @Override
-    public void disConnect() {
+    public void disConnect(String name) {
 
     }
 
@@ -23,12 +23,12 @@ public class CommunicateManager implements ICommunicate {
     }
 
     @Override
-    public boolean isConnected() {
+    public boolean isConnected(String name) {
         return false;
     }
 
     @Override
-    public void sendMessage(String msg) {
+    public void sendMessage(String name, String msg) {
 
     }
 

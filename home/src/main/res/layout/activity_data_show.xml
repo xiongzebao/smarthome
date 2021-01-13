@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".module.home.view.DataShowActivity">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/layout_header" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:padding="20dp"
+            android:background="@color/colorPrimaryDark">
+
+            <com.ihome.base.views.MyProgressView
+                android:id="@+id/progressView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:circleColor="@color/colorPrimaryDark"
+                app:radius="86dp"
+                app:ringColor="#b3bdff"
+                app:strokeWidth="6dp"
+
+                >
+
+            </com.ihome.base.views.MyProgressView>
+        </RelativeLayout>
+
+        <fragment
+
+            android:id="@+id/data_fragment"
+            android:name="com.ihome.smarthome.module.main.view.DataFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+        </fragment>
+    </LinearLayout>
+</layout>

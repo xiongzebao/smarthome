@@ -15,6 +15,7 @@ import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.views.PlaceholderLayout;
 import com.ihome.base.R;
 import com.ihome.base.common.ui.ListFragmentModel;
+import com.ihome.base.utils.ScenceUtils;
 import com.ihome.base.utils.SystemBarUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -82,8 +83,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
 
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        ScenceUtils.closeCutScence(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+
         ActivityManager.pop();
       //  EventBus.getDefault().unregister(this);
     }

@@ -28,9 +28,12 @@ import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.module.base.Constants;
+import com.ihome.smarthome.utils.ClsUtils;
+import com.ihome.smarthome.utils.EventBusUtils;
 
 
 import java.io.IOException;
@@ -39,6 +42,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -51,6 +55,8 @@ public class MyBluetoothManager implements ICommunicate {
     final public int MESSAGE_FOUND_DEVICE = 2;
     final public int ON_CONNECTED = 3;
 
+    HashMap<String, ConnectedThread> connectedBTThreads = new HashMap<>();
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -60,8 +66,13 @@ public class MyBluetoothManager implements ICommunicate {
             switch (msg.what) {
 
                 case ON_CONNECTED:
-                    String name = String.valueOf(msg.arg1);
-                    String type = String.valueOf(msg.arg2);
+                    Bundle bundle1 = msg.getData();
+                    if (bundle1 == null) {
+                        return;
+                    }
+                    String name = bundle1.getString("name");
+                    String type = bundle1.getString("type");
+
                     lisenter.onConnect(name, type);
 
                 case MESSAGE_READ:
@@ -74,17 +85,27 @@ public class MyBluetoothManager implements ICommunicate {
                     if (!TextUtils.isEmpty(bundle.getString("name"))) {
                         client_name = String.valueOf(bundle.getString("name"));
                     }
-                    if (bundle.getByteArray("content").length != 0) {
+
+              /*      if (bundle.getByteArray("content")!=null&&bundle.getByteArray("content").length != 0) {
                         byte[] bytes = bundle.getByteArray("content");
 
                         try {
-                            content = new String(bytes, "utf-8");
+                            content = new String(bytes, "UTF-8");
                         } catch (UnsupportedEncodingException e) {
+                            EventBusUtils.sendFailLog(e.getMessage());
                             e.printStackTrace();
                         }
 
+                    }*/
+                    String str_content = bundle.getString("str_content");
+                    if (str_content != null) {
+                        MyLog.e(str_content);
+                        if (str_content != null && str_content.length() != 0) {
+                            lisenter.onMessage(client_name, str_content);
+                        }
+
                     }
-                    lisenter.onMessage(client_name, content);
+
                     break;
                 case MESSAGE_FOUND_DEVICE:
 
@@ -114,26 +135,27 @@ public class MyBluetoothManager implements ICommunicate {
 
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private BroadcastReceiver mReceiver = null;
-    private ConnectedThread connectedThread;//读取数据线程
+
 
     private AlertListView alertListView;
     private ArrayList<BluetoothDevice> devices = new ArrayList<>();
     private onMessageLisenter lisenter;
     private Context context;
 
-/*    public   static MyBluetoothManager bluetoothManager;
-    public static  MyBluetoothManager Instance(Context context){
-        if(bluetoothManager==null){
-            bluetoothManager = new MyBluetoothManager();
+    public static MyBluetoothManager bluetoothManager;
+
+    public static MyBluetoothManager Instance(Context context) {
+        if (bluetoothManager == null) {
+            bluetoothManager = new MyBluetoothManager(context);
         }
         return bluetoothManager;
-    }*/
+    }
 
     public MyBluetoothManager(Context context) {
         this.context = context;
     }
 
-    @Override
+
     public void connect() {
         enableBluetooth();//如果蓝牙没开启，开启蓝牙
         String bluetooth = SPUtils.getInstance().getString(Constants.CURRENT_BLUETOOTH);//最近一次连接的蓝牙名字
@@ -147,10 +169,12 @@ public class MyBluetoothManager implements ICommunicate {
         connect(bluetoothDevice);//如果有蓝牙就连接
     }
 
-    public void connect(String BluetoothName){
+    public void connect(String BluetoothName) {
+        enableBluetooth();
         BluetoothDevice bluetoothDevice = findPairedBlueToothDeviceByName(BluetoothName);
         if (bluetoothDevice == null) {//如果没有连接过蓝牙
-           ToastUtil.toast("没有名称为["+BluetoothName+"]的配对设备");
+            ToastUtil.toast("没有名称为[" + BluetoothName + "]的配对设备");
+            EventBusUtils.sendFailLog("没有名称为[" + BluetoothName + "]的配对设备");
             return;
         }
         connect(bluetoothDevice);//如果有蓝牙就连接
@@ -166,31 +190,43 @@ public class MyBluetoothManager implements ICommunicate {
     }
 
     @Override
-    public void disConnect() {
+    public void disConnect(String name) {
 
     }
 
     @Override
     public void destroy() {
 
-        if(mBluetoothAdapter.isDiscovering()){
+        if (mBluetoothAdapter.isDiscovering()) {
             mBluetoothAdapter.cancelDiscovery();
         }
         unRegisterDiscoveryReceiver(context);
 
     }
 
-    @Override
-    public boolean isConnected() {
+
+
+
+
+    public boolean isConnected(ConnectedThread connectedThread) {
         if (connectedThread != null && connectedThread.isConnected()) {
             return true;
         }
         return false;
     }
 
-    @Override
-    public void sendMessage(String msg) {
-        write(msg);
+
+    public void sendMessage(String deviceName,String msg) {
+      ConnectedThread thread =   connectedBTThreads.get(deviceName);
+      if(thread==null){
+          EventBusUtils.sendFailLog(deviceName+"#不存在此线程");
+          return;
+      }
+      if(!thread.isConnected()){
+          EventBusUtils.sendFailLog(deviceName+"#已断开连接");
+          return;
+      }
+      thread.write(msg);
     }
 
     @Override
@@ -285,11 +321,19 @@ public class MyBluetoothManager implements ICommunicate {
                         public void onClick(View v) {
                             ToastUtils.showShort("配对");
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                if (Datas.get(i).createBond()) {
+
+                                try {
+                                    if(ClsUtils.createBond(Datas.get(i).getClass(),Datas.get(i))){
+                                        ToastUtil.toast("发起配对");
+                                    }
+                                } catch (Exception e) {
+                                    ToastUtils.showLong("createBond 反射失败"+e.getMessage());
+                                }
+                              /*  if (Datas.get(i).createBond()) {
                                     ToastUtils.showLong("正在配对，请稍等...");
                                 } else {
                                     ToastUtils.showLong("配对失败");
-                                }
+                                }*/
 
                             }
                         }
@@ -325,7 +369,7 @@ public class MyBluetoothManager implements ICommunicate {
         如果成功启用蓝牙，您的 Activity 将会在 onActivityResult() 回调中收到 RESULT_OK 结果代码。
         如果由于某个错误（或用户响应“No”）而没有启用蓝牙，则结果代码为 RESULT_CANCELED。*/
     public void enableBluetooth() {
-        if(!isAvailable()){
+        if (!isAvailable()) {
             ToastUtils.showShort("蓝牙不可用");
             return;
         }
@@ -345,7 +389,21 @@ public class MyBluetoothManager implements ICommunicate {
     }
 
     public void connect(BluetoothDevice device) {
+
         new ConnectThread(device).start();
+    }
+
+    public boolean isConnected(String BluetoothName) {
+        if (connectedBTThreads.containsKey(BluetoothName)) {
+            ConnectedThread connectedThread = connectedBTThreads.get(BluetoothName);
+            if (connectedThread == null) {
+                return false;
+            }
+            if (connectedThread.isConnected() && connectedThread.isAlive()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //查询配对的设备
@@ -381,6 +439,8 @@ public class MyBluetoothManager implements ICommunicate {
                     }
                 }
                 if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)) {
+
+
                     ToastUtils.showLong("ACTION_PAIRING_REQUEST");
                 }
 
@@ -392,22 +452,23 @@ public class MyBluetoothManager implements ICommunicate {
     }
 
     public void startScan() {
-        if(!isAvailable()){
+        if (!isAvailable()) {
             ToastUtils.showShort("蓝牙不可用");
             return;
         }
-        if(mBluetoothAdapter.isDiscovering()){
+
+        if (mBluetoothAdapter.isDiscovering()) {
             mBluetoothAdapter.cancelDiscovery();
         }
-       if(mBluetoothAdapter.startDiscovery()){
-           ToastUtils.showShort("startDiscovery success!");
-       }else{
-           ToastUtils.showShort("startDiscovery failed!");
-       }
+        if (mBluetoothAdapter.startDiscovery()) {
+            ToastUtils.showShort("startDiscovery success!");
+        } else {
+            ToastUtils.showShort("startDiscovery failed!");
+        }
     }
 
     public void unRegisterDiscoveryReceiver(Context context) {
-        if(mReceiver!=null){
+        if (mReceiver != null) {
             context.unregisterReceiver(mReceiver);
         }
     }
@@ -419,7 +480,7 @@ public class MyBluetoothManager implements ICommunicate {
        应用可以设置的最大持续时间为 3600 秒，值为 0 则表示设备始终可检测到。
        任何小于 0 或大于 3600 的值都会自动设为 120 秒*/
     public void requestDiscoverable() {
-        if(!isAvailable()){
+        if (!isAvailable()) {
             ToastUtils.showShort("蓝牙不可用");
             return;
         }
@@ -433,7 +494,7 @@ public class MyBluetoothManager implements ICommunicate {
     }
 
     public void startBluetoothServer() {
-        if(!isAvailable()){
+        if (!isAvailable()) {
             ToastUtils.showShort("蓝牙不可用");
             return;
         }
@@ -441,7 +502,7 @@ public class MyBluetoothManager implements ICommunicate {
         new AcceptThread().start();
     }
 
-    public   void setDiscoverableTimeout() {
+    public void setDiscoverableTimeout() {
 
         try {
             Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
@@ -457,7 +518,7 @@ public class MyBluetoothManager implements ICommunicate {
         }
     }
 
-    public   void closeDiscoverableTimeout() {
+    public void closeDiscoverableTimeout() {
 
         try {
             Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
@@ -472,18 +533,14 @@ public class MyBluetoothManager implements ICommunicate {
     }
 
 
-    public void write(byte[] bytes) {
-        connectedThread.write(bytes);
-    }
-
-    public void write(String str) {
-        connectedThread.write(str.getBytes());
-    }
 
 
     public void manageConnectedSocket(BluetoothSocket mmSocket) {
-        connectedThread = new ConnectedThread(mmSocket);
+
+        ConnectedThread connectedThread = new ConnectedThread(mmSocket);
         connectedThread.start();
+        connectedBTThreads.put(mmSocket.getRemoteDevice().getName(),connectedThread);
+
     }
 
     private class AcceptThread extends Thread {
@@ -514,7 +571,12 @@ public class MyBluetoothManager implements ICommunicate {
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
                     Log.e("xiong", "accept   bluetooth socket:" + socket.getRemoteDevice().getName());
-                    lisenter.onConnect(socket.getRemoteDevice().getName(), onMessageLisenter.BT_ACCEPTED);
+                    Message msg = handler.obtainMessage();
+                    Bundle bundle = new Bundle();
+                    msg.what = ON_CONNECTED;
+                    bundle.putString("name", socket.getRemoteDevice().getName());
+                    bundle.putString("type", onMessageLisenter.BT_CONNECTED);
+                    handler.sendMessage(msg);
                     manageConnectedSocket(socket);
                     try {
                         mmServerSocket.close();
@@ -545,15 +607,17 @@ public class MyBluetoothManager implements ICommunicate {
         public ConnectThread(BluetoothDevice device) {
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
+
             BluetoothSocket tmp = null;
             mmDevice = device;
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
+                //  // 这里的 UUID 需要和服务器的一致
                 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
 
             } catch (IOException e) {
-
+                EventBusUtils.sendFailLog( e.getMessage()+"#蓝牙未开启或不在通信范围");
             }
             mmSocket = tmp;
         }
@@ -568,18 +632,23 @@ public class MyBluetoothManager implements ICommunicate {
                 // until it succeeds or throws an exception
                 if (!mmSocket.isConnected()) {
                     mmSocket.connect();
-                } else {
-                    lisenter.onConnect(mmDevice.getName(), onMessageLisenter.BT_CONNECTED);
                 }
 
-                String tip = mmDevice.getName() + " connect success";
-                //   ToastUtils.showLong(tip);
-                Log.e("xiong", mmDevice.getName() + " connect success");
-                lisenter.onConnect(mmDevice.getName(), onMessageLisenter.BT_CONNECTED);
+
+                Message msg = handler.obtainMessage();
+                msg.what = ON_CONNECTED;
+                Bundle bundle = new Bundle();
+                bundle.putString("name", mmDevice.getName());
+                bundle.putString("type", onMessageLisenter.BT_CONNECTED);
+                msg.setData(bundle);
+
+                MyLog.e("name->" + mmDevice.getName() + "连接成功");
+                handler.sendMessage(msg);
 
             } catch (IOException connectException) {
+                EventBusUtils.sendFailLog(connectException.getMessage()+"  #蓝牙未开启或不在通信范围);");
 
-                lisenter.onDisConnect(connectException.getMessage());
+                lisenter.onError(mmDevice.getName(),"蓝牙未开启或不在通信范围");
                 // Unable to connect; close the socket and get out
                 try {
                     mmSocket.close();
@@ -597,6 +666,31 @@ public class MyBluetoothManager implements ICommunicate {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
+        public void close()  {
+
+            try {
+                mmInStream.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                EventBusUtils.sendFailLog(e.getMessage()+"#"+"关闭输入流失败");
+            }
+            try {
+                mmOutStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                EventBusUtils.sendFailLog(e.getMessage()+"#"+"关闭输出流失败");
+            }
+            try {
+                mmSocket.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                EventBusUtils.sendFailLog(e.getMessage()+"#"+"关闭socket失败");
+            }
+            interrupt();
+        }
+
 
         public boolean isConnected() {
             if (mmSocket != null && mmSocket.isConnected()) {
@@ -607,7 +701,6 @@ public class MyBluetoothManager implements ICommunicate {
 
         public ConnectedThread(BluetoothSocket socket) {
             mmSocket = socket;
-
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
             // Get the input and output streams, using temp objects because
@@ -619,26 +712,52 @@ public class MyBluetoothManager implements ICommunicate {
             }
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
+
         }
 
         public void run() {
-            byte[] buffer = new byte[1024];  // buffer store for the stream
-            int bytes; // bytes returned from read()
-            // Keep listening to the InputStream until an exception occurs
-            while (true) {
-                try {
-                    // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
-                    Message msg = handler.obtainMessage();
-                    msg.what = MESSAGE_READ;
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", mmSocket.getRemoteDevice().getName());
-                    bundle.putByteArray("content", buffer);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
-                } catch (IOException e) {
-                    break;
+
+
+                byte[] buffer = new byte[1024];  // buffer store for the stream
+                int bytes; // bytes returned from read()
+                // Keep listening to the InputStream until an exception occurs
+                while (true&&!isInterrupted()) {
+                    try {
+                        // Read from the InputStream
+                        bytes = mmInStream.read(buffer);
+                        Message msg = handler.obtainMessage();
+                        msg.what = MESSAGE_READ;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("name", mmSocket.getRemoteDevice().getName());
+                        bundle.putString("str_content", new String(getValidBytes(buffer, bytes), "UTF-8"));
+                        //  bundle.putByteArray("content", buffer);
+                        msg.setData(bundle);
+                        handler.sendMessage(msg);
+                        buffer = new byte[1024];
+                    } catch (IOException e) {
+                        EventBusUtils.sendFailLog(e.getMessage()+"####ConnetThread 读取消息失败,关闭io流，关闭socket,结束线程");
+                        close();
+
+
+                    }
                 }
+            EventBusUtils.sendFailLog(mmSocket.getRemoteDevice().getName()+"读消息线程结束");
+
+        }
+
+
+        private byte[] getValidBytes(byte[] bytes, int num) {
+            byte[] tb = new byte[num];
+            for (int i = 0; i < num; i++) {
+                tb[i] = bytes[i];
+            }
+            return tb;
+        }
+
+        public void write(String msg) {
+            try {
+                mmOutStream.write(msg.getBytes("UTF-8"));
+            } catch (IOException e) {
             }
         }
 
