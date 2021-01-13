@@ -3,7 +3,7 @@
     xmlns:widget="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparentGrey"
+    android:background="@color/transparent"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingBottom="@dimen/y30"
@@ -11,32 +11,29 @@
     android:paddingRight="25dp"
     android:paddingTop="@dimen/y30">
 
-    <ImageView
-        android:id="@+id/loadingImageView"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/cutscenes2"
-        android:contentDescription="@string/empty" />
+    <com.github.ybq.android.spinkit.SpinKitView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/spin_kit"
+        android:visibility="visible"
+        style="@style/SpinKitView.Wave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/colorPrimaryDark" />
 
     <TextView
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/loadingMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
         android:text="@string/page_loading"
         android:textColor="#0097C9"
-        android:textSize="@dimen/x30" />
+        android:textSize="15dp" />
 
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/download_msg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text="（温馨提示：下载完成前请您切勿关闭app!）"
-        android:textColor="#0097C9"
-        android:textSize="14sp" />
+
 
     <com.ihome.base.views.NumberProgressBar
         android:visibility="gone"

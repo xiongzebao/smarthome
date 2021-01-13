@@ -22,9 +22,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.EncodeUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.SpanUtils;
 import com.erongdu.wireless.tools.log.MyLog;
+import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.ihome.base.views.ExpandLayout;
 import com.ihome.smarthome.R;
@@ -51,11 +53,12 @@ public class FloatingService extends Service {
     private View rootView;
     private TextView textView;
     SpannableStringBuilder mBuilder;
-    Handler mHandler=new Handler();
+    Handler mHandler = new Handler();
     TextView dragBtn;
     ScrollView scrollView;
     TextView clearBtn;
     TextView closeBtn;
+    TextView scaleBtn;
 
     int minHeight = 200;
 
@@ -63,18 +66,25 @@ public class FloatingService extends Service {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
 
-        switch (event.getAction()){
-            case MessageEvent.LOG_DEBUG: append(event.getMsg(), Color.BLUE);break;
-            case MessageEvent.LOG_FAILED: append(event.getMsg(), Color.RED);break;
-            case MessageEvent.LOG_SUCCESS: append(event.getMsg(), Color.BLACK);break;
+        switch (event.getAction()) {
+            case MessageEvent.LOG_DEBUG:
+                append(event.getMsg(), Color.BLUE);
+                break;
+            case MessageEvent.LOG_FAILED:
+                append(event.getMsg(), Color.RED);
+                break;
+            case MessageEvent.LOG_SUCCESS:
+                append(event.getMsg(), Color.GREEN);
+                break;
         }
         textView.setText(mBuilder);
         //scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-        scrollToBottom(scrollView,textView);
+        scrollToBottom(scrollView, textView);
+        setDragBtnText();
     }
 
 
-    public  void scrollToBottom(final View scroll, final View inner) {
+    public void scrollToBottom(final View scroll, final View inner) {
         mHandler.post(new Runnable() {
             public void run() {
                 if (scroll == null || inner == null) {
@@ -88,8 +98,6 @@ public class FloatingService extends Service {
             }
         });
     }
-
-
 
 
     void append(String text, int color) {
@@ -122,9 +130,10 @@ public class FloatingService extends Service {
     }
 
 
-    private void clear(){
+    private void clear() {
         mBuilder.clear();
         textView.setText(mBuilder);
+        dragBtn.setText("");
     }
 
 
@@ -144,8 +153,8 @@ public class FloatingService extends Service {
             layoutParams.format = PixelFormat.RGBA_8888;
             layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
             //宽高自适应
-            layoutParams.width = ScreenUtils.getScreenWidth() / 4;
-            layoutParams.height = ScreenUtils.getScreenHeight() / 4;
+            layoutParams.width = ScreenUtils.getScreenWidth() / 3;
+            layoutParams.height = ScreenUtils.getScreenHeight() / 3;
             //显示的位置
             layoutParams.x = 300;
             layoutParams.y = 300;
@@ -156,6 +165,7 @@ public class FloatingService extends Service {
             dragBtn = rootView.findViewById(R.id.dragBtn);
             clearBtn = rootView.findViewById(R.id.clearBtn);
             closeBtn = rootView.findViewById(R.id.closeBtn);
+            scaleBtn = rootView.findViewById(R.id.scaleBtn);
             scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
             // 将悬浮窗控件添加到WindowManager
             windowManager.addView(rootView, layoutParams);
@@ -173,6 +183,13 @@ public class FloatingService extends Service {
                 }
             });
 
+            scaleBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleView();
+                }
+            });
+
          /*   dragBtn.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -184,12 +201,16 @@ public class FloatingService extends Service {
     }
 
 
+    private void setDragBtnText() {
+
+        dragBtn.setText(mBuilder.length() < 100 ? mBuilder : mBuilder.subSequence(mBuilder.length() - 90,mBuilder.length()));
+    }
+
+
     private void toggleView() {
         if (scrollView.getVisibility() == View.VISIBLE) {
-
-
             scrollView.setVisibility(View.GONE);
-            dragBtn.setText(mBuilder);
+            setDragBtnText();
         } else {
             scrollView.setVisibility(View.VISIBLE);
             dragBtn.setText("长按隐藏");
@@ -218,7 +239,7 @@ public class FloatingService extends Service {
                             // ToastUtil.toast("true");
 
                         }
-                    }, 500); // 按下时长设置
+                    }, 1000); // 按下时长设置
                     break;
                 case MotionEvent.ACTION_MOVE:
                     double deltaX = Math.sqrt((event.getRawX() - x) * (event.getRawX() - x) + (event.getRawY() - y) * (event.getRawY() - y));
@@ -228,11 +249,10 @@ public class FloatingService extends Service {
                     }
                     if (isLongClickModule) {
                         //添加你长按之后的方法
-                        toggleView();
+                        // toggleView();
                         timer = null;
+                        ActivityManager.startActivity(LogActivity.class);
                     }
-
-
                     int nowX = (int) event.getRawX();
                     int nowY = (int) event.getRawY();
                     int movedX = nowX - x;

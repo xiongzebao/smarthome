@@ -35,9 +35,7 @@ public class CutscenesProgress extends Dialog {
         if (cutscenesProgress == null) {
             return;
         }
-        ImageView         imageView         = (ImageView) cutscenesProgress.findViewById(R.id.loadingImageView);
-        AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getBackground();
-        animationDrawable.start();
+
     }
 
     /**
@@ -53,16 +51,9 @@ public class CutscenesProgress extends Dialog {
      */
     public CutscenesProgress setMessage(String strMessage) {
         TextView tvMsg = (TextView) cutscenesProgress.findViewById(R.id.loadingMsg);
-        TextView loadMsg = (TextView) cutscenesProgress.findViewById(R.id.download_msg);
+
         if (tvMsg != null) {
             tvMsg.setText(strMessage);
-            if(!TextUtil.isEmpty_new(strMessage)&&strMessage.startsWith("下载中")){
-                tvMsg.setVisibility(View.VISIBLE);
-                loadMsg.setVisibility(View.VISIBLE);
-            }else{
-                tvMsg.setVisibility(View.GONE);
-                loadMsg.setVisibility(View.GONE);
-            }
         }
         return cutscenesProgress;
     }

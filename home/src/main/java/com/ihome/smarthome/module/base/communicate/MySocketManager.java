@@ -95,7 +95,7 @@ public class MySocketManager implements ICommunicate{
 
             Log.i(TAG, "diconnected");
             isConnected = false;
-            listener.onDisConnect("服务器断开连接，请检查网络");
+            listener.onDisConnect("","服务器断开连接，请检查网络");
         }
     };
 
@@ -103,13 +103,18 @@ public class MySocketManager implements ICommunicate{
         @Override
         public void call(final Object... args) {
             Log.e(TAG, "Error connecting:" + args[0]);
-            listener.onError("网络连接失败");
+            listener.onError("","网络连接失败");
         }
     };
 
 
     @Override
-    public void disConnect() {
+    public void connect(String name) {
+
+    }
+
+    @Override
+    public void disConnect(String name) {
         if (isConnected) {
             for (Map.Entry<String, Emitter.Listener> entry : listers.entrySet()) {
                 mSocket.off(entry.getKey(), entry.getValue());
@@ -121,14 +126,20 @@ public class MySocketManager implements ICommunicate{
 
     @Override
     public void destroy() {
-        disConnect();
+        disConnect( "");
         listener =null;
         mSocket.close();
     }
 
+
     @Override
-    public boolean isConnected() {
+    public boolean isConnected(String name) {
         return isConnected;
+    }
+
+    @Override
+    public void sendMessage(String name, String msg) {
+
     }
 
 

@@ -42,12 +42,13 @@ dependencies {
     api 'com.github.f0ris.sweetalert:library:1.5.1'
     api  'me.shaohui:bottomdialog:1.1.9'
     api  'com.github.SmartCyl:BottomDialog:1.0.4'
+    api 'com.github.ybq:Android-SpinKit:1.4.0'
     api rootProject.ext.dependencies["glide"]
     api rootProject.ext.dependencies["swipeToLoadLayout"]
     api rootProject.ext.dependencies["glide-okhttp3-integration"]
     api rootProject.ext.dependencies["baseRecyclerViewAdapterHelper"]
     implementation rootProject.ext.dependencies["recyclerview-v7"]
-
+    testImplementation 'junit:junit:4.12'
 
 
 }
