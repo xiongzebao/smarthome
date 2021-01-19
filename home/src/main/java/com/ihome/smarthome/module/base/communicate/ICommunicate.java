@@ -9,6 +9,7 @@ public interface ICommunicate {
     interface onMessageLisenter{
 
         String BT_ACCEPTED = "BT_ACCEPTED";
+        String BT_DISCONNECT = "BT_DISCONNECT";
         String BT_CONNECTED = "BT_CONNECTED";
         String SERVER_CONNECTED = "SERVER_CONNECTED";
 
@@ -16,7 +17,7 @@ public interface ICommunicate {
         void onConnect(String name, String type);
         void onDisConnect(String name,String o);
         void onError(String name,String err_msg);
-
+        void onConnectFailed(String name,String err_msg);
     }
     void connect(String name);
     void disConnect(String name);

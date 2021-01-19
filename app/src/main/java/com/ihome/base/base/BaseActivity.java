@@ -54,7 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
   /*      if (getSupportActionBar() != null){
             getSupportActionBar().hide();
         }*/
-        SystemBarUtils.setAndroidNativeLightStatusBar(this,false);
+        SystemBarUtils.setAndroidNativeLightStatusBar(this,true);
     }
 
     private void setOnBack(){

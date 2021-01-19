@@ -1,8 +1,13 @@
-package com.ihome.smarthome.module.base;
+package com.ihome.smarthome.service;
 
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -12,29 +17,29 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.blankj.utilcode.util.EncodeUtils;
+import androidx.core.app.NotificationCompat;
+
 import com.blankj.utilcode.util.ScreenUtils;
-import com.blankj.utilcode.util.SpanUtils;
-import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
-import com.erongdu.wireless.tools.utils.ToastUtil;
-import com.ihome.base.views.ExpandLayout;
 import com.ihome.smarthome.R;
+import com.ihome.smarthome.database.showlog.DbController;
+import com.ihome.smarthome.database.showlog.ShowLog;
+import com.ihome.smarthome.module.base.LogActivity;
+import com.ihome.smarthome.module.base.LoginActivity;
+import com.ihome.smarthome.module.base.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -61,7 +66,7 @@ public class FloatingService extends Service {
     TextView scaleBtn;
 
     int minHeight = 200;
-
+    public  static boolean isStart = false;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
@@ -69,18 +74,29 @@ public class FloatingService extends Service {
         switch (event.getAction()) {
             case MessageEvent.LOG_DEBUG:
                 append(event.getMsg(), Color.BLUE);
+                insertShowLog(MessageEvent.LOG_DEBUG,event.getMsg());
                 break;
             case MessageEvent.LOG_FAILED:
                 append(event.getMsg(), Color.RED);
+                insertShowLog(MessageEvent.LOG_FAILED,event.getMsg());
                 break;
             case MessageEvent.LOG_SUCCESS:
                 append(event.getMsg(), Color.GREEN);
+                insertShowLog(MessageEvent.LOG_SUCCESS,event.getMsg());
                 break;
         }
         textView.setText(mBuilder);
         //scrollView.fullScroll(ScrollView.FOCUS_DOWN);
         scrollToBottom(scrollView, textView);
         setDragBtnText();
+    }
+
+    private void insertShowLog(int type ,String msg){
+        ShowLog showLog = new ShowLog();
+        showLog.setDate(new Date().toString());
+        showLog.setType(type);
+        showLog.setMsg(msg);
+        DbController.getInstance(this).insert(showLog);
     }
 
 
@@ -108,6 +124,49 @@ public class FloatingService extends Service {
         mBuilder.setSpan(new ForegroundColorSpan(color), start, end, SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
+    private Notification createForegroundNotification() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // 唯一的通知通道的id.
+        String notificationChannelId = "notification_channel_id_01";
+
+        // Android8.0以上的系统，新建消息通道
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //用户可见的通道名称
+            String channelName = "Foreground Service Notification";
+            //通道的重要程度
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel notificationChannel = new NotificationChannel(notificationChannelId, channelName, importance);
+            notificationChannel.setDescription("Channel description");
+            //LED灯
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            //震动
+           // notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+          //  notificationChannel.enableVibration(true);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, notificationChannelId);
+        //通知小图标
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        //通知标题
+        builder.setContentTitle("iHome 蓝牙服务");
+        //通知内容
+        builder.setContentText("蓝牙服务正在后台运行中");
+        //设定通知显示的时间
+        builder.setWhen(System.currentTimeMillis());
+        //设定启动的内容
+        Intent activityIntent = new Intent(this, LoginActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+        //创建通知并返回
+        return builder.build();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -115,7 +174,9 @@ public class FloatingService extends Service {
         EventBus.getDefault().register(this);
         //spanUtils = SpanUtils.with(textView);
         mBuilder = new SpannableStringBuilder();
-
+        Notification notification = createForegroundNotification();
+        //将服务置于启动状态 ,NOTIFICATION_ID指的是创建的通知的ID
+        startForeground(1, notification);
     }
 
     @Override
@@ -134,12 +195,13 @@ public class FloatingService extends Service {
         mBuilder.clear();
         textView.setText(mBuilder);
         dragBtn.setText("");
+        DbController.getInstance(this).deleteAll();
     }
 
 
     @SuppressLint("InflateParams")
     private void showFloatingWindow() {
-        LoginActivity.isStart = true;
+        isStart = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
             // 获取WindowManager服务
             windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -156,6 +218,7 @@ public class FloatingService extends Service {
             layoutParams.width = ScreenUtils.getScreenWidth() / 3;
             layoutParams.height = ScreenUtils.getScreenHeight() / 3;
             //显示的位置
+
             layoutParams.x = 300;
             layoutParams.y = 300;
             // 新建悬浮窗控件
@@ -281,7 +344,19 @@ public class FloatingService extends Service {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        LoginActivity.isStart = false;
+         isStart = false;
         windowManager.removeViewImmediate(rootView);
+    }
+
+    public static void startService(Activity activity){
+        if(isStart){
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            activity.startForegroundService(new Intent( activity, FloatingService.class));
+
+        }else{
+            activity.startService(new Intent( activity, FloatingService.class));
+        }
     }
 }

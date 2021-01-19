@@ -184,6 +184,7 @@ public class AddNewUserActivity extends BaseActivity {
             public void onSuccess(Call<ResBase> call, Response<ResBase> response) {
                  ToastUtil.toast(response.body().message);
                  setResult(ReceiptDataActivity.REFRESH);
+
                  finish();
 
             }

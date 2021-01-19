@@ -42,7 +42,16 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
 
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -111,7 +120,10 @@
         </activity>
         <activity android:name=".module.base.BoilerActivity" />
 
-        <service android:name=".module.base.FloatingService" />
+        <service
+            android:priority="1000"
+            android:persistent="true"
+            android:name=".service.FloatingService" />
     </application>
 
 </manifest>

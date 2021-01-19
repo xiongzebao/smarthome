@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
 android {
 
     compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -10,7 +11,11 @@ android {
         dataBinding = true
     }
 
+    greendao {
+        schemaVersion 1 //数据库版本
+        targetGenDir 'src/main/java' //指定生成代码的目录
 
+    }
 
     defaultConfig {
         applicationId "com.ihome.smarthome"
@@ -72,7 +77,8 @@ dependencies {
         exclude module: "support-v4"
         exclude group: "com.android.support"
     }
-
+    implementation('com.contrarywind:Android-PickerView:4.1.9')
+    implementation 'org.greenrobot:greendao:3.2.2' // 添加库
     implementation('com.github.rubensousa:floatingtoolbar:1.5.1')
     implementation project(':app')
     implementation project(':bottom-navigation-bar')

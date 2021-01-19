@@ -6,6 +6,7 @@ import android.content.Context;
 
 
 import com.erongdu.wireless.tools.log.MyLog;
+import com.ihome.base.utils.SystemTTSUtils;
 import com.ihome.smarthome.MainActivity;
 
 
@@ -20,6 +21,7 @@ public class MyApplication extends Application {
 
     private void init(){
         MyLog.init(KTAppConfig.isDebug,"xiong",false,2,3);
+        SystemTTSUtils.getInstance(this);
 
     }
 

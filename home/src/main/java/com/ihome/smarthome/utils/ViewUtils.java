@@ -21,12 +21,12 @@ public class ViewUtils {
 
     public static void showTimePicker(Context context, String title,boolean isDialog,OnTimeSelectListener listener) {
         Calendar selectedDate = Calendar.getInstance();
-        Calendar startDate = Calendar.getInstance();
-        //startDate.set(2013,1,1);
         Calendar endDate = Calendar.getInstance();
-        endDate.setTime(new Date());
+        //startDate.set(2013,1,1);
+        Calendar startDate = Calendar.getInstance();
+        startDate.setTime(new Date());
         //endDate.set(2020,1,1);
-         startDate.add(Calendar.DATE,-60);
+         endDate.add(Calendar.DATE,1);
         //正确设置方式 原因：注意事项有说明
        // startDate.set(2019, 0, 1);
 
@@ -37,7 +37,7 @@ public class ViewUtils {
 
 
         TimePickerView pvTime = new TimePickerBuilder(context,listener)
-                .setType(new boolean[]{true, true, true, false, false, false})// 默认全部显示
+                .setType(new boolean[]{true, true, true, true, true, true})// 默认全部显示
                 .setCancelText("取消")//取消按钮文字
                 .setSubmitText("确定")//确认按钮文字
                 // .setContentSize(18)//滚轮文字大小

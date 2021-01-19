@@ -49,7 +49,7 @@ public class NoticeManager {
     public static void startNotification(String title, String content, int id) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startNotificationV8(title, content, MainActivity.class,id, "exception", R.mipmap.ic_launcher, R.mipmap.ic_launcher);
+            startNotificationV8(title, content, MainActivity.class,id, "exception", R.mipmap.ic_logo, R.mipmap.ic_logo);
         } else {
             startNotification1(title, content, id,MainActivity.class);
         }
@@ -58,7 +58,7 @@ public class NoticeManager {
     public static void startNotification(String title, String content, int id, Class goClass) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startNotificationV8(title, content, goClass,id, "exception", R.mipmap.ic_launcher, R.mipmap.ic_launcher);
+            startNotificationV8(title, content, goClass,id, "exception", R.mipmap.ic_logo, R.mipmap.ic_logo);
         } else {
             startNotification1(title, content, id,goClass);
         }
@@ -91,7 +91,7 @@ public class NoticeManager {
         NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(ActivityManager.peek());
         notifyBuilder.setContentTitle(title);
         notifyBuilder.setContentText(content);
-        notifyBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        notifyBuilder.setSmallIcon(R.mipmap.ic_logo);
         notifyBuilder.setAutoCancel(true);
         notifyBuilder.setPriority(Notification.PRIORITY_HIGH);
         notifyBuilder.setAutoCancel(true);

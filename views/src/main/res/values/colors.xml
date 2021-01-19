@@ -5,7 +5,7 @@
     <!-- 状态栏颜色(Lollipop - API Level 21 以上) -->
     <color name="colorPrimaryDark">#2683CF</color>
     <!-- 控件的主色调(光标颜色、checkbox背景色等) -->
-    <color name="colorAccent">#FF5256</color>
+    <color name="colorAccent">#2683CF</color>
     <!-- 灰色背景色 -->
     <color name="colorGrey">#F5F5F5</color>
 

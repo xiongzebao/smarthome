@@ -25,7 +25,8 @@ import java.util.TimerTask;
 
 public class BluetoothMonitorReceiver extends BroadcastReceiver {
 
-    HashMap<String  ,Timer> retryTimer = new HashMap<>();
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -41,6 +42,7 @@ public class BluetoothMonitorReceiver extends BroadcastReceiver {
                         case BluetoothAdapter.STATE_ON:
                             Toast.makeText(context,"蓝牙已经打开",Toast.LENGTH_SHORT).show();
                             EventBusUtils.sendDeBugLog("蓝牙已经打开");
+                            MyBluetoothManager.Instance(context).connectCurrentBT();
                             break;
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             Toast.makeText(context,"蓝牙正在关闭",Toast.LENGTH_SHORT).show();
@@ -56,35 +58,15 @@ public class BluetoothMonitorReceiver extends BroadcastReceiver {
                 case BluetoothDevice.ACTION_ACL_CONNECTED:
                     BluetoothDevice conDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     String tip = conDevice.getName()+"蓝牙设备已连接";
-                    Toast.makeText(context,tip,Toast.LENGTH_SHORT).show();
                     EventBusUtils.sendSucessLog( tip);
-                    if(retryTimer.containsKey(conDevice.getName())){
-                        Timer timer = retryTimer.get(conDevice.getName());
-                        if(timer!=null){
-                            timer.cancel();
-                        }
-                    }
-
                     break;
 
                 case BluetoothDevice.ACTION_ACL_DISCONNECTED:
                     BluetoothDevice conDevice1 = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     String tip1 = conDevice1.getName()+"蓝牙设备已断开";
-                    Toast.makeText(context,tip1,Toast.LENGTH_SHORT).show();
                     EventBusUtils.sendFailLog(tip1);
+                    MyBluetoothManager.Instance(context).disConnect(conDevice1.getName());
 
-                    if(retryTimer.containsKey(conDevice1.getName())){
-                        return;
-                    }
-                    TimerTask task = new TimerTask() {
-                        @Override
-                        public void run() {
-                            MyBluetoothManager.Instance(context).connect(conDevice1.getName());
-                        }
-                    };
-                    Timer timer = new Timer();
-                    timer.schedule(task, 0,10000);//2秒后执行TimeTask的run方法
-                    retryTimer.put(conDevice1.getName(),timer);
                     break;
             }
 
