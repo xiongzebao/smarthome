@@ -36,6 +36,7 @@ import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.erongdu.wireless.tools.log.MyLog;
+import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.utils.ClsUtils;
@@ -127,7 +128,7 @@ public class MyBluetoothManager implements ICommunicate {
                 case MESSAGE_FOUND_DEVICE:
                     BluetoothDevice device = (BluetoothDevice) msg.obj;
                     if (alertListView == null) {
-                        alertListView = new AlertListView(context, devices, new DialogInterface.OnClickListener() {
+                        alertListView = new AlertListView(ActivityManager.peek(), devices, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -170,8 +171,6 @@ public class MyBluetoothManager implements ICommunicate {
             bluetoothManager = new MyBluetoothManager(context);
             btManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
             mBluetoothAdapter = btManager.getAdapter();
-            bluetoothManager.registerDiscoveryReceiver();
-
         }
         return bluetoothManager;
     }
@@ -186,9 +185,7 @@ public class MyBluetoothManager implements ICommunicate {
         String bluetooth = currentConnectBTName;
         BluetoothDevice bluetoothDevice = findPairedBlueToothDeviceByName(bluetooth);
         if (bluetoothDevice == null) {//如果没有连接过蓝牙
-            //  requestDiscoverable();
-            registerDiscoveryReceiver();//注册发现蓝牙广播接收器
-            startScan();//开始发现蓝牙
+            ToastUtil.toast(bluetoothDevice.getName()+"未连接");
             return;
         }
         connect(bluetoothDevice);//如果有蓝牙就连接
@@ -203,7 +200,12 @@ public class MyBluetoothManager implements ICommunicate {
 
     public void connect(String BluetoothName) {
 
+        if(isConnected(BluetoothName)){
+            return;
+        }
         currentConnectBTName = BluetoothName;
+
+
         if (!isBluetoothOpen()) {
             enableBluetooth();
             return;
@@ -450,10 +452,9 @@ public class MyBluetoothManager implements ICommunicate {
 
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            if (context instanceof Activity) {
-                Activity act = (Activity) context;
-                act.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
+
+                ActivityManager.peek().startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+
         }
       /*  if (!mBluetoothAdapter.isEnabled()) {
             //若没打开则打开蓝牙
@@ -487,7 +488,7 @@ public class MyBluetoothManager implements ICommunicate {
     }
 
 
-    public void registerDiscoveryReceiver() {
+    public void registerDiscoveryReceiver(Context context) {
         if(isRegisterDiscoveryReceiver){
             return;
         }
@@ -706,10 +707,9 @@ public class MyBluetoothManager implements ICommunicate {
 
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
-        if (context instanceof Activity) {
-            Activity act = (Activity) context;
-            act.startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE);
-        }
+
+            ActivityManager.peek().startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE);
+
     }
 
     public void startBluetoothServer() {

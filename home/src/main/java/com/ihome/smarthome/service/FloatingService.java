@@ -27,6 +27,7 @@ import android.widget.TextView;
 import androidx.core.app.NotificationCompat;
 
 import com.blankj.utilcode.util.ScreenUtils;
+import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.database.showlog.DbController;
@@ -74,15 +75,15 @@ public class FloatingService extends Service {
         switch (event.getAction()) {
             case MessageEvent.LOG_DEBUG:
                 append(event.getMsg(), Color.BLUE);
-                insertShowLog(MessageEvent.LOG_DEBUG,event.getMsg());
+               // insertShowLog(MessageEvent.LOG_DEBUG,event.getMsg());
                 break;
             case MessageEvent.LOG_FAILED:
                 append(event.getMsg(), Color.RED);
-                insertShowLog(MessageEvent.LOG_FAILED,event.getMsg());
+               // insertShowLog(MessageEvent.LOG_FAILED,event.getMsg());
                 break;
             case MessageEvent.LOG_SUCCESS:
                 append(event.getMsg(), Color.GREEN);
-                insertShowLog(MessageEvent.LOG_SUCCESS,event.getMsg());
+              //  insertShowLog(MessageEvent.LOG_SUCCESS,event.getMsg());
                 break;
         }
         textView.setText(mBuilder);
@@ -128,12 +129,12 @@ public class FloatingService extends Service {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // 唯一的通知通道的id.
-        String notificationChannelId = "notification_channel_id_01";
+        String notificationChannelId = "notification_channel_id_02";
 
         // Android8.0以上的系统，新建消息通道
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //用户可见的通道名称
-            String channelName = "Foreground Service Notification";
+            String channelName = "Foreground Floating Service Notification";
             //通道的重要程度
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel = new NotificationChannel(notificationChannelId, channelName, importance);
@@ -151,11 +152,11 @@ public class FloatingService extends Service {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, notificationChannelId);
         //通知小图标
-        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setSmallIcon(R.drawable.ic_logo);
         //通知标题
-        builder.setContentTitle("iHome 蓝牙服务");
+        builder.setContentTitle("iHome 悬浮窗服务");
         //通知内容
-        builder.setContentText("蓝牙服务正在后台运行中");
+        builder.setContentText("悬浮窗服务正在后台运行中");
         //设定通知显示的时间
         builder.setWhen(System.currentTimeMillis());
         //设定启动的内容
@@ -176,7 +177,7 @@ public class FloatingService extends Service {
         mBuilder = new SpannableStringBuilder();
         Notification notification = createForegroundNotification();
         //将服务置于启动状态 ,NOTIFICATION_ID指的是创建的通知的ID
-        startForeground(1, notification);
+        startForeground(2, notification);
     }
 
     @Override
@@ -187,7 +188,9 @@ public class FloatingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         rootView.setVisibility(View.VISIBLE);
-        return super.onStartCommand(intent, flags, startId);
+        MyLog.e("onStartCommand");
+        return START_STICKY;
+
     }
 
 
@@ -249,7 +252,8 @@ public class FloatingService extends Service {
             scaleBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    toggleView();
+                  //  toggleView();
+                    scaleWindow();
                 }
             });
 
@@ -263,6 +267,13 @@ public class FloatingService extends Service {
         }
     }
 
+
+    private void scaleWindow(){
+       WindowManager.LayoutParams params = (WindowManager.LayoutParams) rootView.getLayoutParams();
+        params.height=100;
+        rootView.setLayoutParams(params);
+
+    }
 
     private void setDragBtnText() {
 
@@ -349,9 +360,7 @@ public class FloatingService extends Service {
     }
 
     public static void startService(Activity activity){
-        if(isStart){
-            return;
-        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             activity.startForegroundService(new Intent( activity, FloatingService.class));
 

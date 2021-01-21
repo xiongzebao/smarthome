@@ -2,20 +2,22 @@ package com.ihome.smarthome.module.base;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
+import androidx.annotation.RequiresApi;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.erongdu.wireless.tools.log.MyLog;
@@ -34,11 +36,13 @@ import com.github.rubensousa.floatingtoolbar.FloatingToolbarMenuBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ihome.base.base.BaseActivity;
 import com.ihome.base.utils.ScenceUtils;
-import com.ihome.base.utils.SystemTTSUtils;
+import com.ihome.smarthome.utils.SystemTTSUtils;
 import com.ihome.smarthome.R;
+import com.ihome.smarthome.applockscreen.service.LockScreenService;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
-import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
 import com.ihome.smarthome.receiver.BluetoothMonitorReceiver;
+import com.ihome.smarthome.service.AlarmService;
+import com.ihome.smarthome.service.BluetoothService;
 import com.ihome.smarthome.service.FloatingService;
 import com.ihome.smarthome.utils.EventBusUtils;
 import com.ihome.smarthome.utils.SpanUtils;
@@ -46,7 +50,7 @@ import com.ihome.smarthome.utils.SpanUtils;
 
 public class LoginActivity extends BaseActivity implements ICommunicate.onMessageLisenter {
 
-    private MyBluetoothManager communicateDevice;
+    //private MyBluetoothManager communicateDevice;
     final int PERMISSION_REQUEST_COARSE_LOCATION = 1001;
     private FloatingToolbar mFloatingToolbar;
     private HomeKeyEventBroadCastReceiver homeReceiver;
@@ -74,24 +78,106 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
     }
 
 
+    BluetoothService bluetoothService;
 
-    @Override
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            bluetoothService = ((BluetoothService.MyBinder) service).getService();
+            bluetoothService.startService(LoginActivity.this);
+            bluetoothService.getCommunicateDevice().connect("cooker");
+            EventBusUtils.sendSucessLog("onServiceConnected");
+            setCookerInfo();
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            EventBusUtils.sendSucessLog("onServiceDisconnected");
+        }
+
+        @Override
+        public void onBindingDied(ComponentName name) {
+            EventBusUtils.sendSucessLog("onBindingDied");
+        }
+
+        @Override
+        public void onNullBinding(ComponentName name) {
+            EventBusUtils.sendSucessLog("onNullBinding");
+        }
+    };
+
+    private void bindService(){
+        Intent intent = new Intent(this,BluetoothService.class);
+        bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
+    }
+
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
     protected void bindView() {
         MyLog.e("bindView");
         setContentView(R.layout.activity_login1);
-        setOnclickListener();
-        initFloatBar();
-        requestPermission();
-        initCommunicateDevice();
-        registerHomeKeyReceiver();
-        registerMonitorReceiver();
-        setCookerInfo();
-        SystemTTSUtils.getInstance(this) ;
-        connect();
         startFloatingService();
 
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                init();
+            }
+        },2000);
+
     }
+
+
+    private void init(){
+        checkBatteryOptimizations();
+        setOnclickListener();
+        initFloatBar();
+        requestPermission();
+        registerHomeKeyReceiver();
+        registerMonitorReceiver();
+        SystemTTSUtils.getInstance(this) ;
+        bindService();
+        AlarmService.startService(this);
+        startService(new Intent(LoginActivity.this, LockScreenService.class));
+    }
+
+
+    private void  checkBatteryOptimizations(){
+        if(isIgnoringBatteryOptimizations()){
+            ToastUtil.toast("已在白名单中");
+        }else{
+            ToastUtil.toast("申请加入白名单");
+            requestIgnoreBatteryOptimizations();
+        }
+    }
+
+
+    public void requestIgnoreBatteryOptimizations() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isIgnoringBatteryOptimizations() {
+        boolean isIgnoring = false;
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (powerManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                isIgnoring = powerManager.isIgnoringBatteryOptimizations(getPackageName());
+            }
+        }
+        return isIgnoring;
+    }
+
+
+
+
 
 
     private void setOnclickListener(){
@@ -99,12 +185,12 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
         cvCooker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (communicateDevice.isConnected("cooker")) {
+                if (bluetoothService.getCommunicateDevice().isConnected("cooker")) {
                     ActivityManager.startActivity(BoilerActivity.class);
                     return;
                 }
                 ScenceUtils.showCutscence(LoginActivity.this, "正在连接蓝牙设备...");
-                communicateDevice.connect("cooker");
+                bluetoothService.getCommunicateDevice().connect("cooker");
             }
         });
     }
@@ -128,13 +214,10 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
     }
 
 
-    private void connect(){
-        communicateDevice.connect("cooker");
-    }
-
 
     private void setCookerInfo(){
-        setCookerConnectState(false);
+       boolean isConnect =   bluetoothService.getCommunicateDevice().isConnected("cooker");
+        setCookerConnectState(isConnect);
     }
 
 
@@ -180,25 +263,6 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
         FloatingService.startService(this);
     }
 
- /*   @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-                Toast.makeText(this, "授权失败", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "授权成功", Toast.LENGTH_SHORT).show();
-                if (!isStart)
-                    startService(new Intent(LoginActivity.this, FloatingService.class));
-            }
-        }
-    }
-
-*/
-
-
-
-
 
 
     private void initFloatBar() {
@@ -208,7 +272,9 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
             @Override
             public void onItemClick(MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.action_unread: communicateDevice.startScan();break;
+                    case R.id.action_unread:
+                        bluetoothService.getCommunicateDevice().registerDiscoveryReceiver(LoginActivity.this);
+                        bluetoothService.getCommunicateDevice().startScan();break;
                     case R.id.action_copy: startFloatingService();break;
                 }
             }
@@ -249,12 +315,6 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
                 .build());
     }
 
-
-    private void initCommunicateDevice() {
-        communicateDevice = MyBluetoothManager.Instance(this);
-        communicateDevice.startBluetoothServer();
-        communicateDevice.setOnMessageLisenter(this);
-    }
 
 
     @Override
@@ -307,12 +367,7 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
     }
 
 
-    public void onClickLogin(View view) {
-        if (communicateDevice == null || !communicateDevice.isConnected("")) {
-            ToastUtils.showShort("通信未连接");
-            return;
-        }
-    }
+
 
 
     @Override
@@ -320,9 +375,10 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
         super.onDestroy();
         unregisterReceiver(homeReceiver);
         unregisterReceiver(this.bleListenerReceiver);
-        communicateDevice.destroy();
 
+        unbindService(serviceConnection);
         MyLog.e("onDestroy");
+        bluetoothService.getCommunicateDevice().unRegisterDiscoveryReceiver(this);
 
 
     }
@@ -334,7 +390,7 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        communicateDevice.onActivityResult(requestCode, resultCode, data);
+       // bluetoothService.getCommunicateDevice().onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
                 Toast.makeText(this, "授权失败", Toast.LENGTH_SHORT).show();
@@ -352,7 +408,7 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
             case PERMISSION_REQUEST_COARSE_LOCATION:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // TODO request success
-                    communicateDevice.startScan();
+
                 }
                 break;
 

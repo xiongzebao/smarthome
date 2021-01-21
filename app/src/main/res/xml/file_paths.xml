@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <paths>
-        <root-path
-            name="camera_photos"
-            path="" />
+         
+        <external-path
+            name="files_root"
+            path="Android/data/com.ihome.smarthome/" />
 
-        <files-path path="Android/data/com.qd768626281.ybs/files/" name="qdrl" />
+        <external-path
+            name="external_storage_root"
+            path="." />
+
+
+        <files-path
+            name="qdrl"
+            path="Android/data/com.ihome.smarthome/files/" />
+        <external-path
+            name="external_files"
+            path="." />
+        <external-files-path
+            name="images"
+            path="files/qdrl" />
+        <root-path
+            name="name"
+            path="" />
+        <files-path path="Android/data/com.ihome.smarthome/files/" name="qdrl" />
         <external-path name="external_files" path="."/>
         <external-files-path path="files/qdrl" name="images"/>
         <root-path name="name" path="" />
