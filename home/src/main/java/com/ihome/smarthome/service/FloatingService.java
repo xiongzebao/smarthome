@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -68,6 +69,18 @@ public class FloatingService extends Service {
 
     int minHeight = 200;
     public  static boolean isStart = false;
+
+
+
+    public class MyBinder extends Binder {
+        public FloatingService getService(){
+            return FloatingService.this;
+        }
+    }
+
+    private FloatingService.MyBinder mBinder = new FloatingService.MyBinder();
+
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
@@ -178,19 +191,25 @@ public class FloatingService extends Service {
         Notification notification = createForegroundNotification();
         //将服务置于启动状态 ,NOTIFICATION_ID指的是创建的通知的ID
         startForeground(2, notification);
+        MyLog.e(" FloatingService Create");
+
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         rootView.setVisibility(View.VISIBLE);
-        MyLog.e("onStartCommand");
+        MyLog.e("FloatingService onStartCommand");
         return START_STICKY;
+    }
 
+
+    public void setRootViewVisible(){
+        rootView.setVisibility(View.VISIBLE);
     }
 
 
@@ -272,7 +291,6 @@ public class FloatingService extends Service {
        WindowManager.LayoutParams params = (WindowManager.LayoutParams) rootView.getLayoutParams();
         params.height=100;
         rootView.setLayoutParams(params);
-
     }
 
     private void setDragBtnText() {

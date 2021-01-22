@@ -27,6 +27,7 @@ import com.ihome.base.utils.DialogUtils;
 import com.ihome.base.utils.TTS;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,13 +59,12 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
 
     public  static    void installiFlyEngin(Context context){
         if(!PackageUtils.isAppInstalled(context,"com.iflytek.speechcloud")){
-            EventBusUtils.sendSucessLog("未安装讯飞引擎已安装");
+            EventBusUtils.sendFailLog("未安装讯飞引擎");
             DialogUtils.showDialog(context,"您未安装讯飞语音引擎，请安装讯飞语音引擎",new SweetAlertDialog.OnSweetClickListener(){
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                     // File file=  AssetsUtils.getFileFromAssetsFile(context, "ifly_engine.mp3");
-                    //  installApk(context);
-                   // openApk(copyAssetsFile(context,"ifly_engine.mp3",isExistDir("apkpath")),context);
+                    Uri uri = copyAssetsFile(context,"ifly_engine.mp3",isExistDir("bigstage"));
+                    openApk(uri,context);
 
                 }
             });
@@ -76,7 +76,7 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
     private static void installApk(Context context ){
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri apkUri = copyAssetsFile(context,"ifly_engine.mp3",isExistDir("apkpath"));
+        Uri apkUri = copyAssetsFile(context,"ifly_engine.mp3",isExistDir("bigstage"));
 
         if (Build.VERSION.SDK_INT >= 24) { //判读版本是否在7.0以上
             //参数1 上下文, 参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
@@ -92,6 +92,8 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
         }
         context.startActivity(intent);
     }
+
+
     public static void openApk(Uri uri, Context context) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
@@ -115,7 +117,7 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
                     downloadFile.createNewFile();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    MyLog.e("createNewFile failed");
+                    MyLog.e("isExistDir createNewFile failed");
                 }
             }
             String savePath = downloadFile.getAbsolutePath();
@@ -129,25 +131,67 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
 
 
     public static Uri copyAssetsFile(Context context, String fileName, String path) {
+
+        InputStream mInputStream = null;
         try {
-            InputStream mInputStream = context.getAssets().open(fileName);
-            File file = new File(path);
+            mInputStream = context.getAssets().open(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            MyLog.e("context.getAssets().open failed:"+e.getMessage());
+        }
+        File file = new File(path);
             if (!file.exists()) {
                 file.mkdir();
             }
             File mFile = new File(path + File.separator + "test.apk");
-            if (!mFile.exists())
-                mFile.createNewFile();
-            MyLog.e("开始拷贝");
-            FileOutputStream mFileOutputStream = new FileOutputStream(mFile);
-            byte[] mbyte = new byte[1024];
-            int i = 0;
-            while ((i = mInputStream.read(mbyte)) > 0) {
-                mFileOutputStream.write(mbyte, 0, i);
+            if (!mFile.exists()) {
+                try {
+                    mFile.createNewFile();
+                } catch (IOException e) {
+                     MyLog.e("createNewFile failed:"+e.getMessage());
+                }
             }
+            MyLog.e("开始拷贝");
+        FileOutputStream mFileOutputStream = null;
+        try {
+            mFileOutputStream = new FileOutputStream(mFile);
+        } catch (FileNotFoundException e) {
+            ToastUtil.toast("new FileOutputStream failed:"+e.getMessage());
+            MyLog.e("new FileOutputStream failed:"+e.getMessage());
+        }
+        byte[] mbyte = new byte[1024];
+            int i = 0;
+            while (true) {
+                try {
+                    if (!((i = mInputStream.read(mbyte)) > 0)) break;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    ToastUtil.toast(" mInputStream.read failed:"+e.getMessage());
+                    MyLog.e(" mInputStream.read failed:"+e.getMessage());
+                }
+                try {
+                    mFileOutputStream.write(mbyte, 0, i);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    ToastUtil.toast("mFileOutputStream.write failed:"+e.getMessage());
+                    MyLog.e(" mFileOutputStream.write failed:"+e.getMessage());
+                }
+            }
+        try {
             mInputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            ToastUtil.toast(" mInputStream.close failed:"+e.getMessage());
+            MyLog.e(" mInputStream.close failed:"+e.getMessage());
+        }
+        try {
             mFileOutputStream.close();
-            Uri uri = null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            ToastUtil.toast(" mInputStream.close failed:"+e.getMessage());
+            MyLog.e(" mInputStream.close failed:"+e.getMessage());
+        }
+        Uri uri = null;
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     //包名.fileprovider
@@ -161,13 +205,7 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
             MediaScannerConnection.scanFile(context, new String[]{mFile.getAbsolutePath()}, null, null);
             MyLog.e( "拷贝完毕：" + uri);
             return uri;
-        } catch (IOException e) {
-            e.printStackTrace();
-            MyLog.e( fileName + "not exists" + "or write err");
-            return null;
-        } catch (Exception e) {
-            return null;
-        }
+
     }
 
 
