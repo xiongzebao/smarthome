@@ -37,6 +37,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ihome.base.base.BaseActivity;
 import com.ihome.base.utils.DialogUtils;
 import com.ihome.base.utils.ScenceUtils;
+import com.ihome.base.utils.SystemTTS;
 import com.ihome.smarthome.applockscreen.service.LockScreenService;
 import com.ihome.smarthome.service.AlarmService;
 import com.ihome.smarthome.utils.SystemTTSUtils;
@@ -164,6 +165,8 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
 
         startFloatingService();
 
+
+
        /* if (!isHasNeededPermission()) {
             requestPermission();
             return;
@@ -231,6 +234,7 @@ public class LoginActivity extends BaseActivity implements ICommunicate.onMessag
         cvCooker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ActivityManager.startActivity(BoilerActivity.class);
                 if (bluetoothService.getCommunicateDevice().isConnected("cooker")) {
                     ActivityManager.startActivity(BoilerActivity.class);
                     return;

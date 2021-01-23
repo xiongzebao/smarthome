@@ -15,6 +15,7 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.JsonUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.ihome.base.base.BaseActivity;
 import com.ihome.base.utils.RecyclerViewUtils;
@@ -50,7 +51,6 @@ public class BoilerActivity extends BaseActivity {
         recyclerView = findViewById(R.id.recycler_view);
         RecyclerViewUtils.setVerticalLayout(this ,recyclerView);
 
-
         eventAdapter = new EventAdapter(R.layout.layout_event_item,data);
          btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +59,8 @@ public class BoilerActivity extends BaseActivity {
                  listBase.result_data = data;
                 String JsonStr = GsonUtils.toJson(listBase);
                 ToastUtil.toast(JsonStr);
-                MyBluetoothManager.Instance(BoilerActivity.this).sendMessage("cooker",JsonStr);
+                MyLog.e(JsonStr+"@");
+                MyBluetoothManager.Instance(BoilerActivity.this).sendMessage("cooker",JsonStr+"@");
             }
         });
         recyclerView.setAdapter(eventAdapter);

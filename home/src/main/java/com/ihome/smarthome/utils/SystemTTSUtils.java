@@ -21,6 +21,7 @@ import android.util.Log;
 import androidx.core.content.FileProvider;
 
 import com.erongdu.wireless.tools.log.MyLog;
+import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.PackageUtils;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.ihome.base.utils.DialogUtils;
@@ -45,7 +46,11 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
     private TextToSpeech textToSpeech; // 系统语音播报类
     private boolean isSuccess = true;
 
+
+    
     public static SystemTTSUtils getInstance(Context context) {
+
+
         if (singleton == null) {
             installiFlyEngin(context);
             synchronized (SystemTTSUtils.class) {
