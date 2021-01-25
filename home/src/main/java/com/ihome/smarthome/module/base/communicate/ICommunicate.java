@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 public interface ICommunicate {
 
-    interface onMessageLisenter{
+    interface onMessageListener {
 
         String BT_ACCEPTED = "BT_ACCEPTED";
         String BT_DISCONNECT = "BT_DISCONNECT";
@@ -21,10 +21,9 @@ public interface ICommunicate {
     }
     void connect(String name);
     void disConnect(String name);
-    void destroy( );
     boolean isConnected(String name);
     void sendMessage(String name,String msg);
-    void setOnMessageLisenter(onMessageLisenter onMessageLisenter);
+    void setOnMessageLisenter(String name,onMessageListener onMessageListener);
     void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
 
 

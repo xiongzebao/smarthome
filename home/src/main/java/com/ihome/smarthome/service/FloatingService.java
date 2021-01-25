@@ -85,7 +85,7 @@ public class FloatingService extends Service {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
 
-        switch (event.getAction()) {
+        switch (event.getDeviceType()) {
             case MessageEvent.LOG_DEBUG:
                 append(event.getMsg(), Color.BLUE);
                // insertShowLog(MessageEvent.LOG_DEBUG,event.getMsg());

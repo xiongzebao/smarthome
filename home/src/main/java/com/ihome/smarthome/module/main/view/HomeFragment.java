@@ -125,6 +125,8 @@ public class HomeFragment extends BaseFragment {
 
     private void parseData(HomeStaticBean bean){
         dataFragment.setListDatas(getLists(bean.getChannelDateList()));
+
+
         binding.tv.setText(bean.getTomorrowPlanReceptionNum());
         binding.tv0.setText(bean.getToDayPlanReceptionNum());
         binding.tv1.setText(bean.getTodayReceptionNum());

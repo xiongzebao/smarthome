@@ -29,7 +29,6 @@ public class ScenceUtils {
     }
 
    static public void closeCutScence(Context context){
-
         if(scenesMap.containsKey(context)){
             CutscenesProgress cutscenesProgress= scenesMap.get(context);
             cutscenesProgress.dismiss();

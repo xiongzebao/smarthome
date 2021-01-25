@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.ihome.smarthome.module.base.Constants;
-import com.ihome.smarthome.module.base.MessageEvent;
 
 
 import java.net.URISyntaxException;
@@ -26,7 +25,7 @@ public class MySocketManager implements ICommunicate{
     private boolean isConnected = false;
     private Socket mSocket;
     private Map<String, Emitter.Listener> listers = new HashMap<>();
-    private onMessageLisenter listener =null;
+    private onMessageListener listener =null;
     private Context context;
 
 
@@ -83,7 +82,7 @@ public class MySocketManager implements ICommunicate{
                         "控制端连接成功:" + Constants.getUserName(), Constants.EVENT_CONNECTED).toJson());*/
 
                 isConnected = true;
-                listener.onConnect("服务器连接成功",onMessageLisenter.SERVER_CONNECTED);
+                listener.onConnect("服务器连接成功", onMessageListener.SERVER_CONNECTED);
             }
         }
     };
@@ -124,12 +123,14 @@ public class MySocketManager implements ICommunicate{
         }
     }
 
+/*
     @Override
     public void destroy() {
         disConnect( "");
         listener =null;
         mSocket.close();
     }
+*/
 
 
     @Override
@@ -142,6 +143,11 @@ public class MySocketManager implements ICommunicate{
 
     }
 
+    @Override
+    public void setOnMessageLisenter(String name, onMessageListener onMessageListener) {
+
+    }
+
 
     public void sendMessage(String message) {
         if (!mSocket.connected()) {
@@ -151,10 +157,10 @@ public class MySocketManager implements ICommunicate{
         mSocket.emit(Constants.EVENT_MSG, message);
     }
 
-    @Override
-    public void setOnMessageLisenter(onMessageLisenter onMessageLisenter) {
-        this.listener = onMessageLisenter;
-    }
+/*    @Override
+    public void setOnMessageLisenter(onMessageListener onMessageListener) {
+        this.listener = onMessageListener;
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

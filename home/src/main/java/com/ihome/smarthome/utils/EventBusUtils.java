@@ -23,4 +23,8 @@ public class EventBusUtils {
         EventBus.getDefault().post(new MessageEvent(MessageEvent.LOG_SUCCESS,msg));
     }
 
+    public static void sendMessage(String name,String msg){
+        EventBus.getDefault().post(new MessageEvent(name,msg));
+    }
+
 }

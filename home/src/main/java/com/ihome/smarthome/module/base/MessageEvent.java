@@ -1,6 +1,5 @@
 package com.ihome.smarthome.module.base;
 
-import com.blankj.utilcode.util.CacheDiskStaticUtils;
 import com.blankj.utilcode.util.GsonUtils;
 
 import java.io.Serializable;
@@ -12,55 +11,30 @@ public class MessageEvent implements Serializable {
     final public static int LOG_FAILED=2;
     final public static int LOG_SUCCESS=3;
 
-    private String role= CacheDiskStaticUtils.getString(Constants.SP_USERNAME);
-    private boolean success=true;
-    private String code;
+    private String name;
     private String msg;
-    private int action;
-    private String recv="pi";
+    private int deviceType;
 
-    public MessageEvent( int action) {
 
-        this.action = action;
-    }
-
-    public MessageEvent( int action,String msg) {
+    public MessageEvent( String name,String msg) {
         this.msg = msg;
-        this.action = action;
+         this.name = name;
     }
 
-
-
-    public int getAction() {
-        return action;
+    public int getDeviceType() {
+        return deviceType;
     }
 
-    public void setAction(int action) {
-        this.action = action;
+    public void setDeviceType(int deviceType) {
+        this.deviceType = deviceType;
     }
 
-    public String getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getMsg() {

@@ -1,26 +1,23 @@
 package com.ihome.smarthome.service;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Binder;
-import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
-import com.ihome.smarthome.R;
-import com.ihome.smarthome.module.base.LoginActivity;
+import com.erongdu.wireless.tools.log.MyLog;
+import com.ihome.smarthome.module.base.MessageEvent;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
 import com.ihome.smarthome.utils.NoticeUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * @author xiongbin
@@ -33,20 +30,10 @@ public class BluetoothService extends Service {
     private boolean isAlive = false;
     private MyBluetoothManager communicateDevice;
 
-
-    private ICommunicate.onMessageLisenter lisenter;
-
-    public ICommunicate.onMessageLisenter getLisenter() {
-        return lisenter;
-    }
-
    public MyBluetoothManager getCommunicateDevice(){
         return communicateDevice;
    }
 
-    public void setLisenter(ICommunicate.onMessageLisenter lisenter) {
-        this.lisenter = lisenter;
-    }
 
     public class MyBinder extends Binder {
         public BluetoothService getService(){
@@ -67,6 +54,14 @@ public class BluetoothService extends Service {
                 );
         //将服务置于启动状态 ,NOTIFICATION_ID指的是创建的通知的ID
         startForeground(2, notification);
+        EventBus.getDefault().register(this);
+    }
+
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        MyLog.e("BluetoothService :"+event.getName()+":"+event.getMsg());
     }
 
 
@@ -81,24 +76,24 @@ public class BluetoothService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+
         return START_STICKY;
     }
 
 
-    public void startService(ICommunicate.onMessageLisenter lisenter){
-
+    public void startBluetoothService(){
         if(isAlive){
             return;
         }
-        this.lisenter = lisenter;
         initCommunicateDevice();
         isAlive = true;
-
     }
+
+
     private void initCommunicateDevice() {
         communicateDevice = MyBluetoothManager.Instance(this);
         communicateDevice.startBluetoothServer();
-        communicateDevice.setOnMessageLisenter(lisenter);
     }
 
 
@@ -118,13 +113,11 @@ public class BluetoothService extends Service {
 
 
 
-
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         isAlive = false;
-      //  communicateDevice.destroy();
+        EventBus.getDefault().unregister(this);
+       // communicateDevice.destroy();
     }
 }

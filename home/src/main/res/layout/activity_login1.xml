@@ -10,76 +10,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-        <LinearLayout
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_cooker"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_margin="10dp"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="10dp"
-                app:contentPadding="16dp">
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:id="@+id/tv_name"
-                        android:text="蓝牙名称:cooker"
-                        android:layout_alignParentLeft="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                    <TextView
-                        android:id="@+id/tv_status"
-                        android:layout_alignParentLeft="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
 
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
-        <LinearLayout
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        <EditText
-                android:id="@+id/username_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified"
-                android:inputType="textPersonName"
-                android:maxLength="14"
-                android:maxLines="1"
-                android:text="@={user.username}"
-                android:singleLine="true"/>
-        <EditText
-            android:id="@+id/pwd_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeActionLabel="@string/action_sign_in_short"
-            android:imeOptions="actionUnspecified"
-            android:inputType="textPassword"
-            android:maxLength="14"
-            android:maxLines="1"
-            android:text="@{user.password}"
-            android:singleLine="true"/>
-        <Button
-                android:id="@+id/sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
-                android:onClick="onClickLogin"
-                android:textStyle="bold"/>
-        </LinearLayout>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 

@@ -1,7 +1,6 @@
 package com.ihome.smarthome.module.base.communicate;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -34,14 +33,18 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.ihome.smarthome.R;
+import com.ihome.smarthome.module.base.MessageEvent;
 import com.ihome.smarthome.utils.ClsUtils;
 import com.ihome.smarthome.utils.EventBusUtils;
 
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,84 +72,15 @@ public class MyBluetoothManager implements ICommunicate {
     boolean mScanning;
     private BluetoothLeScanner mBluetoothLeScanner;
     private ScanCallback mScanCallback;
-    private Handler mHandler;
     boolean isRegisterDiscoveryReceiver = false;
     private AlertListView.MyAdapter mAdapter = new AlertListView.MyAdapter();
 
     private int times=0;
     HashMap<String  , Timer> retryTimer = new HashMap<>();
 
-
     HashMap<String, ConnectedThread> connectedBTThreads = new HashMap<>();
-    AcceptThread acceptThread;
-    @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle bundle = msg.getData();
-            switch (msg.what) {
-
-                case ON_CONNECTED:
-                    if (bundle == null) {
-                        return;
-                    }
-                    String name = bundle.getString("name");
-                    String type = bundle.getString("type");
-                    lisenter.onConnect(name, type);
-                    break;
-                case ON_DISCONNECTED:
-                    if (bundle == null) {
-                        return;
-                    }
-                    lisenter.onDisConnect(bundle.getString("name"), "蓝牙断开连接");
-                    break;
-                case ON_CONNECT_FAILED:
-                    if (bundle == null) {
-                        return;
-                    }
-                    lisenter.onConnectFailed(bundle.getString("name"), "蓝牙未开启或不在通信范围，连接失败");
-                    break;
-
-                case MESSAGE_READ:
-
-                    if (bundle == null) {
-                        return;
-                    }
-                    String client_name = "";
-                    String content = "";
-                    if (!TextUtils.isEmpty(bundle.getString("name"))) {
-                        client_name = String.valueOf(bundle.getString("name"));
-                    }
-                    String str_content = bundle.getString("str_content");
-                    if (str_content != null) {
-                        if (str_content != null && str_content.length() != 0) {
-                            lisenter.onMessage(client_name, str_content);
-                        }
-                    }
-                    break;
-                case MESSAGE_FOUND_DEVICE:
-                    BluetoothDevice device = (BluetoothDevice) msg.obj;
-                    if (alertListView == null) {
-                        alertListView = new AlertListView(ActivityManager.peek(), devices, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                ToastUtils.showShort(devices.get(which).getName());
-                            }
-                        });
-                        alertListView.show();
-                    }
-                    if (device.getName() != null) {
-                        devices.add(device);
-                        alertListView.notifyDataSetChanged();
-                    }
-                    break;
-            }
-        }
-    };
-
-
+    AcceptThread serverAcceptThread;
+    HashMap<String, onMessageListener> listenerHashMap = new HashMap<>();
     String str_uuid = "00001101-0000-1000-8000-00805F9B34FB";
     public String NAME = "ai_car_android";
     public UUID MY_UUID = UUID.fromString(str_uuid);
@@ -162,8 +96,116 @@ public class MyBluetoothManager implements ICommunicate {
 
     private AlertListView alertListView;
     private ArrayList<BluetoothDevice> devices = new ArrayList<>();
-    public onMessageLisenter lisenter;
+
     private Context context;
+
+
+
+    private void onConnect(Bundle bundle){
+        if (bundle == null) {
+            return;
+        }
+        String name = bundle.getString("name");
+        String type = bundle.getString("type");
+        if(name==null||type==null){
+            return;
+        }
+         ICommunicate.onMessageListener  listener = listenerHashMap.get(name);
+        if(listener!=null){
+            listener.onConnect(name, type);;
+        }
+    }
+
+
+    private void onDisConnect(Bundle bundle){
+        if (bundle == null||bundle.getString("name")==null) {
+            return;
+        }
+        String name = bundle.getString("name");
+        ICommunicate.onMessageListener  listener = listenerHashMap.get(name);
+        if(listener!=null){
+            listener.onDisConnect(name, "蓝牙断开连接");
+        }
+    }
+
+
+    private void onConnectFailed(Bundle bundle){
+        if (bundle == null||bundle.getString("name")==null) {
+            return;
+        }
+        String name = bundle.getString("name");
+        ICommunicate.onMessageListener  listener = listenerHashMap.get(name);
+        if(listener!=null){
+            listener.onConnectFailed(name, "蓝牙未开启或不在通信范围，连接失败");
+        }
+
+    }
+
+    private void onMessageRead(Bundle bundle){
+        if (bundle == null) {
+            return;
+        }
+        String name = "";
+        if (TextUtils.isEmpty(bundle.getString("name"))) {
+          return;
+        }
+        name = String.valueOf(bundle.getString("name"));
+        String str_content = bundle.getString("str_content");
+        if (str_content != null) {
+            if (str_content != null && str_content.length() != 0) {
+                ICommunicate.onMessageListener  listener = listenerHashMap.get(name);
+                if(listener!=null){
+                    listener.onMessage(name, str_content);
+                }
+            }
+        }
+    }
+
+
+    private void onMessageFoundDevice(Message msg){
+        BluetoothDevice device = (BluetoothDevice) msg.obj;
+        if (alertListView == null) {
+            alertListView = new AlertListView(ActivityManager.peek(), devices, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    ToastUtils.showShort(devices.get(which).getName());
+                }
+            });
+            alertListView.show();
+        }
+        if (device.getName() != null) {
+            devices.add(device);
+            alertListView.notifyDataSetChanged();
+        }
+    }
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            switch (msg.what) {
+                case ON_CONNECTED:
+                    onConnect(bundle);
+                    break;
+                case ON_DISCONNECTED:
+                    onDisConnect(bundle);
+                    break;
+                case ON_CONNECT_FAILED:
+                   onConnectFailed(bundle);
+                    break;
+                case MESSAGE_READ:
+                    onMessageRead(bundle);
+                    break;
+                case MESSAGE_FOUND_DEVICE:
+                    onMessageFoundDevice(msg);
+                    break;
+            }
+        }
+    };
+
+
 
 
     public static MyBluetoothManager Instance(Context context) {
@@ -271,7 +313,7 @@ public class MyBluetoothManager implements ICommunicate {
        sendEventMessage(ON_DISCONNECTED,name);
     }
 
-    @Override
+
     public void destroy() {
 
         if (mBluetoothAdapter.isDiscovering()) {
@@ -303,8 +345,11 @@ public class MyBluetoothManager implements ICommunicate {
     }
 
     @Override
-    public void setOnMessageLisenter(onMessageLisenter onMessageLisenter) {
-        this.lisenter = onMessageLisenter;
+    public void setOnMessageLisenter(String name,onMessageListener onMessageListener) {
+        if(onMessageListener!=null&&name!=null&&name.trim().length()!=0)
+        {
+            listenerHashMap.put(name,onMessageListener);
+        }
     }
 
 
@@ -717,13 +762,13 @@ public class MyBluetoothManager implements ICommunicate {
             ToastUtils.showShort("蓝牙不可用");
             return;
         }
-        if (acceptThread == null) {
-            acceptThread = new AcceptThread();
+        if (serverAcceptThread == null) {
+            serverAcceptThread = new AcceptThread();
         }
-        if (acceptThread.isInterrupted() || acceptThread.isAlive()) {
+        if (serverAcceptThread.isInterrupted() || serverAcceptThread.isAlive()) {
             return;
         }
-        acceptThread.start();
+        serverAcceptThread.start();
     }
 
     public void setDiscoverableTimeout() {
@@ -803,7 +848,7 @@ public class MyBluetoothManager implements ICommunicate {
                     Bundle bundle = new Bundle();
                     msg.what = ON_CONNECTED;
                     bundle.putString("name", socket.getRemoteDevice().getName());
-                    bundle.putString("type", onMessageLisenter.BT_CONNECTED);
+                    bundle.putString("type", onMessageListener.BT_CONNECTED);
                     handler.sendMessage(msg);
                     manageConnectedSocket(socket);
                     try {
@@ -865,7 +910,7 @@ public class MyBluetoothManager implements ICommunicate {
                 msg.what = ON_CONNECTED;
                 Bundle bundle = new Bundle();
                 bundle.putString("name", mmDevice.getName());
-                bundle.putString("type", onMessageLisenter.BT_CONNECTED);
+                bundle.putString("type", onMessageListener.BT_CONNECTED);
                 msg.setData(bundle);
                 MyLog.e("name->" + mmDevice.getName() + "连接成功");
                 handler.sendMessage(msg);
@@ -883,6 +928,15 @@ public class MyBluetoothManager implements ICommunicate {
             // Do work to manage the connection (in a separate thread)
             manageConnectedSocket(mmSocket);
         }
+    }
+
+
+
+
+
+    public void postMessageEvent(String json){
+      MessageEvent event =  GsonUtils.fromJson(json,MessageEvent.class);
+      EventBus.getDefault().post(event);
     }
 
 
@@ -975,6 +1029,9 @@ public class MyBluetoothManager implements ICommunicate {
             }
             EventBusUtils.sendFailLog(mmSocket.getRemoteDevice().getName() + "读消息线程结束");
         }
+
+
+
 
 
         private byte[] getValidBytes(byte[] bytes, int num) {

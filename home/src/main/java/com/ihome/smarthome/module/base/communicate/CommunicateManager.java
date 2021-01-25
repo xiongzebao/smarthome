@@ -17,10 +17,7 @@ public class CommunicateManager implements ICommunicate {
 
     }
 
-    @Override
-    public void destroy() {
 
-    }
 
     @Override
     public boolean isConnected(String name) {
@@ -33,9 +30,11 @@ public class CommunicateManager implements ICommunicate {
     }
 
     @Override
-    public void setOnMessageLisenter(onMessageLisenter onMessageLisenter) {
+    public void setOnMessageLisenter(String name, onMessageListener onMessageListener) {
 
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
