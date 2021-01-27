@@ -1,5 +1,6 @@
 package com.ihome.smarthome.applockscreen.service;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,6 +8,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.IBinder;
 import android.widget.Toast;
 
@@ -17,6 +19,7 @@ import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.applockscreen.activity.DetailActivity;
 import com.ihome.smarthome.applockscreen.receiver.LockScreenReceiver;
+import com.ihome.smarthome.service.BluetoothService;
 import com.ihome.smarthome.utils.NoticeUtils;
 
 
@@ -64,5 +67,14 @@ public class LockScreenService extends Service {
             mReceiver = null;
         }
         super.onDestroy();
+    }
+
+
+    public static void startService(Activity activity){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            activity.startForegroundService(new Intent( activity, LockScreenService.class));
+        }else{
+            activity.startService(new Intent( activity, LockScreenService.class));
+        }
     }
 }

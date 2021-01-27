@@ -24,20 +24,6 @@ public class CommunicateManager implements ICommunicate {
         return false;
     }
 
-    @Override
-    public void sendMessage(String name, String msg) {
-
-    }
-
-    @Override
-    public void setOnMessageLisenter(String name, onMessageListener onMessageListener) {
-
-    }
 
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-    }
 }

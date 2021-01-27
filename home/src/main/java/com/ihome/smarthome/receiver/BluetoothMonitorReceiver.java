@@ -42,7 +42,7 @@ public class BluetoothMonitorReceiver extends BroadcastReceiver {
                         case BluetoothAdapter.STATE_ON:
                             Toast.makeText(context,"蓝牙已经打开",Toast.LENGTH_SHORT).show();
                             EventBusUtils.sendDeBugLog("蓝牙已经打开");
-                            MyBluetoothManager.Instance(context).connectCurrentBT();
+                            MyBluetoothManager.getInstance().connectCurrentBT();
                             break;
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             Toast.makeText(context,"蓝牙正在关闭",Toast.LENGTH_SHORT).show();
@@ -65,7 +65,7 @@ public class BluetoothMonitorReceiver extends BroadcastReceiver {
                     BluetoothDevice conDevice1 = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     String tip1 = conDevice1.getName()+"蓝牙设备已断开";
                     EventBusUtils.sendFailLog(tip1);
-                    MyBluetoothManager.Instance(context).disConnect(conDevice1.getName());
+                    MyBluetoothManager.getInstance().disConnect(conDevice1.getName());
 
                     break;
             }

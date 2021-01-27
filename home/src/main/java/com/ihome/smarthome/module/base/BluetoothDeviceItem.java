@@ -8,6 +8,16 @@ package com.ihome.smarthome.module.base;
 
 public class BluetoothDeviceItem  extends DeviceItem{
 
+    private String btName;
+
+    public String getBtName() {
+        return btName;
+    }
+
+    public void setBtName(String btName) {
+        this.btName = btName;
+    }
+
     public BluetoothDeviceItem(String name, int deviceType, String deviceId) {
         super(name, deviceType, deviceId);
     }
@@ -15,4 +25,6 @@ public class BluetoothDeviceItem  extends DeviceItem{
     public BluetoothDeviceItem(String name, int deviceType) {
         super(name, deviceType);
     }
+
+
 }

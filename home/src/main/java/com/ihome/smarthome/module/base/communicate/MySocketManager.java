@@ -1,3 +1,4 @@
+/*
 package com.ihome.smarthome.module.base.communicate;
 
 import android.content.Context;
@@ -78,8 +79,10 @@ public class MySocketManager implements ICommunicate{
 
             Log.e("xiong", "onConnect");
             if (!isConnected) {
-        /*        mSocket.emit(Constants.EVENT_CONNECTED, new MessageEvent("" +
-                        "控制端连接成功:" + Constants.getUserName(), Constants.EVENT_CONNECTED).toJson());*/
+        */
+/*        mSocket.emit(Constants.EVENT_CONNECTED, new MessageEvent("" +
+                        "控制端连接成功:" + Constants.getUserName(), Constants.EVENT_CONNECTED).toJson());*//*
+
 
                 isConnected = true;
                 listener.onConnect("服务器连接成功", onMessageListener.SERVER_CONNECTED);
@@ -123,6 +126,7 @@ public class MySocketManager implements ICommunicate{
         }
     }
 
+*/
 /*
     @Override
     public void destroy() {
@@ -130,7 +134,8 @@ public class MySocketManager implements ICommunicate{
         listener =null;
         mSocket.close();
     }
-*/
+*//*
+
 
 
     @Override
@@ -143,11 +148,6 @@ public class MySocketManager implements ICommunicate{
 
     }
 
-    @Override
-    public void setOnMessageLisenter(String name, onMessageListener onMessageListener) {
-
-    }
-
 
     public void sendMessage(String message) {
         if (!mSocket.connected()) {
@@ -157,14 +157,14 @@ public class MySocketManager implements ICommunicate{
         mSocket.emit(Constants.EVENT_MSG, message);
     }
 
+*/
 /*    @Override
     public void setOnMessageLisenter(onMessageListener onMessageListener) {
         this.listener = onMessageListener;
-    }*/
+    }*//*
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-    }
+
 
 }
+*/

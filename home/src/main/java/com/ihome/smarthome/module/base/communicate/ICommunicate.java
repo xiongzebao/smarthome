@@ -4,27 +4,16 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
+import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
+
 public interface ICommunicate {
 
-    interface onMessageListener {
+    interface  Listener{
+       void onMessage(BaseMessageEvent event);
 
-        String BT_ACCEPTED = "BT_ACCEPTED";
-        String BT_DISCONNECT = "BT_DISCONNECT";
-        String BT_CONNECTED = "BT_CONNECTED";
-        String SERVER_CONNECTED = "SERVER_CONNECTED";
-
-        void onMessage(String name, String msg);
-        void onConnect(String name, String type);
-        void onDisConnect(String name,String o);
-        void onError(String name,String err_msg);
-        void onConnectFailed(String name,String err_msg);
     }
     void connect(String name);
     void disConnect(String name);
     boolean isConnected(String name);
-    void sendMessage(String name,String msg);
-    void setOnMessageLisenter(String name,onMessageListener onMessageListener);
-    void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
-
 
 }

@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.MultipleItemRvAdapter;
 import com.ihome.smarthome.module.adapter.provider.DeviceItemProvider;
+import com.ihome.smarthome.module.base.DeviceConstant;
 import com.ihome.smarthome.module.base.DeviceItem;
 
 import java.util.List;
@@ -19,6 +20,18 @@ public class DeviceListAdapter extends MultipleItemRvAdapter<DeviceItem, BaseVie
 
     public static final int TYPE_DEVICE_BASE = 0;
 
+
+
+     public void refreshItem(String macAddress,int connectState){
+         for (int i=0;  i<getData().size();i++) {
+             DeviceItem item = getData().get(i);
+             item.setConnectStatus(connectState);
+             if(item.getDeviceId().equals(macAddress)){
+                 notifyItemChanged(i);
+                return;
+             }
+         }
+     }
 
     public DeviceListAdapter(@Nullable List<DeviceItem> data) {
         super(data);
@@ -39,7 +52,7 @@ public class DeviceListAdapter extends MultipleItemRvAdapter<DeviceItem, BaseVie
     @Override
     protected int getViewType(DeviceItem message) {
         //返回对应的viewType
-        if (message.getItemType()==DeviceItem.COOKER) {
+        if (message.getItemType()== DeviceConstant.BT_COOKER) {
             return TYPE_DEVICE_BASE;
         }
         return 0;

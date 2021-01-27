@@ -34,8 +34,9 @@ import com.ihome.smarthome.R;
 import com.ihome.smarthome.database.showlog.DbController;
 import com.ihome.smarthome.database.showlog.ShowLog;
 import com.ihome.smarthome.module.base.LogActivity;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.module.base.LoginActivity;
-import com.ihome.smarthome.module.base.MessageEvent;
+import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -54,6 +55,9 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
  */
 
 public class FloatingService extends Service {
+    final public static int SHOW_FLOATING_SERVICE=1;
+    final public static int HIDE_FLOATING_SERVICE=2;
+    final public static int CLOSE_FLOATING_SERVICE=3;
 
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
@@ -82,21 +86,24 @@ public class FloatingService extends Service {
 
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent event) {
 
-        switch (event.getDeviceType()) {
-            case MessageEvent.LOG_DEBUG:
-                append(event.getMsg(), Color.BLUE);
-               // insertShowLog(MessageEvent.LOG_DEBUG,event.getMsg());
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(LogEvent event) {
+
+        switch (event.getType()) {
+            case LogEvent.LOG_DEBUG:
+                append(event.getMessage(), Color.BLUE);
+               // insertShowLog(LogEvent.LOG_DEBUG,event.getMsg());
                 break;
-            case MessageEvent.LOG_FAILED:
-                append(event.getMsg(), Color.RED);
-               // insertShowLog(MessageEvent.LOG_FAILED,event.getMsg());
+            case LogEvent.LOG_FAILED:
+                append(event.getMessage(), Color.RED);
+               // insertShowLog(LogEvent.LOG_FAILED,event.getMsg());
                 break;
-            case MessageEvent.LOG_SUCCESS:
-                append(event.getMsg(), Color.GREEN);
-              //  insertShowLog(MessageEvent.LOG_SUCCESS,event.getMsg());
+            case LogEvent.LOG_SUCCESS:
+                append(event.getMessage(), Color.GREEN);
+              //  insertShowLog(LogEvent.LOG_SUCCESS,event.getMsg());
                 break;
         }
         textView.setText(mBuilder);
@@ -202,9 +209,23 @@ public class FloatingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        rootView.setVisibility(View.VISIBLE);
-        MyLog.e("FloatingService onStartCommand");
+        int command = intent.getIntExtra("command",0);
+        switch (command){
+            case SHOW_FLOATING_SERVICE:setVisibility(true);break;
+            case HIDE_FLOATING_SERVICE:setVisibility(false);break;
+            case CLOSE_FLOATING_SERVICE:stopSelf();break;
+        }
         return START_STICKY;
+    }
+
+    public static void startCommand(Context context,int command){
+       Intent intent =  new Intent( context, FloatingService.class);
+       intent.putExtra("command",command);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        }else{
+            context.startService(intent);
+        }
     }
 
 
@@ -220,6 +241,11 @@ public class FloatingService extends Service {
         DbController.getInstance(this).deleteAll();
     }
 
+
+    public   void setVisibility(boolean b){
+        if(rootView!=null)
+        rootView.setVisibility(b?View.VISIBLE:View.GONE);
+    }
 
     @SuppressLint("InflateParams")
     private void showFloatingWindow() {
@@ -378,10 +404,8 @@ public class FloatingService extends Service {
     }
 
     public static void startService(Activity activity){
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             activity.startForegroundService(new Intent( activity, FloatingService.class));
-
         }else{
             activity.startService(new Intent( activity, FloatingService.class));
         }

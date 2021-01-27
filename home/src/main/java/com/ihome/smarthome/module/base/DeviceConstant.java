@@ -7,8 +7,10 @@ package com.ihome.smarthome.module.base;
  */
 
 public class DeviceConstant {
-    public static final int COOKER = 1;
-    public static final int FLOWERPOT=2;
-    public static final int ROPE_SKIPPING=3;
+    public static final int BT_COOKER = 1;
+    public static final int BT_FLOWERPOT =2;
+    public static final int BT_ROPE_SKIPPING =3;
+
+
 
 }

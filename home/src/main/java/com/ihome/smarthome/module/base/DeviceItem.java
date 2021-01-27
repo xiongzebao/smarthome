@@ -18,6 +18,15 @@ public class DeviceItem implements MultiItemEntity {
     private int deviceType;
     private String deviceId;
 
+    private String macAddress;
+
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    public void setMacAddress(String macAddress) {
+        this.macAddress = macAddress;
+    }
 
     public DeviceItem(String name, int deviceType, String deviceId) {
         Name = name;

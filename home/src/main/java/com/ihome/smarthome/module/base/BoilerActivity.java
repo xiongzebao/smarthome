@@ -60,7 +60,7 @@ public class BoilerActivity extends BaseActivity {
                 String JsonStr = GsonUtils.toJson(listBase);
                 ToastUtil.toast(JsonStr);
                 MyLog.e(JsonStr+"@");
-                MyBluetoothManager.Instance(BoilerActivity.this).sendMessage("cooker",JsonStr+"@");
+                MyBluetoothManager.getInstance().sendMessage("cooker",JsonStr+"@");
             }
         });
         recyclerView.setAdapter(eventAdapter);

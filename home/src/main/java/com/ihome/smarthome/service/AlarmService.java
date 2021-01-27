@@ -59,7 +59,6 @@ public class AlarmService extends Service {
     public static void startService(Activity activity){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             activity.startForegroundService(new Intent( activity, AlarmService.class));
-
         }else{
             activity.startService(new Intent( activity, AlarmService.class));
         }

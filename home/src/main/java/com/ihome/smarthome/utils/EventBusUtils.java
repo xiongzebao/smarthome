@@ -1,6 +1,8 @@
 package com.ihome.smarthome.utils;
 
-import com.ihome.smarthome.module.base.MessageEvent;
+import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
+import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -12,19 +14,21 @@ import org.greenrobot.eventbus.EventBus;
 
 public class EventBusUtils {
     public static void sendDeBugLog(String msg){
-        EventBus.getDefault().post(new MessageEvent(MessageEvent.LOG_DEBUG,msg));
+        EventBus.getDefault().post(new LogEvent(LogEvent.LOG_DEBUG,msg));
     }
 
     public static void sendFailLog(String msg){
-        EventBus.getDefault().post(new MessageEvent(MessageEvent.LOG_FAILED,msg));
+        EventBus.getDefault().post(new LogEvent(LogEvent.LOG_FAILED,msg));
     }
 
     public static void sendSucessLog(String msg){
-        EventBus.getDefault().post(new MessageEvent(MessageEvent.LOG_SUCCESS,msg));
+        EventBus.getDefault().post(new LogEvent(LogEvent.LOG_SUCCESS,msg));
     }
 
-    public static void sendMessage(String name,String msg){
-        EventBus.getDefault().post(new MessageEvent(name,msg));
+
+    public static void sendMessageEvent(BTMessageEvent event){
+        EventBus.getDefault().post(event);
+        MyBluetoothManager.getInstance().callListener(event);
     }
 
 }
