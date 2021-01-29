@@ -209,6 +209,9 @@ public class FloatingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent==null){
+              return START_STICKY;
+        }
         int command = intent.getIntExtra("command",0);
         switch (command){
             case SHOW_FLOATING_SERVICE:setVisibility(true);break;

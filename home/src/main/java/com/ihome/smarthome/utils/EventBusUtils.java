@@ -28,7 +28,7 @@ public class EventBusUtils {
 
     public static void sendMessageEvent(BTMessageEvent event){
         EventBus.getDefault().post(event);
-        MyBluetoothManager.getInstance().callListener(event);
+        MyBluetoothManager.getInstance().sendMessage(event);
     }
 
 }

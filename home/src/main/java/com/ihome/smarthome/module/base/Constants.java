@@ -11,7 +11,7 @@ public class Constants {
     public static String CURRENT_BLUETOOTH="CURRENT_BLUETOOTH";
 
 
-    public static final String CHAT_SERVER_URL = "http://192.168.8.216:4000";
+    public static final String CHAT_SERVER_URL = "http://192.168.17.14:4000";
 
     public static String EVENT_CONNECTED="on_connected";
     public static String EVENT_MSG="message";

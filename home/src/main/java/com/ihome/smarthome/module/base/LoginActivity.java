@@ -33,6 +33,7 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.erongdu.wireless.tools.log.MyLog;
+import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbarMenuBuilder;
@@ -43,6 +44,7 @@ import com.ihome.base.utils.ScenceUtils;
 import com.ihome.smarthome.applockscreen.service.LockScreenService;
 import com.ihome.smarthome.module.adapter.DeviceListAdapter;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
+import com.ihome.smarthome.module.base.communicate.MySocketManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
 import com.ihome.smarthome.service.AlarmService;
@@ -183,6 +185,7 @@ public class LoginActivity extends BaseActivity  {
         startBluetoothService();
         startLockScreenService();
         init();
+        MySocketManager.getInstance();
 
     }
 
@@ -211,12 +214,17 @@ public class LoginActivity extends BaseActivity  {
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                DeviceItem deviceItem = (DeviceItem) adapter.getData().get(position);
-                connectDevice(deviceItem);
+
+              //  DeviceItem deviceItem = (DeviceItem) adapter.getData().get(position);
+              //  connectDevice(deviceItem);
+                if(position==0){
+                  //  ActivityManager.startActivity(DHTActivity.class);
+                    MySocketManager.getInstance().connect();
+                }
             }
         });
         setDeviceList();
-        addListener();
+       // addListener();
        // connectAllDevices();
     }
 
@@ -241,9 +249,18 @@ public class LoginActivity extends BaseActivity  {
          listenerPair = new Pair<>(device.getAddress(), new ICommunicate.Listener() {
             @Override
             public void onMessage(BaseMessageEvent event) {
+                if(event==null){
+                    return;
+                }
                 if(event instanceof BTMessageEvent){
                     BTMessageEvent btMessageEvent = (BTMessageEvent) event;
+                    if(btMessageEvent.getData()==null){
+                        return;
+                    }
                     String json_data =   btMessageEvent.getData().getJson_msg();
+                    if(json_data==null){
+                        return;
+                    }
                     DHT dht = GsonUtils.fromJson(json_data,DHT.class);
                     ToastUtil.toast(dht.getTemp()+"/"+dht.getHumi());
                 }

@@ -17,8 +17,6 @@ public class LockScreenReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-
-            MyLog.e("LockScreenReceiver onReceive ACTION_SCREEN_OFF");
             if (Parser.sPhoneCallState == TelephonyManager.CALL_STATE_IDLE) { // 手机状态为未来电的空闲状态
                 // 判断锁屏界面是否已存在，如果已存在就先finish，防止多个锁屏出现
                 if (!Parser.KEY_GUARD_INSTANCES.isEmpty()) {
@@ -31,8 +29,7 @@ public class LockScreenReceiver extends BroadcastReceiver {
                 context.startActivity(lockScreen);
             }
         } else {
-            MyLog.e("LockScreenReceiver onReceive not ACTION_SCREEN_OFF");
-            MyLog.e("action=="+action);
+
             Parser.killBackgroundProcess(context);
         }
     }
