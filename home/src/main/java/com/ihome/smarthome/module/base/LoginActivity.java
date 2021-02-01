@@ -175,7 +175,7 @@ public class LoginActivity extends BaseActivity  {
         startBluetoothService();
         startLockScreenService();
         init();
-        MySocketManager.getInstance();
+        MySocketManager.getInstance().connect();
 
     }
 
@@ -446,8 +446,9 @@ public class LoginActivity extends BaseActivity  {
             public void onItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_unread:
-                         MyBluetoothManager.getInstance().registerDiscoveryReceiver(LoginActivity.this);
-                        MyBluetoothManager.getInstance().startScan();
+                       /*  MyBluetoothManager.getInstance().registerDiscoveryReceiver(LoginActivity.this);
+                        MyBluetoothManager.getInstance().startScan();*/
+                        MySocketManager.getInstance().sendMessage(" android client test");
                         break;
                     case R.id.action_copy:
                         FloatingService.startCommand(LoginActivity.this,FloatingService.SHOW_FLOATING_SERVICE);

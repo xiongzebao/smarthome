@@ -15,7 +15,9 @@ import com.ihome.smarthome.utils.EventBusUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.socket.client.IO;
@@ -29,8 +31,8 @@ public class MySocketManager implements ICommunicate {
     String TAG = "xiong";
     private boolean isConnected = false;
     private Socket mSocket;
-    private Map<String, Emitter.Listener> listers = new HashMap<>();
-    private Context context;
+    HashMap<String, List<String>> header = new HashMap<>();
+    HashMap<String,String> auth = new HashMap<>();
     private static MySocketManager instance = null;
 
     private Emitter.Listener onConnect = new Emitter.Listener() {
@@ -63,6 +65,7 @@ public class MySocketManager implements ICommunicate {
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
+            sendParamLog(args);
 
         }
     };
@@ -74,6 +77,12 @@ public class MySocketManager implements ICommunicate {
         return instance;
     }
 
+
+    public void sendMessage(String msg){
+        mSocket.emit(Constants.CLIENT_MSG,msg);
+
+    }
+
     private void sendParamLog(Object...args){
         for (int i = 0; i < args.length; i++) {
             EventBusUtils.sendDeBugLog(args[i] + "");
@@ -81,8 +90,13 @@ public class MySocketManager implements ICommunicate {
     }
 
 
+
     public MySocketManager(Context context) {
-        this.context = context;
+         List<String>  list=new ArrayList<>();
+         list.add("android");
+        header.put("device_type",list);
+
+        auth.put("xiongbin","123456");
         IO.Options options = IO.Options.builder()
                 // IO factory options
                 .setForceNew(false)
@@ -92,8 +106,9 @@ public class MySocketManager implements ICommunicate {
                 .setUpgrade(true)
                 .setRememberUpgrade(false)
                 .setPath("/socket.io/")
-                .setQuery(null)
-                .setExtraHeaders(null)
+                .setQuery("device_type=phone")
+                .setExtraHeaders(header)
+
                 // Manager options
                 .setReconnection(true)
                 .setReconnectionAttempts(3)
@@ -101,19 +116,15 @@ public class MySocketManager implements ICommunicate {
                 .setReconnectionDelayMax(50_000)
                 .setRandomizationFactor(0.5)
                 .setTimeout(20_000)
+                .setSecure(true)
                 // Socket options
-                .setAuth(null)
+                .setAuth(auth)
                 .build();
         mSocket = IO.socket(URI.create(Constants.CHAT_SERVER_URL), options);
         on(io.socket.client.Socket.EVENT_CONNECT, onConnect);
         on(io.socket.client.Socket.EVENT_DISCONNECT, onDisconnect);
         on(io.socket.client.Socket.EVENT_CONNECT_ERROR, onConnectError);
-
-     /*   on(Socket.EVENT_RECONNECT_ERROR, onConnectError);
-        on(Socket.EVENT_RECONNECT_FAILED, onConnectError);
-        on(io.socket.client.Socket.EVENT_CONNECT_TIMEOUT, onConnectError);*/
-
-        on(Constants.EVENT_MSG, onNewMessage);
+        on(Constants.SERVER_MSG, onNewMessage);
 
     }
 
@@ -125,11 +136,9 @@ public class MySocketManager implements ICommunicate {
     }
 
     public void on(String event, Emitter.Listener listener) {
-        if (listers.containsKey(event)) {
-            return;
-        }
+
         mSocket.on(event, listener);
-        listers.put(event, listener);
+
     }
 
 
@@ -141,13 +150,7 @@ public class MySocketManager implements ICommunicate {
 
     @Override
     public void disConnect(String name) {
-        if (isConnected) {
-            for (Map.Entry<String, Emitter.Listener> entry : listers.entrySet()) {
-                mSocket.off(entry.getKey(), entry.getValue());
-            }
-            mSocket.disconnect();
-            isConnected = false;
-        }
+
     }
 
     @Override
