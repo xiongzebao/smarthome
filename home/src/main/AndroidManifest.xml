@@ -157,7 +157,7 @@
             android:priority="1000"
             android:persistent="true"
             android:name=".service.FloatingService" />
-        <service android:name=".service.BluetoothService" />
+        <service android:name=".service.ConnectionService" />
         <service android:name=".service.AlarmService" />
         <service android:name=".applockscreen.service.LockScreenService" />
 

@@ -1,26 +1,20 @@
 package com.ihome.smarthome.module.base;
 
 import android.Manifest;
-import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -30,10 +24,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.erongdu.wireless.tools.log.MyLog;
-import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbarMenuBuilder;
@@ -52,10 +44,8 @@ import com.ihome.smarthome.utils.SystemTTSUtils;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
 import com.ihome.smarthome.receiver.BluetoothMonitorReceiver;
-import com.ihome.smarthome.service.BluetoothService;
+import com.ihome.smarthome.service.ConnectionService;
 import com.ihome.smarthome.service.FloatingService;
-import com.ihome.smarthome.utils.EventBusUtils;
-import com.ihome.smarthome.utils.SpanUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -79,7 +69,7 @@ public class LoginActivity extends BaseActivity  {
 
     private HomeKeyEventBroadCastReceiver homeReceiver;
     private BluetoothMonitorReceiver bleListenerReceiver = null;
-    private BluetoothService bluetoothService;
+    private ConnectionService connectionService;
     private FloatingService floatingService;
 
     private List<DeviceItem> deviceList = new ArrayList<>();
@@ -307,7 +297,7 @@ public class LoginActivity extends BaseActivity  {
     }
 
     private void startBluetoothService() {
-        BluetoothService.startService(this);
+        ConnectionService.startService(this);
     }
 
     private void startLockScreenService() {
@@ -393,7 +383,7 @@ public class LoginActivity extends BaseActivity  {
 
 
     private void setCookerInfo() {
-        boolean isConnect = bluetoothService.getCommunicateDevice().isConnected("cooker");
+        boolean isConnect = connectionService.getBluetoothManager().isConnected("cooker");
         // setCookerConnectState(isConnect);
     }
 

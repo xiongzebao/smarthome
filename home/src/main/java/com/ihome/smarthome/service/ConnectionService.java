@@ -12,6 +12,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.erongdu.wireless.tools.log.MyLog;
+import com.ihome.smarthome.module.base.Constants;
+import com.ihome.smarthome.module.base.communicate.MySocketManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 import com.ihome.smarthome.module.base.TestUtils;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
@@ -27,19 +29,24 @@ import org.greenrobot.eventbus.ThreadMode;
  * @date : 2021/1/19 16:31
  */
 
-public class BluetoothService extends Service {
+public class ConnectionService extends Service {
+
+    public final static int START_BLUETOOTH_SERVER  = 1000;
+    public final static int START_WIRELESS_SERVER  = 1001;
 
     private boolean isAlive = false;
-    private MyBluetoothManager communicateDevice;
+    private MyBluetoothManager bluetoothManager;
+    private MySocketManager socketManager;
 
-   public MyBluetoothManager getCommunicateDevice(){
-        return communicateDevice;
+
+   public MyBluetoothManager getBluetoothManager(){
+        return bluetoothManager;
    }
 
 
     public class MyBinder extends Binder {
-        public BluetoothService getService(){
-            return BluetoothService.this;
+        public ConnectionService getService(){
+            return ConnectionService.this;
         }
     }
 
@@ -79,8 +86,18 @@ public class BluetoothService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent==null){
+            return START_STICKY;
+        }
+        int  command = intent.getIntExtra(Constants.SP_KEY_COMMAND,0);
+        switch (command){
+            case START_BLUETOOTH_SERVER:
+                startBluetoothService();
+                break;
+            case START_WIRELESS_SERVER:
 
-
+                break;
+        }
         return START_STICKY;
     }
 
@@ -94,9 +111,13 @@ public class BluetoothService extends Service {
     }
 
 
+    public void startStartWirelessServer(){
+       socketManager=MySocketManager.getInstance();
+    }
+
     private void initCommunicateDevice() {
-        communicateDevice = MyBluetoothManager.getInstance();
-        communicateDevice.startBluetoothServer();
+        bluetoothManager = MyBluetoothManager.getInstance();
+        bluetoothManager.startBluetoothServer();
     }
 
 
@@ -125,9 +146,9 @@ public class BluetoothService extends Service {
 
     public static void startService(Activity activity){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            activity.startForegroundService(new Intent( activity, BluetoothService.class));
+            activity.startForegroundService(new Intent( activity, ConnectionService.class));
         }else{
-            activity.startService(new Intent( activity, BluetoothService.class));
+            activity.startService(new Intent( activity, ConnectionService.class));
         }
     }
 }

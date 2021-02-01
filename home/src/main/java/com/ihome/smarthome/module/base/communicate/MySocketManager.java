@@ -33,27 +33,21 @@ public class MySocketManager implements ICommunicate {
     private Context context;
     private static MySocketManager instance = null;
 
-
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Log.e("xiong", "onConnect");
-            for (int i = 0; i < args.length; i++) {
-                EventBusUtils.sendSucessLog(args[i] + "");
-            }
+
+            sendParamLog(args);
+            EventBusUtils.sendSucessLog("websocket connected!","1");
         }
     };
-
 
     private Emitter.Listener onDisconnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
 
-            Log.d(TAG, "diconnected");
-            for (int i = 0; i < args.length; i++) {
-                EventBusUtils.sendFailLog(args[i] + "");
-            }
-
+            sendParamLog(args);
+            EventBusUtils.sendFailLog("websocket disconnected!","1");
         }
     };
 
@@ -61,9 +55,8 @@ public class MySocketManager implements ICommunicate {
         @Override
         public void call(final Object... args) {
 
-            for (int i = 0; i < args.length; i++) {
-                EventBusUtils.sendFailLog(args[i] + "");
-            }
+            sendParamLog(args);
+            EventBusUtils.sendFailLog("websocket connect error!","1");
         }
     };
 
@@ -71,17 +64,20 @@ public class MySocketManager implements ICommunicate {
         @Override
         public void call(final Object... args) {
 
-            MyLog.d("ew message to");
-            //  listener.onMessage("new message to ...");
         }
     };
-
 
     public static MySocketManager getInstance() {
         if (instance == null) {
             instance = new MySocketManager(MyApplication.application);
         }
         return instance;
+    }
+
+    private void sendParamLog(Object...args){
+        for (int i = 0; i < args.length; i++) {
+            EventBusUtils.sendDeBugLog(args[i] + "");
+        }
     }
 
 
@@ -100,9 +96,9 @@ public class MySocketManager implements ICommunicate {
                 .setExtraHeaders(null)
                 // Manager options
                 .setReconnection(true)
-                .setReconnectionAttempts(Integer.MAX_VALUE)
-                .setReconnectionDelay(1_000)
-                .setReconnectionDelayMax(5_000)
+                .setReconnectionAttempts(3)
+                .setReconnectionDelay(5_000)
+                .setReconnectionDelayMax(50_000)
                 .setRandomizationFactor(0.5)
                 .setTimeout(20_000)
                 // Socket options
@@ -139,7 +135,8 @@ public class MySocketManager implements ICommunicate {
 
     @Override
     public void connect(String name) {
-        MyLog.d(" connect");
+
+
     }
 
     @Override
@@ -160,34 +157,3 @@ public class MySocketManager implements ICommunicate {
 }
 
 
-/*
-    @Override
-    public void destroy() {
-        disConnect( "");
-        listener =null;
-        mSocket.close();
-    }
-*//*
-
-
-
-    @Override
-    public boolean isConnected(String name) {
-        return isConnected;
-    }
-
-    @Override
-    public void sendMessage(String name, String msg) {
-
-    }
-
-
-    public void sendMessage(String message) {
-        if (!mSocket.connected()) {
-            ToastUtils.showLong("Socket unconnected!");
-            return;
-        }
-        mSocket.emit(Constants.EVENT_MSG, message);
-    }
-
-*/
