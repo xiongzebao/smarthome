@@ -4,13 +4,17 @@ package com.ihome.smarthome.module.base.communicate;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.base.MyApplication;
 import com.ihome.smarthome.module.base.Constants;
+import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
+import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
 import com.ihome.smarthome.utils.EventBusUtils;
 
 import java.net.URI;
@@ -32,15 +36,17 @@ public class MySocketManager implements ICommunicate {
     private boolean isConnected = false;
     private Socket mSocket;
     HashMap<String, List<String>> header = new HashMap<>();
-    HashMap<String,String> auth = new HashMap<>();
+    HashMap<String, String> auth = new HashMap<>();
     private static MySocketManager instance = null;
+
+    ArrayList<Pair<String, Listener>> listeners = new ArrayList<>();
 
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
 
             sendParamLog(args);
-            EventBusUtils.sendSucessLog("websocket connected!","1");
+            EventBusUtils.sendSucessLog("websocket connected!", "1");
         }
     };
 
@@ -49,7 +55,7 @@ public class MySocketManager implements ICommunicate {
         public void call(Object... args) {
 
             sendParamLog(args);
-            EventBusUtils.sendFailLog("websocket disconnected!","1");
+            EventBusUtils.sendFailLog("websocket disconnected!", "1");
         }
     };
 
@@ -58,7 +64,7 @@ public class MySocketManager implements ICommunicate {
         public void call(final Object... args) {
 
             sendParamLog(args);
-            EventBusUtils.sendFailLog("websocket connect error!","1");
+            EventBusUtils.sendFailLog("websocket connect error!", "1");
         }
     };
 
@@ -78,25 +84,28 @@ public class MySocketManager implements ICommunicate {
     }
 
 
-    public void sendMessage(String msg){
-        mSocket.emit(Constants.CLIENT_MSG,msg);
+    public void sendMessage(String msg) {
+        mSocket.emit(Constants.CLIENT_MSG, msg);
 
     }
 
-    private void sendParamLog(Object...args){
+    private void sendParamLog(Object... args) {
         for (int i = 0; i < args.length; i++) {
             EventBusUtils.sendDeBugLog(args[i] + "");
         }
     }
 
 
-
     public MySocketManager(Context context) {
-         List<String>  list=new ArrayList<>();
-         list.add("android");
-        header.put("device_type",list);
+        List<String> list = new ArrayList<>();
+        list.add("android");
+        list.add(DeviceUtils.getAndroidID());
+        list.add(DeviceUtils.getModel());
+        header.put("device", list);
 
-        auth.put("xiongbin","123456");
+
+
+        auth.put("xiongbin", "123456");
         IO.Options options = IO.Options.builder()
                 // IO factory options
                 .setForceNew(false)
@@ -108,7 +117,6 @@ public class MySocketManager implements ICommunicate {
                 .setPath("/socket.io/")
                 .setQuery("device_type=phone")
                 .setExtraHeaders(header)
-
                 // Manager options
                 .setReconnection(true)
                 .setReconnectionAttempts(3)
@@ -124,21 +132,52 @@ public class MySocketManager implements ICommunicate {
         on(io.socket.client.Socket.EVENT_CONNECT, onConnect);
         on(io.socket.client.Socket.EVENT_DISCONNECT, onDisconnect);
         on(io.socket.client.Socket.EVENT_CONNECT_ERROR, onConnectError);
+
+
         on(Constants.SERVER_MSG, onNewMessage);
 
     }
-
-
 
 
     public void connect() {
         mSocket.connect();
     }
 
-    public void on(String event, Emitter.Listener listener) {
-
+    private void on(String event, Emitter.Listener listener) {
         mSocket.on(event, listener);
+    }
 
+    private boolean containsInListener(String event){
+        for (int i=0;i<listeners.size();i++){
+            if(event.equals(listeners.get(i).first)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void on(String event,Listener listener) {
+
+        if(containsInListener(event)){
+           listeners.add(new Pair<>(event,listener));
+           return;
+        }
+        Emitter.Listener elistener  = new Emitter.Listener(){
+
+            @Override
+            public void call(Object... args) {
+                for (int i=0;i<listeners.size();i++){
+                    if(listeners.get(i).first.equals(event)){
+                        BaseMessageEvent messageEvent = new BaseMessageEvent();
+                        messageEvent.event = event;
+                        listeners.get(i).second.onMessage(messageEvent);
+                    }
+
+                }
+            }
+        };
+        listeners.add(new Pair<>(event,listener));
+        mSocket.on(event, elistener);
     }
 
 
@@ -157,6 +196,12 @@ public class MySocketManager implements ICommunicate {
     public boolean isConnected(String name) {
         return false;
     }
+
+    public void destroy(){
+        mSocket.disconnect();
+        instance = null;
+    }
+
 }
 
 

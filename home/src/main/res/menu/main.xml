@@ -3,31 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_unread"
+        android:id="@+id/action1"
         android:icon="@drawable/ic_image_delete"
         android:title="Mark unread"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_copy"
+        android:id="@+id/action2"
         android:icon="@drawable/ic_image_delete"
         android:title="Copy"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_google"
+        android:id="@+id/action3"
         android:icon="@drawable/ic_image_delete"
         android:title="Google+"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_facebook"
+        android:id="@+id/action4"
         android:icon="@drawable/ic_image_delete"
         android:title="Facebook"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_twitter"
+        android:id="@+id/action5"
         android:icon="@drawable/ic_image_delete"
         android:title="Twitter"
         app:showAsAction="ifRoom" />

@@ -72,7 +72,7 @@ public class MyBluetoothManager implements ICommunicate {
     final public int REQUEST_DISCOVERABLE = 101;
     final public int MESSAGE_FOUND_DEVICE = 102;
     final public int MESSAGE_SEND = 103;
-
+    private static MyBluetoothManager bluetoothManager;
     String currentConnectBTAddress = "";
     boolean mScanning;
     private BluetoothLeScanner mBluetoothLeScanner;
@@ -90,9 +90,11 @@ public class MyBluetoothManager implements ICommunicate {
     public String NAME = "smart_home";
     public UUID MY_UUID = UUID.fromString(str_uuid);
     public final ParcelUuid Service_UUID = ParcelUuid.fromString(str_uuid);
-    private static BluetoothManager btManager;
-    private static MyBluetoothManager bluetoothManager;
-    private static BluetoothAdapter mBluetoothAdapter;
+    private   BluetoothManager btManager;
+
+    private   BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+
     private BroadcastReceiver mFoundDeviceReceiver = null;
     private AlertListView alertListView;
     private ArrayList<BluetoothDevice> scannedDevices = new ArrayList<>();
@@ -165,8 +167,8 @@ public class MyBluetoothManager implements ICommunicate {
     public static MyBluetoothManager getInstance() {
         if (bluetoothManager == null) {
             bluetoothManager = new MyBluetoothManager(MyApplication.getInstance());
-            btManager = (BluetoothManager) MyApplication.getInstance().getSystemService(Context.BLUETOOTH_SERVICE);
-            mBluetoothAdapter = btManager.getAdapter();
+           // btManager = (BluetoothManager) MyApplication.getInstance().getSystemService(Context.BLUETOOTH_SERVICE);
+            //mBluetoothAdapter = btManager.getAdapter();
         }
         return bluetoothManager;
     }
@@ -272,6 +274,9 @@ public class MyBluetoothManager implements ICommunicate {
             mBluetoothAdapter.cancelDiscovery();
         }
         unRegisterDiscoveryReceiver(context);
+        bluetoothManager =null;
+
+
     }
 
 

@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.GsonUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.erongdu.wireless.tools.log.MyLog;
+import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbarMenuBuilder;
@@ -58,7 +59,7 @@ import java.util.Set;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 
-public class LoginActivity extends BaseActivity  {
+public class LoginActivity extends BaseActivity {
 
     private final static int REQUEST_OVERLAY_PERMISSION = 1001;
     private final static int REQUEST_PERMISSION_CODE = 1002;
@@ -174,6 +175,7 @@ public class LoginActivity extends BaseActivity  {
         startFloatingService();
         startBluetoothService();
         startLockScreenService();
+        startAlarmService();
         init();
         MySocketManager.getInstance().connect();
 
@@ -184,6 +186,13 @@ public class LoginActivity extends BaseActivity  {
         recyclerView = findViewById(R.id.recycler_view);
         fab = findViewById(R.id.fab);
         mFloatingToolbar = findViewById(R.id.floatingToolbar);
+
+        MySocketManager.getInstance().on(Constants.SERVER_MSG, new ICommunicate.Listener() {
+            @Override
+            public void onMessage(BaseMessageEvent event) {
+                MyLog.e("LoginActivity SERVER_MSG");
+            }
+        });
     }
 
 
@@ -205,17 +214,16 @@ public class LoginActivity extends BaseActivity  {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-              //  DeviceItem deviceItem = (DeviceItem) adapter.getData().get(position);
-              //  connectDevice(deviceItem);
-                if(position==0){
-                  //  ActivityManager.startActivity(DHTActivity.class);
-                    MySocketManager.getInstance().connect();
+                //  DeviceItem deviceItem = (DeviceItem) adapter.getData().get(position);
+                //  connectDevice(deviceItem);
+                if (position == 0) {
+                      ActivityManager.startActivity(DHTActivity.class);
                 }
             }
         });
         setDeviceList();
-       // addListener();
-       // connectAllDevices();
+        // addListener();
+        // connectAllDevices();
     }
 
     private void setDeviceList() {
@@ -234,32 +242,33 @@ public class LoginActivity extends BaseActivity  {
     }
 
     Pair<String, ICommunicate.Listener> listenerPair;
-    private void addListener(){
+
+    private void addListener() {
         BluetoothDevice device = MyBluetoothManager.getInstance().findPairedBlueToothDeviceByName("cooker");
-         listenerPair = new Pair<>(device.getAddress(), new ICommunicate.Listener() {
+        listenerPair = new Pair<>(device.getAddress(), new ICommunicate.Listener() {
             @Override
             public void onMessage(BaseMessageEvent event) {
-                if(event==null){
+                if (event == null) {
                     return;
                 }
-                if(event instanceof BTMessageEvent){
+                if (event instanceof BTMessageEvent) {
                     BTMessageEvent btMessageEvent = (BTMessageEvent) event;
-                    if(btMessageEvent.getData()==null){
+                    if (btMessageEvent.getData() == null) {
                         return;
                     }
-                    String json_data =   btMessageEvent.getData().getJson_msg();
-                    if(json_data==null){
+                    String json_data = btMessageEvent.getData().getJson_msg();
+                    if (json_data == null) {
                         return;
                     }
-                    DHT dht = GsonUtils.fromJson(json_data,DHT.class);
-                    ToastUtil.toast(dht.getTemp()+"/"+dht.getHumi());
+                    DHT dht = GsonUtils.fromJson(json_data, DHT.class);
+                    ToastUtil.toast(dht.getTemp() + "/" + dht.getHumi());
                 }
             }
         });
         MyBluetoothManager.getInstance().addListener(listenerPair);
     }
 
-    private void removeListener(){
+    private void removeListener() {
         MyBluetoothManager.getInstance().removeListener(listenerPair);
     }
 
@@ -270,7 +279,7 @@ public class LoginActivity extends BaseActivity  {
             return;
         }
         checkBatteryOptimizations();
-       // registerHomeKeyReceiver();
+        // registerHomeKeyReceiver();
         registerMonitorReceiver();
 
         startBluetoothService();
@@ -306,6 +315,12 @@ public class LoginActivity extends BaseActivity  {
 
     private void stopFloatingService() {
         stopService(new Intent(LoginActivity.this, FloatingService.class));
+    }
+    private void stopScreenLockService() {
+        stopService(new Intent(LoginActivity.this, LockScreenService.class));
+    }
+    private void stopConnectService() {
+        stopService(new Intent(LoginActivity.this, ConnectionService.class));
     }
 
 
@@ -432,7 +447,7 @@ public class LoginActivity extends BaseActivity  {
             });
             return;
         } else {
-           // bindFloatingService();
+            // bindFloatingService();
             FloatingService.startService(this);
         }
     }
@@ -445,13 +460,20 @@ public class LoginActivity extends BaseActivity  {
             @Override
             public void onItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_unread:
+                    case R.id.action1:
                        /*  MyBluetoothManager.getInstance().registerDiscoveryReceiver(LoginActivity.this);
                         MyBluetoothManager.getInstance().startScan();*/
                         MySocketManager.getInstance().sendMessage(" android client test");
                         break;
-                    case R.id.action_copy:
-                        FloatingService.startCommand(LoginActivity.this,FloatingService.SHOW_FLOATING_SERVICE);
+                    case R.id.action2:
+                        FloatingService.startCommand(LoginActivity.this, FloatingService.SHOW_FLOATING_SERVICE);
+                        break;
+
+                    case R.id.action3:
+                        stopConnectService();
+                        stopFloatingService();
+                        stopScreenLockService();
+                        finish();
                         break;
                 }
             }
@@ -487,8 +509,9 @@ public class LoginActivity extends BaseActivity  {
 
 
         mFloatingToolbar.setMenu(new FloatingToolbarMenuBuilder(this)
-                .addItem(R.id.action_unread, R.drawable.ic_baseline_bluetooth_searching_24, "Mark unread")
-                .addItem(R.id.action_copy, R.drawable.ic_outline_insert_drive_file_24, "Copy")
+                .addItem(R.id.action1, R.drawable.ic_baseline_bluetooth_searching_24, "Mark unread")
+                .addItem(R.id.action2, R.drawable.ic_outline_insert_drive_file_24, "Copy")
+                .addItem(R.id.action3, R.drawable.login_act_icon, "exit")
                 .build());
     }
 
@@ -497,11 +520,11 @@ public class LoginActivity extends BaseActivity  {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-       // unregisterReceiver(homeReceiver);
+        // unregisterReceiver(homeReceiver);
         unregisterReceiver(bleListenerReceiver);
 
-      //  unbindService(btServiceConnection);
-       // unbindService(floatingServiceConnection);
+        //  unbindService(btServiceConnection);
+        // unbindService(floatingServiceConnection);
         MyLog.e("onDestroy");
         MyBluetoothManager.getInstance().unRegisterDiscoveryReceiver(this);
         removeListener();
@@ -538,6 +561,12 @@ public class LoginActivity extends BaseActivity  {
             default:
                 throw new IllegalStateException("Unexpected value: " + requestCode);
         }
+    }
+
+
+    private void forceExit() {
+        stopFloatingService();
+        stopConnectService();
     }
 }
 

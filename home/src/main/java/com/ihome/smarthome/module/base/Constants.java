@@ -11,7 +11,8 @@ public class Constants {
     public static String EVENT_CONNECTED="on_connected";
     public static String SERVER_MSG="server message";
     public static String CLIENT_MSG="client message";
-
+    public static String  ACTION="msg";
+    public static String  WARN="warn";
     public static final String SP_KEY_COMMAND = "command";
 
 

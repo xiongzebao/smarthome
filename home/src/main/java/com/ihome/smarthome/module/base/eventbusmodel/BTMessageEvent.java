@@ -40,7 +40,6 @@ public class BTMessageEvent extends  BaseMessageEvent implements Serializable {
 
     public static class Data{
 
-
         private int data_type ;
         private int device_type;
         private String json_msg;

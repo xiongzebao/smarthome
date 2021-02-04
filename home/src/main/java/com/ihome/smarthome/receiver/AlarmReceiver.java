@@ -45,7 +45,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         EventBusUtils.sendFailLog("hour:"+hour+"min:"+min);
         String time = hour+"点"+min+"分";
         if(hour<=12&&min<=60){
-            SystemTTSUtils.getInstance(ActivityManager.peek()).playText(time);
+           // SystemTTSUtils.getInstance(ActivityManager.peek()).playText(time);
         }
     }
 

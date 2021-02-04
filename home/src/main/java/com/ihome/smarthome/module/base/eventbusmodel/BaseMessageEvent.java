@@ -10,4 +10,12 @@ import java.io.Serializable;
 
 public class BaseMessageEvent implements Serializable {
 
+    public String event;
+    public String eventType;
+    public String name;
+    public String deviceId;
+    public String ownerId;
+    public String message;
+
+
 }

@@ -13,10 +13,12 @@ import androidx.annotation.Nullable;
 
 import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.module.base.Constants;
+import com.ihome.smarthome.module.base.communicate.ICommunicate;
 import com.ihome.smarthome.module.base.communicate.MySocketManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 import com.ihome.smarthome.module.base.TestUtils;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
+import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
 import com.ihome.smarthome.utils.NoticeUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,15 +67,28 @@ public class ConnectionService extends Service {
         startForeground(2, notification);
         EventBus.getDefault().register(this);
         TestUtils.newInstance();
-    }
 
+        MySocketManager.getInstance().on(Constants.SERVER_MSG, new ICommunicate.Listener() {
+            @Override
+            public void onMessage(BaseMessageEvent event) {
+                MyLog.e("ConnectService1 SERVER_MSG");
+            }
+        });
+
+        MySocketManager.getInstance().on(Constants.ACTION, new ICommunicate.Listener() {
+            @Override
+            public void onMessage(BaseMessageEvent event) {
+
+                MyLog.e("ConnectService2 "+event.event);
+            }
+        });
+    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BTMessageEvent event) {
         MyLog.e("BluetoothService :"+event.getName()+":"+event.getMessage());
     }
-
 
 
     @Nullable
@@ -141,6 +156,8 @@ public class ConnectionService extends Service {
         super.onDestroy();
         isAlive = false;
         EventBus.getDefault().unregister(this);
+        MySocketManager.getInstance().destroy();
+        MyBluetoothManager.getInstance().destroy();
        // communicateDevice.destroy();
     }
 
