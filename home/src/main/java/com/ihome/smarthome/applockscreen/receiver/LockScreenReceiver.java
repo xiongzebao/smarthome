@@ -10,13 +10,17 @@ import android.telephony.TelephonyManager;
 import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.applockscreen.activity.LockScreenActivity;
 import com.ihome.smarthome.applockscreen.util.Parser;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
+import com.ihome.smarthome.utils.EventBusUtils;
 
 
 public class LockScreenReceiver extends BroadcastReceiver {
+    public static String TAG = "LockScreenReceiver";
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (Intent.ACTION_SCREEN_OFF.equals(action)) {
+          //  EventBusUtils.sendLog(TAG,"LockScreenReceiver ACTION_SCREEN_OFF", LogEvent.LOG_IMPORTANT,true);
             if (Parser.sPhoneCallState == TelephonyManager.CALL_STATE_IDLE) { // 手机状态为未来电的空闲状态
                 // 判断锁屏界面是否已存在，如果已存在就先finish，防止多个锁屏出现
                 if (!Parser.KEY_GUARD_INSTANCES.isEmpty()) {

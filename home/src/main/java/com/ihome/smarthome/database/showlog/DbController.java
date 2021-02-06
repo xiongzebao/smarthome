@@ -29,7 +29,7 @@ public class DbController {
     /**
      * dao
      */
-    private ShowLogDao personInforDao;
+    private ShowLogEntityDao showLogEntityDao;
 
     private static DbController mDbController;
 
@@ -55,7 +55,8 @@ public class DbController {
         mHelper = new DaoMaster.DevOpenHelper(context,"show_log.db", null);
         mDaoMaster =new DaoMaster(getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
-        personInforDao = mDaoSession.getShowLogDao();
+        showLogEntityDao = mDaoSession.getShowLogEntityDao();
+
     }
     /**
      * 获取可读数据库
@@ -84,46 +85,49 @@ public class DbController {
      * 会自动判定是插入还是替换
      * @param personInfor
      */
-    public void insertOrReplace(ShowLog personInfor){
-        personInforDao.insertOrReplace(personInfor);
+    public void insertOrReplace(ShowLogEntity personInfor){
+        showLogEntityDao.insertOrReplace(personInfor);
     }
     /**插入一条记录，表里面要没有与之相同的记录
      *
      * @param personInfor
      */
-    public long insert(ShowLog personInfor){
-        return  personInforDao.insert(personInfor);
+    public long insert(ShowLogEntity personInfor){
+        return  showLogEntityDao.insert(personInfor);
     }
 
     /**
      * 更新数据
      * @param personInfor
      */
-    public void update(ShowLog personInfor){
+    public void update(ShowLogEntity personInfor){
 
     }
     /**
      * 按条件查询数据
      */
-    public List<ShowLog> searchByWhere(String wherecluse){
-        List<ShowLog>personInfors = (List<ShowLog>) personInforDao.queryBuilder().where(ShowLogDao.Properties.Type.eq(wherecluse)).build().unique();
+    public List<ShowLogEntity> searchByWhere(Integer wherecluse){
+
+        List<ShowLogEntity>personInfors =  showLogEntityDao.queryBuilder().where(ShowLogEntityDao.Properties.Type.eq(wherecluse)).build().list();
+
+
         return personInfors;
     }
     /**
      * 查询所有数据
      */
-    public List<ShowLog> searchAll(){
-        List<ShowLog>personInfors=personInforDao.queryBuilder().list();
+    public List<ShowLogEntity> searchAll(){
+        List<ShowLogEntity>personInfors= showLogEntityDao.queryBuilder().list();
         return personInfors;
     }
     /**
      * 删除数据
      */
     public void delete(String wherecluse){
-        personInforDao.queryBuilder().where(ShowLogDao.Properties.Type.eq(wherecluse)).buildDelete().executeDeleteWithoutDetachingEntities();
+        showLogEntityDao.queryBuilder().where(ShowLogEntityDao.Properties.Type.eq(wherecluse)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
 
     public void deleteAll(){
-        personInforDao.queryBuilder().buildDelete().executeDeleteWithoutDetachingEntities();
+        showLogEntityDao.queryBuilder().buildDelete().executeDeleteWithoutDetachingEntities();
     }
 }

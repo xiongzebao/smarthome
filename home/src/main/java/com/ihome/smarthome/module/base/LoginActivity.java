@@ -40,7 +40,9 @@ import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
 import com.ihome.smarthome.module.base.communicate.MySocketManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.service.AlarmService;
+import com.ihome.smarthome.utils.EventBusUtils;
 import com.ihome.smarthome.utils.SystemTTSUtils;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
@@ -88,9 +90,10 @@ public class LoginActivity extends BaseActivity {
                 String reason = intent.getStringExtra(SYSTEM_REASON);
                 if (reason != null) {
                     if (reason.equals(SYSTEM_HOME_KEY)) {
-
+                        EventBusUtils.sendLog(getTAG(),"SYSTEM_HOME_KEY",LogEvent.LOG_IMPORTANT,true);
                     } else if (reason.equals(SYSTEM_RECENT_APPS)) {
                         //   stopFloatingService();
+                        EventBusUtils.sendLog(getTAG(),"SYSTEM_RECENT_APPS",LogEvent.LOG_IMPORTANT,true);
                     }
                 }
             }
@@ -167,6 +170,7 @@ public class LoginActivity extends BaseActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void bindView() {
+        EventBusUtils.sendLog(getTAG(),"LoginActivity bindView",LogEvent.LOG_IMPORTANT,true);
         setContentView(R.layout.activity_login1);
         EventBus.getDefault().register(this);
         initView();
@@ -217,7 +221,7 @@ public class LoginActivity extends BaseActivity {
                 //  DeviceItem deviceItem = (DeviceItem) adapter.getData().get(position);
                 //  connectDevice(deviceItem);
                 if (position == 0) {
-                      ActivityManager.startActivity(DHTActivity.class);
+                      ActivityManager.startActivity(LogActivity.class);
                 }
             }
         });
@@ -520,7 +524,7 @@ public class LoginActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        // unregisterReceiver(homeReceiver);
+       //  unregisterReceiver(homeReceiver);
         unregisterReceiver(bleListenerReceiver);
 
         //  unbindService(btServiceConnection);
@@ -528,6 +532,7 @@ public class LoginActivity extends BaseActivity {
         MyLog.e("onDestroy");
         MyBluetoothManager.getInstance().unRegisterDiscoveryReceiver(this);
         removeListener();
+        EventBusUtils.sendLog(getTAG(),getTAG()+"   onDestroyed!", LogEvent.LOG_IMPORTANT,true);
 
     }
 

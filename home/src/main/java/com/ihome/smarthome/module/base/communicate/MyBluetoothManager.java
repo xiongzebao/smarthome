@@ -44,6 +44,7 @@ import com.ihome.smarthome.R;
 import com.ihome.smarthome.base.MyApplication;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.utils.ClsUtils;
 import com.ihome.smarthome.utils.EventBusUtils;
 
@@ -207,12 +208,15 @@ public class MyBluetoothManager implements ICommunicate {
         BluetoothDevice bluetoothDevice = findPairedBlueToothDeviceByAddress(macAddress);
         if (bluetoothDevice == null) {//如果没有连接过蓝牙
             // //ToastUtil.toast("此设备没有配对");
-            EventBusUtils.sendFailLog(macAddress + "没有配对设备");
+            EventBusUtils.sendLog(getTag(),macAddress + "没有配对设备", LogEvent.LOG_FAILED,true);
             return;
         }
         connect(bluetoothDevice);//如果有蓝牙就连接
     }
 
+    private String getTag(){
+        return getInstance().getClass().getSimpleName();
+    }
 
     public void cancelReTryTimer(String name) {
         if (retryTimer.containsKey(name)) {
@@ -238,7 +242,8 @@ public class MyBluetoothManager implements ICommunicate {
                 times++;
                 if (times == 3) {
                     timer.cancel();
-                    EventBusUtils.sendFailLog("尝试重连失败");
+
+                    EventBusUtils.sendLog(getTag(),macAddress + "尝试重连失败", LogEvent.LOG_FAILED,true);
                 }
             }
         };
@@ -291,11 +296,13 @@ public class MyBluetoothManager implements ICommunicate {
     public void sendMessage(String macAddress, String msg) {
         ConnectedThread thread = connectedBTThreads.get(macAddress);
         if (thread == null) {
-            EventBusUtils.sendFailLog(macAddress + "#不存在此线程");
+
+            EventBusUtils.sendLog(getTag(),macAddress + "不存在此通信线程", LogEvent.LOG_FAILED,true);
+
             return;
         }
         if (!thread.isConnected()) {
-            EventBusUtils.sendFailLog(macAddress + "#已断开连接");
+            EventBusUtils.sendLog(getTag(),macAddress + "蓝牙已断开", LogEvent.LOG_FAILED,true);
             return;
         }
         thread.write(msg);
@@ -776,7 +783,8 @@ public class MyBluetoothManager implements ICommunicate {
                 // MY_UUID is the app's UUID string, also used by the client code
                 tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
             } catch (IOException e) {
-                EventBusUtils.sendFailLog("create ServerSocket failed" + "#:" + e.getMessage());
+
+                EventBusUtils.sendLog(getTag(),"create ServerSocket failed" + "#:" + e.getMessage(), LogEvent.LOG_FAILED,true);
                 interrupted();
             }
             mmServerSocket = tmp;
@@ -845,7 +853,8 @@ public class MyBluetoothManager implements ICommunicate {
 
             } catch (IOException e) {
 
-                EventBusUtils.sendFailLog(e.getMessage() + "#createRfcommSocketToServiceRecord occur exception!");
+
+                EventBusUtils.sendLog(getTag(),e.getMessage() + "#createRfcommSocketToServiceRecord occur exception!", LogEvent.LOG_FAILED,true);
             }
             mmSocket = tmp;
         }
@@ -867,7 +876,8 @@ public class MyBluetoothManager implements ICommunicate {
                 EventBusUtils.sendMessageEvent(event);
                 MyLog.e("name->" + mmDevice.getName() + "连接成功");
             } catch (IOException connectException) {
-                EventBusUtils.sendFailLog(connectException.getMessage() + "  #蓝牙未开启或不在通信范围);");
+
+                EventBusUtils.sendLog(getTag(),connectException.getMessage() + "  #蓝牙未开启或不在通信范围);", LogEvent.LOG_FAILED,true);
                 BTMessageEvent event = new BTMessageEvent(BTMessageEvent.ON_CONNECT_FAILED, mmDevice.getName() + ":蓝牙未开启或不在通信范围", mmDevice.getAddress());
                 EventBusUtils.sendMessageEvent(event);
                 try {
@@ -892,20 +902,21 @@ public class MyBluetoothManager implements ICommunicate {
                 mmInStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
-                EventBusUtils.sendFailLog(e.getMessage() + "#" + "关闭输入流失败");
+               // EventBusUtils.sendFailLog(e.getMessage() + "#" + "关闭输入流失败");
+
             }
             try {
                 mmOutStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
-                EventBusUtils.sendFailLog(e.getMessage() + "#" + "关闭输出流失败");
+              //  EventBusUtils.sendFailLog(e.getMessage() + "#" + "关闭输出流失败");
             }
             try {
                 mmSocket.close();
 
             } catch (IOException e) {
                 e.printStackTrace();
-                EventBusUtils.sendFailLog(e.getMessage() + "#" + "关闭socket失败");
+              //  EventBusUtils.sendFailLog(e.getMessage() + "#" + "关闭socket失败");
             }
             interrupt();
         }
@@ -961,11 +972,11 @@ public class MyBluetoothManager implements ICommunicate {
                 } catch (IOException e) {
                     BTMessageEvent event = new BTMessageEvent(BTMessageEvent.ON_READ_EXCEPTION, name + "消息读取异常"+e.getMessage(), macAddress);
                     EventBusUtils.sendMessageEvent(event);
-                    EventBusUtils.sendFailLog(e.getMessage() + "####ConnetThread 读取消息失败,关闭io流，关闭socket,结束线程");
+                    EventBusUtils.sendLog(getTag(),e.getMessage() + "####ConnetThread 读取消息失败,关闭io流，关闭socket,结束线程",LogEvent.LOG_FAILED,true);
                     close();
                 }
             }
-            EventBusUtils.sendFailLog(mmSocket.getRemoteDevice().getName() + "读消息线程结束");
+            EventBusUtils.sendLog(getTag(),mmSocket.getRemoteDevice().getName() + "读消息线程结束",LogEvent.LOG_FAILED,true);
         }
 
 

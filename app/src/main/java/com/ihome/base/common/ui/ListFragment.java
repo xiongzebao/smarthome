@@ -59,10 +59,14 @@ public class ListFragment extends BaseFragment implements OnLoadMoreListener, On
         this.swipeToLoadLayout = binding.swipe;
         this.swipeToLoadLayout.setOnLoadMoreListener(this);
         this.swipeToLoadLayout.setOnRefreshListener(this);
+        initData();
         return binding.getRoot();
     }
 
 
+    public void initData(){
+
+    }
     public ObservableInt getPlaceHolderState(){
         return model.placeholderState;
     }

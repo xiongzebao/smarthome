@@ -19,6 +19,8 @@ import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 import com.ihome.smarthome.module.base.TestUtils;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
+import com.ihome.smarthome.utils.EventBusUtils;
 import com.ihome.smarthome.utils.NoticeUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -158,6 +160,7 @@ public class ConnectionService extends Service {
         EventBus.getDefault().unregister(this);
         MySocketManager.getInstance().destroy();
         MyBluetoothManager.getInstance().destroy();
+        EventBusUtils.sendLog("ConnectService","ConnectService onDestroyed!", LogEvent.LOG_IMPORTANT,true);
        // communicateDevice.destroy();
     }
 

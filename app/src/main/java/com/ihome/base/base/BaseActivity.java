@@ -41,6 +41,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
         setOnBack();
     }
 
+    public String getTAG(){
+        return this.getClass().getSimpleName();
+    }
+
     @Override
    final public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);

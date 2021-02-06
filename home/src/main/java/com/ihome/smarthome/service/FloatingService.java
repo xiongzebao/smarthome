@@ -32,11 +32,11 @@ import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.database.showlog.DbController;
-import com.ihome.smarthome.database.showlog.ShowLog;
+import com.ihome.smarthome.database.showlog.ShowLogEntity;
 import com.ihome.smarthome.module.base.LogActivity;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.module.base.LoginActivity;
-import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
+import com.ihome.smarthome.utils.EventBusUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -113,7 +113,7 @@ public class FloatingService extends Service {
     }
 
     private void insertShowLog(int type ,String msg){
-        ShowLog showLog = new ShowLog();
+        ShowLogEntity showLog = new ShowLogEntity();
         showLog.setDate(new Date().toString());
         showLog.setType(type);
         showLog.setMsg(msg);
@@ -275,7 +275,7 @@ public class FloatingService extends Service {
             // 新建悬浮窗控件
             rootView = LayoutInflater.from(this).inflate(R.layout.float_window, null);
             rootView.setOnTouchListener(new FloatingOnTouchListener());
-            textView = rootView.findViewById(R.id.tv);
+            textView = rootView.findViewById(R.id.tv_message);
             dragBtn = rootView.findViewById(R.id.dragBtn);
             clearBtn = rootView.findViewById(R.id.clearBtn);
             closeBtn = rootView.findViewById(R.id.closeBtn);
@@ -318,8 +318,11 @@ public class FloatingService extends Service {
 
     private void scaleWindow(){
        WindowManager.LayoutParams params = (WindowManager.LayoutParams) rootView.getLayoutParams();
-        params.height=100;
+        params.height=200;
         rootView.setLayoutParams(params);
+        rootView.requestLayout();
+        rootView.invalidate();
+
     }
 
     private void setDragBtnText() {
@@ -404,6 +407,7 @@ public class FloatingService extends Service {
         EventBus.getDefault().unregister(this);
          isStart = false;
         windowManager.removeViewImmediate(rootView);
+        EventBusUtils.sendLog("FloatingService","Floating service onDestroyed!",LogEvent.LOG_IMPORTANT,true);
     }
 
     public static void startService(Activity activity){

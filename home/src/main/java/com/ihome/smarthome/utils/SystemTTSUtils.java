@@ -64,7 +64,8 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
 
     public  static    void installiFlyEngin(Context context){
         if(!PackageUtils.isAppInstalled(context,"com.iflytek.speechcloud")){
-            EventBusUtils.sendFailLog("未安装讯飞引擎");
+            //EventBusUtils.sendFailLog("未安装讯飞引擎");
+
             DialogUtils.showDialog(context,"您未安装讯飞语音引擎，请安装讯飞语音引擎",new SweetAlertDialog.OnSweetClickListener(){
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
@@ -74,7 +75,7 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
                 }
             });
         }else{
-            EventBusUtils.sendSucessLog("讯飞引擎已安装");
+          //  EventBusUtils.sendSucessLog("讯飞引擎已安装");
         }
     }
 

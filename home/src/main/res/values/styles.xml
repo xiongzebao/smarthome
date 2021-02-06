@@ -27,7 +27,9 @@
         <item name="android:textColor">@color/color33</item>
 
     </style>
-
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">13sp</item>
+    </style>
 
 </resources>
 

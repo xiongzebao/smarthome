@@ -11,12 +11,30 @@ public class LogEvent extends BaseMessageEvent {
     final public static int LOG_FAILED=2;
     final public static int LOG_SUCCESS=3;
 
+    final public static int LOG_EVENT=4;
+    final public static int LOG_IMPORTANT=5;
+
     private int type;
     private String message;
+    private String event;
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
 
     public LogEvent(int type, String message) {
         this.type = type;
         this.message = message;
+    }
+
+    public LogEvent(int type, String message,String event) {
+        this.type = type;
+        this.message = message;
+        this.event = event;
     }
 
     public int getType() {

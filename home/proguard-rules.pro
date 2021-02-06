@@ -19,3 +19,20 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+#GreenDao
+#greendao
+-keep class org.greenrobot.greendao.**{
+     *;}
+-keep public interface org.greenrobot.greendao.**
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+
+public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+
+#optional
+-keep class net.sqlcipher.database.**{
+     *;}
+-keep public interface net.sqlcipher.database.**
+-dontwarn net.sqlcipher.database.**
+-dontwarn org.greenrobot.greendao.**

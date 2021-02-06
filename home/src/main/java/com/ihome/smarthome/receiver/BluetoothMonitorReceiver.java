@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.utils.EventBusUtils;
 
 import java.util.HashMap;
@@ -37,20 +38,20 @@ public class BluetoothMonitorReceiver extends BroadcastReceiver {
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_ON:
                             Toast.makeText(context,"蓝牙正在打开",Toast.LENGTH_SHORT).show();
-                            EventBusUtils.sendDeBugLog("蓝牙正在打开");
+                           // EventBusUtils.sendDeBugLog("蓝牙正在打开");
                             break;
                         case BluetoothAdapter.STATE_ON:
                             Toast.makeText(context,"蓝牙已经打开",Toast.LENGTH_SHORT).show();
-                            EventBusUtils.sendDeBugLog("蓝牙已经打开");
+                            //EventBusUtils.sendDeBugLog("蓝牙已经打开");
                             MyBluetoothManager.getInstance().connectCurrentBT();
                             break;
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             Toast.makeText(context,"蓝牙正在关闭",Toast.LENGTH_SHORT).show();
-                            EventBusUtils.sendDeBugLog("蓝牙正在关闭");
+                           // EventBusUtils.sendDeBugLog("蓝牙正在关闭");
                             break;
                         case BluetoothAdapter.STATE_OFF:
                             Toast.makeText(context,"蓝牙已经关闭",Toast.LENGTH_SHORT).show();
-                            EventBusUtils.sendDeBugLog("蓝牙已经关闭");
+                          //  EventBusUtils.sendDeBugLog("蓝牙已经关闭");
                             break;
                     }
                     break;
@@ -58,13 +59,14 @@ public class BluetoothMonitorReceiver extends BroadcastReceiver {
                 case BluetoothDevice.ACTION_ACL_CONNECTED:
                     BluetoothDevice conDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     String tip = conDevice.getName()+"蓝牙设备已连接";
-                    EventBusUtils.sendSucessLog( tip);
+
+                    EventBusUtils.sendLog("bluetooth",tip, LogEvent.LOG_SUCCESS,true);
                     break;
 
                 case BluetoothDevice.ACTION_ACL_DISCONNECTED:
                     BluetoothDevice conDevice1 = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     String tip1 = conDevice1.getName()+"蓝牙设备已断开";
-                    EventBusUtils.sendFailLog(tip1);
+                    EventBusUtils.sendLog("bluetooth",tip1, LogEvent.LOG_SUCCESS,true);
                     MyBluetoothManager.getInstance().disConnect(conDevice1.getName());
 
                     break;

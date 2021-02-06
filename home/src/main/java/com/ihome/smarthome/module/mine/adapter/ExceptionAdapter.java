@@ -37,13 +37,13 @@ public class ExceptionAdapter extends BaseQuickAdapter<SelectRecyclerView.BaseMo
     @Override
     protected void convert(@NonNull BaseViewHolder helper, SelectRecyclerView.BaseModel item) {
         ExceptionBean bean = (ExceptionBean) item;
-        helper.setText(R.id.tv,bean.Name);
+        helper.setText(R.id.tv_message,bean.Name);
         if(item.isSelect()){
-            helper.setTextColor(R.id.tv, ActivityManager.peek().getResources().getColor(R.color.color_4e));
-            helper.setBackgroundRes(R.id.tv,R.drawable.bg_text_item_select);
+            helper.setTextColor(R.id.tv_message, ActivityManager.peek().getResources().getColor(R.color.color_4e));
+            helper.setBackgroundRes(R.id.tv_message,R.drawable.bg_text_item_select);
         }else{
-            helper.setTextColor(R.id.tv, ActivityManager.peek().getResources().getColor(R.color.color66));
-            helper.setBackgroundRes(R.id.tv,R.drawable.bg_text_item_unselect);
+            helper.setTextColor(R.id.tv_message, ActivityManager.peek().getResources().getColor(R.color.color66));
+            helper.setBackgroundRes(R.id.tv_message,R.drawable.bg_text_item_unselect);
         }
     }
 }

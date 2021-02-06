@@ -24,6 +24,6 @@ public class EventAdapter extends BaseQuickAdapter<Event, BaseViewHolder> {
     @Override
     protected void convert(@NonNull BaseViewHolder helper, Event item) {
         helper.addOnClickListener(R.id.iv_delete);
-        helper.setText(R.id.tv,item.getEvent());
+        helper.setText(R.id.tv_message,item.getEvent());
     }
 }

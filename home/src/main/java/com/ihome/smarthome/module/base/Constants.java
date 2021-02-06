@@ -15,7 +15,7 @@ public class Constants {
     public static String  WARN="warn";
     public static final String SP_KEY_COMMAND = "command";
 
-
+    public static String PING="ping";
 
 
 
