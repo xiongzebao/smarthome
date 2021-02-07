@@ -29,26 +29,28 @@ import io.socket.engineio.client.transports.Polling;
 import io.socket.engineio.client.transports.WebSocket;
 
 public class MySocketManager implements ICommunicate {
+
     public static String TAG = "MySocketManager";
     private boolean isConnected = false;
     private Socket mSocket;
-    HashMap<String, List<String>> header = new HashMap<>();
-    HashMap<String, String> auth = new HashMap<>();
+    private HashMap<String, List<String>> header = new HashMap<>();
+    private HashMap<String, String> auth = new HashMap<>();
     private static MySocketManager instance = null;
-    ArrayList<Pair<String, Listener>> listeners = new ArrayList<>();
-
-    HashSet<String> eventLogs = new HashSet<>();
-
+    private ArrayList<Pair<String, Listener>> listeners = new ArrayList<>();
+    private HashSet<String> eventLogs = new HashSet<>();//记录指定事件日志
     private int counter = 0;
     private long interval = 60000;
 
-    Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
         @Override
         public void run() {
             counter++;
-            if (counter % 5 == 0) {
-                EventBusUtils.sendLog(TAG, "心跳连接超时!", LogEvent.LOG_IMPORTANT, true);
+           // EventBusUtils.sendLog(TAG,"handler ping",LogEvent.LOG_DEBUG,true);
+            EventBusUtils.saveToDatabase(TAG,"handler",LogEvent.LOG_DEBUG);
+            if (counter%3==0) {
+                EventBusUtils.sendLog(TAG, "心跳连接超时，重新连接！", LogEvent.LOG_IMPORTANT, true);
+                reConnect();
             }
             sendPing();
             handler.postDelayed(this, interval);
@@ -57,6 +59,8 @@ public class MySocketManager implements ICommunicate {
 
 
     private void startTimer() {
+        counter=0;
+        handler.removeCallbacks(runnable);
         handler.postDelayed(runnable, interval);
     }
 
@@ -70,13 +74,20 @@ public class MySocketManager implements ICommunicate {
 
     private Emitter.Listener onConnect = args -> {
         EventBusUtils.sendLog(TAG, "websocket connected:" + paramsToString(args), LogEvent.LOG_IMPORTANT, true);
-        startTimer();
+        //startTimer();
+
+
     };
-    private Emitter.Listener onDisconnect = args -> EventBusUtils.sendLog(TAG, "websocket Disconnect:" + paramsToString(args), LogEvent.LOG_IMPORTANT, true);
+    private Emitter.Listener onDisconnect = args -> {
+        EventBusUtils.sendLog(TAG, "websocket Disconnect:" + paramsToString(args), LogEvent.LOG_IMPORTANT, true);
 
-    private Emitter.Listener onConnectError = args -> EventBusUtils.sendLog(TAG, "websocket connect error:" + paramsToString(args), LogEvent.LOG_IMPORTANT, true);
+    };
 
-    private Emitter.Listener onNewMessage = args -> EventBusUtils.sendLog(TAG, "websocket connect error:" + paramsToString(args), LogEvent.LOG_EVENT, true);
+    private Emitter.Listener onConnectError = args -> {
+        EventBusUtils.sendLog(TAG, "websocket connect error:" + paramsToString(args), LogEvent.LOG_IMPORTANT, true);
+
+    };
+
 
     private Emitter.Listener onPing = args -> {
         EventBusUtils.sendLog(TAG, "onPing", LogEvent.LOG_DEBUG, true);
@@ -94,8 +105,10 @@ public class MySocketManager implements ICommunicate {
         mSocket.emit(Constants.CLIENT_MSG, msg);
     }
 
-    private void sendPing() {
-        mSocket.emit(Constants.PING, "p");
+    public void sendPing() {
+        if(mSocket.connected()){
+            mSocket.emit(Constants.PING, "p");
+        }
     }
 
     private String paramsToString(Object... args) {
@@ -127,11 +140,11 @@ public class MySocketManager implements ICommunicate {
                 .setExtraHeaders(header)
                 // Manager options
                 .setReconnection(true)
-                .setReconnectionAttempts(10)
-                .setReconnectionDelay(5_000)
-                .setReconnectionDelayMax(50_000)
+                .setReconnectionAttempts(3)
+                .setReconnectionDelay(3_000)
+                .setReconnectionDelayMax(5_000)
                 .setRandomizationFactor(0.5)
-                .setTimeout(20_000)
+                .setTimeout(10_000)
                 .setSecure(true)
                 // Socket options
                 .setAuth(auth)
@@ -156,13 +169,21 @@ public class MySocketManager implements ICommunicate {
                 });
             }
         });
+
+
     }
 
 
-    public void connect() {
+    public void reConnect() {
+        if(mSocket.isActive()){
+            mSocket.close();
+        }
         mSocket.connect();
     }
 
+    public void connect(){
+        mSocket.connect();
+    }
     private void on(String event, Emitter.Listener listener) {
         mSocket.on(event, listener);
     }

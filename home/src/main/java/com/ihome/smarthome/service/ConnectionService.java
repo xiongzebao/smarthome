@@ -1,17 +1,21 @@
 package com.ihome.smarthome.service;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.erongdu.wireless.tools.log.MyLog;
+import com.ihome.smarthome.R;
 import com.ihome.smarthome.module.base.Constants;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
 import com.ihome.smarthome.module.base.communicate.MySocketManager;
@@ -84,6 +88,19 @@ public class ConnectionService extends Service {
                 MyLog.e("ConnectService2 "+event.event);
             }
         });
+        MySocketManager.getInstance().connect();
+        wakeLock();
+
+    }
+   PowerManager.WakeLock wl;
+    private void wakeLock() {
+        PowerManager pm = (PowerManager) getSystemService(
+                Context.POWER_SERVICE);
+        wl= pm.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK
+                        | PowerManager.ON_AFTER_RELEASE,
+                getString(R.string.pm_tag1));
+        wl.acquire();
     }
 
 
@@ -112,7 +129,7 @@ public class ConnectionService extends Service {
                 startBluetoothService();
                 break;
             case START_WIRELESS_SERVER:
-
+                startStartWirelessServer();
                 break;
         }
         return START_STICKY;
@@ -162,6 +179,7 @@ public class ConnectionService extends Service {
         MyBluetoothManager.getInstance().destroy();
         EventBusUtils.sendLog("ConnectService","ConnectService onDestroyed!", LogEvent.LOG_IMPORTANT,true);
        // communicateDevice.destroy();
+        wl.release();
     }
 
     public static void startService(Activity activity){

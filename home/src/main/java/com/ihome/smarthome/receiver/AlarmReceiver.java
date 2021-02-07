@@ -6,6 +6,8 @@ import android.content.Intent;
 
 import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
+import com.ihome.smarthome.module.base.communicate.MySocketManager;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.utils.SystemTTSUtils;
 import com.ihome.smarthome.service.AlarmService;
 import com.ihome.smarthome.utils.EventBusUtils;
@@ -42,10 +44,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         int hour =  Calendar.getInstance().get(Calendar.HOUR);
         int min = Calendar.getInstance().get(Calendar.MINUTE);
         MyLog.e("hour:"+hour+"min:"+min);
-//        EventBusUtils.sendFailLog("hour:"+hour+"min:"+min);
+        EventBusUtils.sendLog("AlarmReceiver","hour:"+hour+"min:"+min, LogEvent.LOG_DEBUG,false);
         String time = hour+"点"+min+"分";
         if(hour<=12&&min<=60){
            // SystemTTSUtils.getInstance(ActivityManager.peek()).playText(time);
+            MySocketManager.getInstance().sendPing();
         }
     }
 

@@ -35,7 +35,7 @@ import com.ihome.smarthome.database.showlog.DbController;
 import com.ihome.smarthome.database.showlog.ShowLogEntity;
 import com.ihome.smarthome.module.base.LogActivity;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
-import com.ihome.smarthome.module.base.LoginActivity;
+import com.ihome.smarthome.module.base.HomeActivity;
 import com.ihome.smarthome.utils.EventBusUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -104,6 +104,15 @@ public class FloatingService extends Service {
             case LogEvent.LOG_SUCCESS:
                 append(event.getMessage(), Color.GREEN);
               //  insertShowLog(LogEvent.LOG_SUCCESS,event.getMsg());
+                break;
+            case LogEvent.LOG_IMPORTANT:
+                append(event.getMessage(), Color.parseColor("#642100"));
+                //  insertShowLog(LogEvent.LOG_SUCCESS,event.getMsg());
+                break;
+
+            case LogEvent.LOG_EVENT:
+                append(event.getMessage(), Color.parseColor("#006000"));
+                //  insertShowLog(LogEvent.LOG_SUCCESS,event.getMsg());
                 break;
         }
         textView.setText(mBuilder);
@@ -180,7 +189,7 @@ public class FloatingService extends Service {
         //设定通知显示的时间
         builder.setWhen(System.currentTimeMillis());
         //设定启动的内容
-        Intent activityIntent = new Intent(this, LoginActivity.class);
+        Intent activityIntent = new Intent(this, HomeActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 

@@ -1,6 +1,7 @@
 package com.ihome.smarthome.module.base;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -61,7 +62,7 @@ import java.util.Set;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 
-public class LoginActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity {
 
     private final static int REQUEST_OVERLAY_PERMISSION = 1001;
     private final static int REQUEST_PERMISSION_CODE = 1002;
@@ -90,10 +91,10 @@ public class LoginActivity extends BaseActivity {
                 String reason = intent.getStringExtra(SYSTEM_REASON);
                 if (reason != null) {
                     if (reason.equals(SYSTEM_HOME_KEY)) {
-                        EventBusUtils.sendLog(getTAG(),"SYSTEM_HOME_KEY",LogEvent.LOG_IMPORTANT,true);
+                        EventBusUtils.sendLog(getTAG(), "SYSTEM_HOME_KEY", LogEvent.LOG_IMPORTANT, true);
                     } else if (reason.equals(SYSTEM_RECENT_APPS)) {
                         //   stopFloatingService();
-                        EventBusUtils.sendLog(getTAG(),"SYSTEM_RECENT_APPS",LogEvent.LOG_IMPORTANT,true);
+                        EventBusUtils.sendLog(getTAG(), "SYSTEM_RECENT_APPS", LogEvent.LOG_IMPORTANT, true);
                     }
                 }
             }
@@ -170,7 +171,7 @@ public class LoginActivity extends BaseActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void bindView() {
-        EventBusUtils.sendLog(getTAG(),"LoginActivity bindView",LogEvent.LOG_IMPORTANT,true);
+        EventBusUtils.sendLog(getTAG(), "LoginActivity bindView", LogEvent.LOG_IMPORTANT, true);
         setContentView(R.layout.activity_login1);
         EventBus.getDefault().register(this);
         initView();
@@ -181,9 +182,12 @@ public class LoginActivity extends BaseActivity {
         startLockScreenService();
         startAlarmService();
         init();
-        MySocketManager.getInstance().connect();
 
+
+       // requestIgnoreBatteryOptimizationsSETTINGS();
     }
+
+
 
 
     private void initView() {
@@ -221,7 +225,7 @@ public class LoginActivity extends BaseActivity {
                 //  DeviceItem deviceItem = (DeviceItem) adapter.getData().get(position);
                 //  connectDevice(deviceItem);
                 if (position == 0) {
-                      ActivityManager.startActivity(LogActivity.class);
+                    ActivityManager.startActivity(LogActivity.class);
                 }
             }
         });
@@ -318,13 +322,15 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void stopFloatingService() {
-        stopService(new Intent(LoginActivity.this, FloatingService.class));
+        stopService(new Intent(HomeActivity.this, FloatingService.class));
     }
+
     private void stopScreenLockService() {
-        stopService(new Intent(LoginActivity.this, LockScreenService.class));
+        stopService(new Intent(HomeActivity.this, LockScreenService.class));
     }
+
     private void stopConnectService() {
-        stopService(new Intent(LoginActivity.this, ConnectionService.class));
+        stopService(new Intent(HomeActivity.this, ConnectionService.class));
     }
 
 
@@ -340,6 +346,7 @@ public class LoginActivity extends BaseActivity {
 
     public void requestIgnoreBatteryOptimizations() {
         try {
+
             Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             intent.setData(Uri.parse("package:" + getPackageName()));
             startActivity(intent);
@@ -347,6 +354,17 @@ public class LoginActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
+    public void requestIgnoreBatteryOptimizationsSETTINGS() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     private boolean isIgnoringBatteryOptimizations() {
         boolean isIgnoring = false;
@@ -365,7 +383,7 @@ public class LoginActivity extends BaseActivity {
             ToastUtil.toast("设备已连接");
             return;
         }
-        ScenceUtils.showCutscence(LoginActivity.this, "正在连接蓝牙设备...");
+        ScenceUtils.showCutscence(HomeActivity.this, "正在连接蓝牙设备...");
         MyBluetoothManager.getInstance().connect(deviceItem.getDeviceId());
     }
 
@@ -470,7 +488,7 @@ public class LoginActivity extends BaseActivity {
                         MySocketManager.getInstance().sendMessage(" android client test");
                         break;
                     case R.id.action2:
-                        FloatingService.startCommand(LoginActivity.this, FloatingService.SHOW_FLOATING_SERVICE);
+                        FloatingService.startCommand(HomeActivity.this, FloatingService.SHOW_FLOATING_SERVICE);
                         break;
 
                     case R.id.action3:
@@ -524,7 +542,7 @@ public class LoginActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-       //  unregisterReceiver(homeReceiver);
+       // unregisterReceiver(homeReceiver);
         unregisterReceiver(bleListenerReceiver);
 
         //  unbindService(btServiceConnection);
@@ -532,7 +550,7 @@ public class LoginActivity extends BaseActivity {
         MyLog.e("onDestroy");
         MyBluetoothManager.getInstance().unRegisterDiscoveryReceiver(this);
         removeListener();
-        EventBusUtils.sendLog(getTAG(),getTAG()+"   onDestroyed!", LogEvent.LOG_IMPORTANT,true);
+        EventBusUtils.sendLog(getTAG(), getTAG() + "   onDestroyed!", LogEvent.LOG_IMPORTANT, true);
 
     }
 

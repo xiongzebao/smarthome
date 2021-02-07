@@ -8,13 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Handler;
 import android.os.Vibrator;
 
 import androidx.core.app.NotificationCompat;
 
 import com.ihome.smarthome.R;
-import com.ihome.smarthome.module.base.LoginActivity;
+import com.ihome.smarthome.module.base.HomeActivity;
 import com.ihome.smarthome.module.base.NoticeManager;
 
 /**
@@ -72,7 +71,7 @@ public class NoticeUtils {
         //设定通知显示的时间
         builder.setWhen(System.currentTimeMillis());
         //设定启动的内容
-        Intent activityIntent = new Intent(context, LoginActivity.class);
+        Intent activityIntent = new Intent(context, HomeActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
