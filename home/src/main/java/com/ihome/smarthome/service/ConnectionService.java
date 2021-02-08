@@ -24,6 +24,7 @@ import com.ihome.smarthome.module.base.TestUtils;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
+import com.ihome.smarthome.module.base.eventbusmodel.MediaSessionManager;
 import com.ihome.smarthome.utils.EventBusUtils;
 import com.ihome.smarthome.utils.NoticeUtils;
 
@@ -72,8 +73,6 @@ public class ConnectionService extends Service {
         //将服务置于启动状态 ,NOTIFICATION_ID指的是创建的通知的ID
         startForeground(2, notification);
         EventBus.getDefault().register(this);
-        TestUtils.newInstance();
-
         MySocketManager.getInstance().on(Constants.SERVER_MSG, new ICommunicate.Listener() {
             @Override
             public void onMessage(BaseMessageEvent event) {

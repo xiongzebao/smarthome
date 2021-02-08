@@ -74,7 +74,7 @@ public class MySocketManager implements ICommunicate {
 
     private Emitter.Listener onConnect = args -> {
         EventBusUtils.sendLog(TAG, "websocket connected:" + paramsToString(args), LogEvent.LOG_IMPORTANT, true);
-        //startTimer();
+        startTimer();
 
 
     };

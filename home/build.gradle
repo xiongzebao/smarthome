@@ -78,6 +78,7 @@ dependencies {
         exclude module: "support-v4"
         exclude group: "com.android.support"
     }
+    implementation 'com.github.HeyAlex:WidgetUpdateHelper:1.4'
     implementation('com.contrarywind:Android-PickerView:4.1.9')
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'org.greenrobot:greendao:3.2.2' // 添加库

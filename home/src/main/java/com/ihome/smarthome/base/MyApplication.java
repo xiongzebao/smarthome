@@ -4,8 +4,9 @@ import android.app.Application;
 import android.content.Context;
 
 
-
+import com.erongdu.wireless.tools.log.CrashHandler;
 import com.erongdu.wireless.tools.log.MyLog;
+import com.ihome.smarthome.utils.CrashHandlerUtils;
 import com.ihome.smarthome.utils.SystemTTSUtils;
 import com.ihome.smarthome.MainActivity;
 
@@ -25,7 +26,7 @@ public class MyApplication extends Application {
     private void init(){
         application = this;
         MyLog.init(KTAppConfig.isDebug,"xiong",false,2,3);
-
+        CrashHandlerUtils.getInstance().init(this);
 
     }
 

@@ -171,6 +171,63 @@
 
         <receiver android:name=".applockscreen.receiver.LockScreenReceiver" />
         <receiver android:name=".receiver.AlarmReceiver" />
+
+
+
+        <receiver
+            android:name=".appwidget.single.ExampleSingleAppWidget"
+            android:label="Single Example">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/example_app_widget_single_info" />
+        </receiver>
+
+        <service android:name=".appwidget.list.SampleRemoteService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name=".appwidget.common.ExampleCommonAppWidget"
+            android:label="Common Example">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/example_app_widget_common_info" />
+        </receiver>
+
+        <receiver
+            android:name=".appwidget.list.ListAppWidget"
+            android:label="List Example">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/example_app_widget_common_info" />
+        </receiver>
+
+
+
+
+        <receiver
+            android:name=".receiver.AdminReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/example_app_widget_single_info" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>

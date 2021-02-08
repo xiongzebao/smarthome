@@ -2,9 +2,11 @@ package com.ihome.smarthome.module.base;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,9 +15,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -42,7 +47,9 @@ import com.ihome.smarthome.module.base.communicate.MySocketManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
+import com.ihome.smarthome.receiver.AdminReceiver;
 import com.ihome.smarthome.service.AlarmService;
+import com.ihome.smarthome.utils.CrashHandlerUtils;
 import com.ihome.smarthome.utils.EventBusUtils;
 import com.ihome.smarthome.utils.SystemTTSUtils;
 import com.ihome.smarthome.R;
@@ -171,6 +178,7 @@ public class HomeActivity extends BaseActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void bindView() {
+
         EventBusUtils.sendLog(getTAG(), "LoginActivity bindView", LogEvent.LOG_IMPORTANT, true);
         setContentView(R.layout.activity_login1);
         EventBus.getDefault().register(this);
@@ -183,11 +191,60 @@ public class HomeActivity extends BaseActivity {
         startAlarmService();
         init();
 
-
-       // requestIgnoreBatteryOptimizationsSETTINGS();
+      //  getAdminOwner();
+      //  enableDeviceAdmin();
+      //  requestIgnoreBatteryOptimizationsSETTINGS();
     }
 
 
+
+    private void getAdminOwner(){
+        Intent intent = new Intent(
+                DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                getPackageName());
+        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "提示文字");
+        startActivityForResult(intent, 1);
+
+    }
+
+
+    private void enableDeviceAdmin() {
+
+        ComponentName deviceAdmin = new ComponentName(this, AdminReceiver.class);
+        DevicePolicyManager mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+        // First of all, to access anything you must be device owner
+        if (mDpm.isDeviceOwnerApp(getPackageName())) {
+
+            // If not device admin, ask to become one
+            if (!mDpm.isAdminActive(deviceAdmin) &&
+                    mDpm.isDeviceOwnerApp(getPackageName())) {
+
+                Log.v(getTAG(), "Not device admin. Asking device owner to become one.");
+
+                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdmin);
+                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                        "You need to be a device admin to enable device admin.");
+
+                startActivity(intent);
+            }
+
+            // Device owner and admin : enter device admin
+            else {
+                mDpm.setLockTaskPackages(deviceAdmin, new String[]{
+                        getPackageName(), /* PUT OTHER PACKAGE NAMES HERE! */
+            });
+            startLockTask();
+        }
+    }
+    // Not device owner - can't access anything
+         else {
+        Log.v(getTAG(), "Not device owner");
+        Toast.makeText(this, "Not device owner", Toast.LENGTH_SHORT).show();
+    }
+}
 
 
     private void initView() {
@@ -195,12 +252,14 @@ public class HomeActivity extends BaseActivity {
         fab = findViewById(R.id.fab);
         mFloatingToolbar = findViewById(R.id.floatingToolbar);
 
-        MySocketManager.getInstance().on(Constants.SERVER_MSG, new ICommunicate.Listener() {
-            @Override
-            public void onMessage(BaseMessageEvent event) {
-                MyLog.e("LoginActivity SERVER_MSG");
-            }
-        });
+    }
+
+    private void test(){
+        Window win = getWindow();
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED //锁屏状态下显示
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD //解锁
+
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON); //打开屏幕
     }
 
 
@@ -289,7 +348,6 @@ public class HomeActivity extends BaseActivity {
         checkBatteryOptimizations();
         // registerHomeKeyReceiver();
         registerMonitorReceiver();
-
         startBluetoothService();
     }
 
@@ -346,7 +404,6 @@ public class HomeActivity extends BaseActivity {
 
     public void requestIgnoreBatteryOptimizations() {
         try {
-
             Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             intent.setData(Uri.parse("package:" + getPackageName()));
             startActivity(intent);
@@ -492,10 +549,12 @@ public class HomeActivity extends BaseActivity {
                         break;
 
                     case R.id.action3:
-                        stopConnectService();
+                     /*   stopConnectService();
                         stopFloatingService();
                         stopScreenLockService();
-                        finish();
+                        finish();*/
+                        MyLog.e("todaylogs:---"+CrashHandlerUtils.getTodayLogs());
+                        ToastUtil.toast(CrashHandlerUtils.getTodayLogs());
                         break;
                 }
             }
