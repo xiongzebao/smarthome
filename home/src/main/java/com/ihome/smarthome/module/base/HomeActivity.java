@@ -41,6 +41,7 @@ import com.ihome.base.base.BaseActivity;
 import com.ihome.base.utils.DialogUtils;
 import com.ihome.base.utils.ScenceUtils;
 import com.ihome.smarthome.applockscreen.service.LockScreenService;
+import com.ihome.smarthome.basicmanagedprofile.ProfileActivity;
 import com.ihome.smarthome.module.adapter.DeviceListAdapter;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
 import com.ihome.smarthome.module.base.communicate.MySocketManager;
@@ -190,10 +191,10 @@ public class HomeActivity extends BaseActivity {
         startLockScreenService();
         startAlarmService();
         init();
-
-      //  getAdminOwner();
-      //  enableDeviceAdmin();
+       // getAdminOwner();
+        enableDeviceAdmin();
       //  requestIgnoreBatteryOptimizationsSETTINGS();
+       // ActivityManager.startActivity(ProfileActivity.class);
     }
 
 
@@ -209,17 +210,35 @@ public class HomeActivity extends BaseActivity {
     }
 
 
+
+    private void active(){
+
+    }
+
+
+
+
     private void enableDeviceAdmin() {
 
-        ComponentName deviceAdmin = new ComponentName(this, AdminReceiver.class);
-        DevicePolicyManager mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        ComponentName deviceAdmin = new ComponentName(getApplication(), AdminReceiver.class);
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+   /*     if (!devicePolicyManager.isAdminActive(deviceAdmin)) {
+            Intent intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdmin);
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "激活此设备管理员后可免root停用应用")
+            startActivityForResult(intent, 1)
+        } else {
+            Toast.makeText(this, "此App已激活设备管理器", Toast.LENGTH_SHORT).show()
+        }
+        */
+
+
 
         // First of all, to access anything you must be device owner
-        if (mDpm.isDeviceOwnerApp(getPackageName())) {
-
+        if (devicePolicyManager.isDeviceOwnerApp(getPackageName())) {
             // If not device admin, ask to become one
-            if (!mDpm.isAdminActive(deviceAdmin) &&
-                    mDpm.isDeviceOwnerApp(getPackageName())) {
+            if (!devicePolicyManager.isAdminActive(deviceAdmin) &&
+                    devicePolicyManager.isDeviceOwnerApp(getPackageName())) {
 
                 Log.v(getTAG(), "Not device admin. Asking device owner to become one.");
 
@@ -233,7 +252,7 @@ public class HomeActivity extends BaseActivity {
 
             // Device owner and admin : enter device admin
             else {
-                mDpm.setLockTaskPackages(deviceAdmin, new String[]{
+                devicePolicyManager.setLockTaskPackages(deviceAdmin, new String[]{
                         getPackageName(), /* PUT OTHER PACKAGE NAMES HERE! */
             });
             startLockTask();
