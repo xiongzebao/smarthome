@@ -36,13 +36,13 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class HomeFragment extends BaseFragment {
+public class SmartHomeFragment extends BaseFragment {
 
     FragHomeBinding binding;
     DataFragment dataFragment;
 
-    public static HomeFragment newInstance() {
-        HomeFragment homeFrag = new HomeFragment();
+    public static SmartHomeFragment newInstance() {
+        SmartHomeFragment homeFrag = new SmartHomeFragment();
         return homeFrag;
     }
 

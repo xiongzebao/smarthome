@@ -64,6 +64,10 @@ public class ListFragment extends BaseFragment implements OnLoadMoreListener, On
     }
 
 
+    public void scrollToBottom(){
+        binding.swipeTarget.smoothScrollToPosition(adapter.getItemCount());
+    }
+
     public void initData(){
 
     }
@@ -103,6 +107,7 @@ public class ListFragment extends BaseFragment implements OnLoadMoreListener, On
         pageMo.loadMore();
         if (loadListener != null) {
             loadListener.onLoadPage(pageMo);
+            loadFinish();
         }
     }
 
@@ -111,6 +116,7 @@ public class ListFragment extends BaseFragment implements OnLoadMoreListener, On
         pageMo.refresh();
         if (loadListener != null) {
             loadListener.onLoadPage(pageMo);
+            loadFinish();
         }
     }
 

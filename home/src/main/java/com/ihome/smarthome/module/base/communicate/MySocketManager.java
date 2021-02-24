@@ -94,6 +94,11 @@ public class MySocketManager implements ICommunicate {
         counter = 0;
     };
 
+    private Emitter.Listener server_msg = args -> {
+        EventBusUtils.sendLog(TAG, paramsToString(args), LogEvent.LOG_DEBUG, true);
+        counter = 0;
+    };
+
     public static MySocketManager getInstance() {
         if (instance == null) {
             instance = new MySocketManager(MyApplication.application);
@@ -155,6 +160,8 @@ public class MySocketManager implements ICommunicate {
         on(io.socket.client.Socket.EVENT_CONNECT_ERROR, onConnectError);
         on(Constants.PING, onPing);
 
+
+
         mSocket.io().on(Manager.EVENT_TRANSPORT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -162,9 +169,9 @@ public class MySocketManager implements ICommunicate {
                 transport.on(Transport.EVENT_REQUEST_HEADERS, new Emitter.Listener() {
                     @Override
                     public void call(Object... args) {
-                        Log.v(TAG, "Caught EVENT_REQUEST_HEADERS after EVENT_TRANSPORT, adding headers");
-                        Map<String, List<String>> mHeaders = (Map<String, List<String>>) args[0];
-                        mHeaders.put("Authorization", Arrays.asList("Basic bXl1c2VyOm15cGFzczEyMw=="));
+                       // Log.v(TAG, "Caught EVENT_REQUEST_HEADERS after EVENT_TRANSPORT, adding headers");
+                        //Map<String, List<String>> mHeaders = (Map<String, List<String>>) args[0];
+                      //  mHeaders.put("Authorization", Arrays.asList("Basic bXl1c2VyOm15cGFzczEyMw=="));
                     }
                 });
             }

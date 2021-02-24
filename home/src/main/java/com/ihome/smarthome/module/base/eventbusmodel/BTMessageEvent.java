@@ -14,6 +14,8 @@ public class BTMessageEvent extends  BaseMessageEvent implements Serializable {
     final public static int ON_READ_EXCEPTION = 6;
     final public static  int ON_CONNECT_SUCCESS = 7;
 
+    final public static  int REFRESH_NOTICE = 8;
+
     private String name;
     private String message;
     private String macAddress;

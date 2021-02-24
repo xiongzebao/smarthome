@@ -13,7 +13,7 @@ public class LogEvent extends BaseMessageEvent {
 
     final public static int LOG_EVENT=4;
     final public static int LOG_IMPORTANT=5;
-
+    final public static int LOG_NOTICE=6;
     private int type;
     private String message;
     private String event;

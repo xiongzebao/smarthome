@@ -114,7 +114,13 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".module.job.view.ReceiptDataActivity"
             android:screenOrientation="portrait" />
@@ -134,20 +140,16 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity android:name=".module.base.HomeActivity">
-           <intent-filter>
+
+        </activity>
+
+      <!--  <activity android:name=".applockscreen.activity.MainActivity">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity android:name=".applockscreen.activity.MainActivity">
-      <!--      <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
+        </activity>-->
         <activity android:name=".module.base.BoilerActivity" />
 
         <activity

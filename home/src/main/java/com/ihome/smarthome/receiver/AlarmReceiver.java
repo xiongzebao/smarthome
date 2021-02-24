@@ -46,14 +46,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         MyLog.e("hour:"+hour+"min:"+min);
         EventBusUtils.sendLog("AlarmReceiver","hour:"+hour+"min:"+min, LogEvent.LOG_DEBUG,false);
         String time = hour+"点"+min+"分";
-        if(hour<=12&&min<=60){
-           // SystemTTSUtils.getInstance(ActivityManager.peek()).playText(time);
-            MySocketManager.getInstance().sendPing();
-        }
+       // MySocketManager.getInstance().sendPing();
     }
-
-
-
 
     void setVibratorTimer(){
         Timer timer = new Timer();

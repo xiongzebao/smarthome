@@ -29,9 +29,6 @@ public class NoticeUtils {
         long[] patter = {1000, 1000, 2000, 50};
         vibrator.vibrate(patter, 0);
         NoticeManager.startNotification("久坐提醒","一个小时提醒一次");
-
-
-
     }
 
     public static Notification createForegroundNotification(Context context,String notificationChannelId,

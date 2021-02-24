@@ -2,6 +2,9 @@ package com.ihome.smarthome;
 
 
 import android.content.Intent;
+import android.os.Build;
+import android.provider.Settings;
+import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
@@ -13,13 +16,16 @@ import androidx.fragment.app.FragmentTransaction;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.erongdu.wireless.tools.log.MyLog;
+import com.ihome.smarthome.module.base.LogFragment;
+import com.ihome.smarthome.module.base.SmartHomeFragment;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.king.zxing.CameraScan;
 import com.ihome.base.base.BaseActivity;
 import com.ihome.base.base.BaseFragment;
 import com.ihome.smarthome.base.MyApplication;
 import com.ihome.smarthome.common.KTConstant;
 import com.ihome.smarthome.databinding.ActivityMainBinding;
-import com.ihome.smarthome.module.main.view.HomeFragment;
+
 import com.ihome.smarthome.module.main.view.JobFragment;
 import com.ihome.smarthome.module.main.view.MineFragment;
 import com.ihome.smarthome.utils.ApiUtils;
@@ -29,8 +35,8 @@ public class MainActivity extends BaseActivity {
 
     ActivityMainBinding binding;
 
-    HomeFragment homeFrag;
-    JobFragment jobFragment;
+    SmartHomeFragment homeFrag;
+    LogFragment jobFragment;
     MineFragment mineFragment;
 
     final String TAG_HOME = "tag_home";
@@ -48,6 +54,7 @@ public class MainActivity extends BaseActivity {
                     break;
                 case 1:
                     showFragment(jobFragment, TAG_JOB);
+                    jobFragment.refresh();
                     break;
                 case 2:
                     showFragment(mineFragment, TAG_MINE);
@@ -100,12 +107,12 @@ public class MainActivity extends BaseActivity {
         if (null == fragment) {
             switch (tag) {
                 case TAG_HOME:
-                    fragment = HomeFragment.newInstance();
-                    homeFrag = (HomeFragment) fragment;
+                    fragment = SmartHomeFragment.newInstance();
+                    homeFrag = (SmartHomeFragment) fragment;
                     break;
                 case TAG_JOB:
-                    fragment = JobFragment.newInstance();
-                    jobFragment = (JobFragment) fragment;
+                    fragment =LogFragment.newInstance(LogEvent.LOG_NOTICE);
+                    jobFragment = (LogFragment) fragment;
                     break;
                 case TAG_MINE:
                     fragment = MineFragment.newInstance();
@@ -125,13 +132,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String topTitle = CommenSetUtils.getProjectTitle();
-        if (homeFrag != null) {
-            homeFrag.setTitle(topTitle);
-        }
-        if (jobFragment != null) {
-            jobFragment.setTitle(topTitle);
-        }
+
 
     }
 
@@ -166,30 +167,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case MineFragment.REQUEST_CODE_SCAN:
-                if (resultCode == RESULT_OK && data != null) {
-                    String result = CameraScan.parseScanResult(data);
-                    ApiUtils.uploadMemUserID(result);
-                }
-                break;
-            case KTConstant.LOGIN:
-                if (resultCode != RESULT_OK) {
-
-                    finish();
-                }else{
-                    homeFrag.requestProjectData();
-                }
-                break;
-            case MineFragment.RC_CAMERA:
-                MyLog.e("获取相机权限");
-                mineFragment.startScanCode();
-                break;
-        }
-    }
 
 
     protected void onNewIntent(Intent intent) {
@@ -202,6 +179,21 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         MyApplication.mainActivity = null;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == com.ihome.smarthome.module.base.SmartHomeFragment.REQUEST_OVERLAY_PERMISSION) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+                Toast.makeText(this, "授权失败", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "授权成功", Toast.LENGTH_SHORT).show();
+                //bindFloatingService();
+               // SmartHomeFragment.startFloatingService();
+            }
+        }
     }
 
 

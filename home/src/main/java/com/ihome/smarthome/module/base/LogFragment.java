@@ -5,10 +5,25 @@ import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.erongdu.wireless.network.entity.PageMo;
+import com.erongdu.wireless.tools.log.MyLog;
+import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.ihome.base.common.ui.ListFragment;
+import com.ihome.base.common.ui.OnLoadListener;
+import com.ihome.base.utils.ScenceUtils;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.database.showlog.DbController;
 import com.ihome.smarthome.database.showlog.ShowLogEntity;
+import com.ihome.smarthome.module.base.communicate.ICommunicate;
+import com.ihome.smarthome.module.base.communicate.MySocketManager;
+import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
+import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
+import com.ihome.smarthome.utils.EventBusUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +35,6 @@ import java.util.List;
  */
 
 public class LogFragment  extends ListFragment {
-
 
 
     int LogType;
@@ -51,13 +65,55 @@ public class LogFragment  extends ListFragment {
     }
 
 
+
+
+
+
+    public static LogFragment newInstance(int logType){
+        LogFragment fragment = new LogFragment(logType);
+        return fragment;
+    }
+
+
     @Override
     public void initData() {
          setAdapter(new MyAdapter(R.layout.layout_log_item,list));
 
+
+         setOnLoadListener(new OnLoadListener() {
+             @Override
+             public void onLoadPage(PageMo pageNo) {
+                 refresh();
+             }
+         });
+
+        EventBus.getDefault().register(this);
+
+    }
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            refresh();
+            scrollToBottom();
+        }
     }
 
-   public void refresh(){
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(BTMessageEvent event) {
+        switch (event.getMessageType()) {
+            case BTMessageEvent.REFRESH_NOTICE:
+                refresh();
+                scrollToBottom();
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    public void refresh(){
         if(LogType==0){
             List<ShowLogEntity> data =  DbController.getInstance(getContext()).searchAll();
             if(getAdapter()!=null){
@@ -71,5 +127,10 @@ public class LogFragment  extends ListFragment {
       }
    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
+        EventBus.getDefault().unregister(this);
+    }
 }

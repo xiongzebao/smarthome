@@ -20,4 +20,8 @@ public class BaseFragment extends Fragment implements PlaceholderLayout.OnReload
     public void onApply(View v) {
 
     }
+
+    protected String getTAG(){
+        return this.getClass().getSimpleName();
+    }
 }

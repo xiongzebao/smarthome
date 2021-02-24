@@ -16,7 +16,9 @@ import androidx.annotation.Nullable;
 
 import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.R;
+import com.ihome.smarthome.database.showlog.DbController;
 import com.ihome.smarthome.module.base.Constants;
+import com.ihome.smarthome.module.base.NoticeManager;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
 import com.ihome.smarthome.module.base.communicate.MySocketManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
@@ -42,7 +44,7 @@ public class ConnectionService extends Service {
 
     public final static int START_BLUETOOTH_SERVER  = 1000;
     public final static int START_WIRELESS_SERVER  = 1001;
-
+    private PowerManager.WakeLock wl;
     private boolean isAlive = false;
     private MyBluetoothManager bluetoothManager;
     private MySocketManager socketManager;
@@ -67,31 +69,46 @@ public class ConnectionService extends Service {
         Notification notification = NoticeUtils.createForegroundNotification(this,
                 "bluetooth_notice_channal",
                 "bluetooth service",
-                "蓝牙服务",
-                "蓝牙服务已开启"
+                "连接服务",
+                "连接服务已开启"
                 );
         //将服务置于启动状态 ,NOTIFICATION_ID指的是创建的通知的ID
         startForeground(2, notification);
         EventBus.getDefault().register(this);
-        MySocketManager.getInstance().on(Constants.SERVER_MSG, new ICommunicate.Listener() {
+        registerEvent();
+        MySocketManager.getInstance().connect();
+        wakeLock();
+    }
+
+//saveToDatabase(String tag,String msg,int type,String event){
+    private void registerEvent(){
+        MySocketManager.getInstance().on(Constants.WARN, new ICommunicate.Listener() {
             @Override
             public void onMessage(BaseMessageEvent event) {
                 MyLog.e("ConnectService1 SERVER_MSG");
+                NoticeManager.startNotification("提醒",event.message);
+                EventBusUtils.saveToDatabase("notice",event.message,LogEvent.LOG_NOTICE,event.event);
+                EventBusUtils.sendMessageEvent(new BTMessageEvent(BTMessageEvent.REFRESH_NOTICE));
+
             }
         });
 
         MySocketManager.getInstance().on(Constants.ACTION, new ICommunicate.Listener() {
             @Override
             public void onMessage(BaseMessageEvent event) {
-
                 MyLog.e("ConnectService2 "+event.event);
+                NoticeManager.startNotification("动作",event.message);
+                EventBusUtils.saveToDatabase("notice",event.message,LogEvent.LOG_NOTICE,event.event);
             }
         });
-        MySocketManager.getInstance().connect();
-        wakeLock();
-
     }
-   PowerManager.WakeLock wl;
+
+
+
+
+
+
+
     private void wakeLock() {
         PowerManager pm = (PowerManager) getSystemService(
                 Context.POWER_SERVICE);

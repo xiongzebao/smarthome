@@ -94,7 +94,7 @@ public class LogActivity extends BaseActivity {
     final public static int LOG_IMPORTANT=5;*/
 
     List<String> getTitles(){
-        List<String> list =   Arrays.asList("全部","debug","failed","success","event","important");
+        List<String> list =   Arrays.asList("全部","debug","failed","success","event","important","notice");
         return list;
     }
 }

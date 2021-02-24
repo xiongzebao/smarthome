@@ -41,7 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
         setOnBack();
     }
 
-    public String getTAG(){
+    protected String getTAG(){
         return this.getClass().getSimpleName();
     }
 

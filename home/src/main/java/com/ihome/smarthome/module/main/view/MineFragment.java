@@ -110,7 +110,7 @@ public class MineFragment extends BaseFragment {
 
     private void setBinding(){
 
-        setUserInfo();
+
 
         binding.rlLeaveConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +122,7 @@ public class MineFragment extends BaseFragment {
         binding.rlExceptionUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityManager.startActivity(ExceptionActivity.class);
+
             }
         });
 
@@ -137,7 +137,7 @@ public class MineFragment extends BaseFragment {
         binding.rlFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 ActivityManager.startActivity(FeedBackActivity.class);
+
             }
         });
 
@@ -152,7 +152,7 @@ public class MineFragment extends BaseFragment {
         binding.rlExitLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityUtils.signOutToLogin(getActivity());
+
             }
         });
 
