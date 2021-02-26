@@ -48,7 +48,7 @@ public class MySocketManager implements ICommunicate {
             counter++;
            // EventBusUtils.sendLog(TAG,"handler ping",LogEvent.LOG_DEBUG,true);
             EventBusUtils.saveToDatabase(TAG,"handler",LogEvent.LOG_DEBUG);
-            if (counter%3==0) {
+            if (counter%5==0) {
                 EventBusUtils.sendLog(TAG, "心跳连接超时，重新连接！", LogEvent.LOG_IMPORTANT, true);
                 reConnect();
             }

@@ -198,7 +198,7 @@ public class SmartHomeFragment extends BaseFragment {
         initRecyclerview();
         startFloatingService();
         startBluetoothService();
-        startLockScreenService();
+       // startLockScreenService();
         startAlarmService();
         init();
         // getAdminOwner();
@@ -210,6 +210,13 @@ public class SmartHomeFragment extends BaseFragment {
         return  rootView;
     }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+      //  SystemTTSUtils.installiFlyEnginSlice(getContext());
+    }
 
     private void getAdminOwner(){
         Intent intent = new Intent(

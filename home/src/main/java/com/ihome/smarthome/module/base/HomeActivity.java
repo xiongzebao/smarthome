@@ -195,6 +195,7 @@ public class HomeActivity extends BaseActivity {
         enableDeviceAdmin();
       //  requestIgnoreBatteryOptimizationsSETTINGS();
        // ActivityManager.startActivity(ProfileActivity.class);
+
     }
 
 

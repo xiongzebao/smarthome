@@ -14,6 +14,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.VibrateUtils;
 import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.database.showlog.DbController;
@@ -89,7 +90,7 @@ public class ConnectionService extends Service {
                 NoticeManager.startNotification("提醒",event.message);
                 EventBusUtils.saveToDatabase("notice",event.message,LogEvent.LOG_NOTICE,event.event);
                 EventBusUtils.sendMessageEvent(new BTMessageEvent(BTMessageEvent.REFRESH_NOTICE));
-
+              // VibrateUtils.vibrate(5000);
             }
         });
 

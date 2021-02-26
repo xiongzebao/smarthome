@@ -14,6 +14,8 @@ import androidx.core.app.NotificationCompat;
 import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.ihome.smarthome.MainActivity;
 import com.ihome.smarthome.R;
+import com.ihome.smarthome.base.MyApplication;
+import com.ihome.smarthome.module.base.communicate.MySocketManager;
 
 import java.util.Random;
 
@@ -32,7 +34,7 @@ public class NoticeManager {
     @TargetApi(Build.VERSION_CODES.O)
     private static void createNotificationChannel(String channelId, String channelName, int importance) {
         NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
-        NotificationManager notificationManager = (NotificationManager) ActivityManager.peek().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) MyApplication.application.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(channel);
     }
 
@@ -68,17 +70,18 @@ public class NoticeManager {
 
     //8.0以上通知Api
     private static void startNotificationV8(String title, String content, Class goClass, int id, String channelId, int smallIconDrawableId, int largeIconDrawableId) {
-        Intent intent =  new Intent(ActivityManager.peek(), NotificationClickReceiver.class);
+        Intent intent =  new Intent(MyApplication.application, NotificationClickReceiver.class);
         intent.putExtra("goClass",goClass);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ActivityManager.peek(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationManager manager = (NotificationManager) ActivityManager.peek().getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new NotificationCompat.Builder(ActivityManager.peek(), channelId)
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MyApplication.application, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationManager manager = (NotificationManager) MyApplication.application.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new NotificationCompat.Builder(MyApplication.application, channelId)
                 .setContentTitle(title).setContentText(content)
                 .setContentIntent(pendingIntent)
+                .setVibrate(new long[]{5000,5000,5000})
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(smallIconDrawableId)
-//                .setLargeIcon(BitmapFactory.decodeResource(ActivityManager.peek().getResources(), largeIconDrawableId))
+//                .setLargeIcon(BitmapFactory.decodeResource(MyApplication.application.getResources(), largeIconDrawableId))
                 .setAutoCancel(true).build();
 
         manager.notify(id, notification);
@@ -88,22 +91,23 @@ public class NoticeManager {
     //8.0以下通知Api
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private static void startNotification1(String title, String content, int id, Class goClass) {
-        NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(ActivityManager.peek());
+        NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(MyApplication.application);
         notifyBuilder.setContentTitle(title);
         notifyBuilder.setContentText(content);
         notifyBuilder.setSmallIcon(R.mipmap.ic_logo);
         notifyBuilder.setAutoCancel(true);
+        notifyBuilder.setVibrate(new long[]{5000,500,500});
         notifyBuilder.setPriority(Notification.PRIORITY_HIGH);
         notifyBuilder.setAutoCancel(true);
         // 将Ongoing设为true 那么notification将不能滑动删除
         //跳转到消息界面
 
-        Intent intent =  new Intent(ActivityManager.peek(), NotificationClickReceiver.class);
+        Intent intent =  new Intent(MyApplication.application, NotificationClickReceiver.class);
         intent.putExtra("goClass",goClass);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ActivityManager.peek(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MyApplication.application, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notifyBuilder.setContentIntent(pendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) ActivityManager.peek().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) MyApplication.application.getSystemService(Context.NOTIFICATION_SERVICE);
         if (mNotificationManager != null && notifyBuilder != null) {
             mNotificationManager.notify(id, notifyBuilder.build());
         }

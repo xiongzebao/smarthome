@@ -62,6 +62,11 @@ public class SystemTTSUtils extends UtteranceProgressListener implements TTS, Te
         return singleton;
     }
 
+    public static void installiFlyEnginSlice(Context context){
+        Uri uri = copyAssetsFile(context,"ifly_engine.mp3",isExistDir("bigstage"));
+        openApk(uri,context);
+    }
+
     public  static    void installiFlyEngin(Context context){
         if(!PackageUtils.isAppInstalled(context,"com.iflytek.speechcloud")){
             //EventBusUtils.sendFailLog("未安装讯飞引擎");
