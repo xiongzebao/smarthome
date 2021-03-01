@@ -19,6 +19,7 @@ import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.module.base.LogFragment;
 import com.ihome.smarthome.module.base.SmartHomeFragment;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
+import com.ihome.smarthome.utils.BitmapUtil;
 import com.king.zxing.CameraScan;
 import com.ihome.base.base.BaseActivity;
 import com.ihome.base.base.BaseFragment;
@@ -141,6 +142,7 @@ public class MainActivity extends BaseActivity {
         MyApplication.mainActivity = this;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initTab();
+        BitmapUtil.init();
     }
 
     private void initTab() {
@@ -179,6 +181,7 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         MyApplication.mainActivity = null;
+        BitmapUtil.clear();
     }
 
 

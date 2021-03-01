@@ -2,7 +2,7 @@ package com.ihome.smarthome.module.base;
 
 import com.blankj.utilcode.util.CacheDiskStaticUtils;
 
-public class Constants {
+public class STConstants {
 
 
 

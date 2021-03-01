@@ -87,7 +87,18 @@
         android:requestLegacyExternalStorage="true"
         tools:replace="android:appComponentFactory,allowBackup,icon,label">
 
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="ZpGiz1eS30TMzOSNrUcmBVqBLbfHbRhj"/>
 
+        <meta-data android:name="android.max_aspect"
+            android:value="2.1"/>
+
+        <service
+            android:name="com.baidu.trace.LBSTraceService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":remote" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -253,6 +264,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".module.base.TracingActivity" />
 
         <receiver
             android:name=".basicmanagedprofile.BasicDeviceAdminReceiver"

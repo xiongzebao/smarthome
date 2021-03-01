@@ -2,23 +2,20 @@ package com.ihome.smarthome.module.base.communicate;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 import android.util.Pair;
 
 import com.blankj.utilcode.util.DeviceUtils;
 import com.ihome.smarthome.base.MyApplication;
-import com.ihome.smarthome.module.base.Constants;
+import com.ihome.smarthome.module.base.STConstants;
 import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.utils.EventBusUtils;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import io.socket.client.IO;
 import io.socket.client.Manager;
@@ -107,12 +104,12 @@ public class MySocketManager implements ICommunicate {
     }
 
     public void sendMessage(String msg) {
-        mSocket.emit(Constants.CLIENT_MSG, msg);
+        mSocket.emit(STConstants.CLIENT_MSG, msg);
     }
 
     public void sendPing() {
         if(mSocket.connected()){
-            mSocket.emit(Constants.PING, "p");
+            mSocket.emit(STConstants.PING, "p");
         }
     }
 
@@ -154,11 +151,11 @@ public class MySocketManager implements ICommunicate {
                 // Socket options
                 .setAuth(auth)
                 .build();
-        mSocket = IO.socket(URI.create(Constants.CHAT_SERVER_URL), options);
+        mSocket = IO.socket(URI.create(STConstants.CHAT_SERVER_URL), options);
         on(io.socket.client.Socket.EVENT_CONNECT, onConnect);
         on(io.socket.client.Socket.EVENT_DISCONNECT, onDisconnect);
         on(io.socket.client.Socket.EVENT_CONNECT_ERROR, onConnectError);
-        on(Constants.PING, onPing);
+        on(STConstants.PING, onPing);
 
 
 

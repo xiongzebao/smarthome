@@ -573,7 +573,8 @@ public class SmartHomeFragment extends BaseFragment {
                     case R.id.action1:
                        /*  MyBluetoothManager.getInstance().registerDiscoveryReceiver(LoginActivity.this);
                         MyBluetoothManager.getInstance().startScan();*/
-                        MySocketManager.getInstance().sendMessage(" android client test");
+                       // MySocketManager.getInstance().sendMessage(" android client test");
+                        ActivityManager.startActivity(TracingActivity.class);
                         break;
                     case R.id.action2:
                         FloatingService.startCommand(getActivity(), FloatingService.SHOW_FLOATING_SERVICE);

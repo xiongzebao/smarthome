@@ -16,7 +16,12 @@ android {
         targetGenDir 'src/main/java' //指定生成代码的目录
 
     }
-
+    sourceSets {
+        main {
+            // 这里我写 `libs`，它就会去 `libs` 目录中找，你也可以放在其它任何目录中。
+            jniLibs.srcDirs = ['libs']
+        }
+    }
     defaultConfig {
         applicationId "com.ihome.smarthome"
 
@@ -27,6 +32,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+
     }
 
     buildTypes {

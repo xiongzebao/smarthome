@@ -1,6 +1,5 @@
 package com.ihome.smarthome.service;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.Service;
@@ -14,20 +13,16 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.VibrateUtils;
 import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.R;
-import com.ihome.smarthome.database.showlog.DbController;
-import com.ihome.smarthome.module.base.Constants;
+import com.ihome.smarthome.module.base.STConstants;
 import com.ihome.smarthome.module.base.NoticeManager;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
 import com.ihome.smarthome.module.base.communicate.MySocketManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
-import com.ihome.smarthome.module.base.TestUtils;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
-import com.ihome.smarthome.module.base.eventbusmodel.MediaSessionManager;
 import com.ihome.smarthome.utils.EventBusUtils;
 import com.ihome.smarthome.utils.NoticeUtils;
 
@@ -83,23 +78,23 @@ public class ConnectionService extends Service {
 
 //saveToDatabase(String tag,String msg,int type,String event){
     private void registerEvent(){
-        MySocketManager.getInstance().on(Constants.WARN, new ICommunicate.Listener() {
+        MySocketManager.getInstance().on(STConstants.WARN, new ICommunicate.Listener() {
             @Override
             public void onMessage(BaseMessageEvent event) {
                 MyLog.e("ConnectService1 SERVER_MSG");
-                NoticeManager.startNotification("提醒",event.message);
-                EventBusUtils.saveToDatabase("notice",event.message,LogEvent.LOG_NOTICE,event.event);
-                EventBusUtils.sendMessageEvent(new BTMessageEvent(BTMessageEvent.REFRESH_NOTICE));
+              //  NoticeManager.startNotification("提醒",event.message);
+             //   EventBusUtils.saveToDatabase("notice",event.message,LogEvent.LOG_NOTICE,event.event);
+              //  EventBusUtils.sendMessageEvent(new BTMessageEvent(BTMessageEvent.REFRESH_NOTICE));
               // VibrateUtils.vibrate(5000);
             }
         });
 
-        MySocketManager.getInstance().on(Constants.ACTION, new ICommunicate.Listener() {
+        MySocketManager.getInstance().on(STConstants.ACTION, new ICommunicate.Listener() {
             @Override
             public void onMessage(BaseMessageEvent event) {
                 MyLog.e("ConnectService2 "+event.event);
-                NoticeManager.startNotification("动作",event.message);
-                EventBusUtils.saveToDatabase("notice",event.message,LogEvent.LOG_NOTICE,event.event);
+              //  NoticeManager.startNotification("动作",event.message);
+              //  EventBusUtils.saveToDatabase("notice",event.message,LogEvent.LOG_NOTICE,event.event);
             }
         });
     }
@@ -140,7 +135,7 @@ public class ConnectionService extends Service {
         if(intent==null){
             return START_STICKY;
         }
-        int  command = intent.getIntExtra(Constants.SP_KEY_COMMAND,0);
+        int  command = intent.getIntExtra(STConstants.SP_KEY_COMMAND,0);
         switch (command){
             case START_BLUETOOTH_SERVER:
                 startBluetoothService();
