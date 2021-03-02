@@ -1,12 +1,15 @@
 package com.ihome.base.base;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.OrientationEventListener;
@@ -16,6 +19,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
@@ -31,6 +36,7 @@ import org.greenrobot.eventbus.EventBus;
 public abstract class BaseActivity extends AppCompatActivity implements PlaceholderLayout.OnReloadListener {
 
     final static int REQUEST_CODE_ASK_WRITE_SETTINGS = 1001;
+     PowerManager powerManager = null;
     @Override
    final  protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
    final public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
        // EventBus.getDefault().register(this);
+        powerManager=(PowerManager) getSystemService(Context.POWER_SERVICE);
         ActivityManager.push(this);
         setSystemBar();
         bindView();
@@ -126,6 +133,41 @@ public abstract class BaseActivity extends AppCompatActivity implements Placehol
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+    }
+
+
+    protected void requestBatteryOptimizations() {
+
+
+        // 在Android 6.0及以上系统，若定制手机使用到doze模式，请求将应用添加到白名单。
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String packageName =  getPackageName();
+            boolean isIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName);
+            if (!isIgnoring) {
+                Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + packageName));
+                try {
+                    startActivity(intent);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void requestBackgroundLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                    // No explanation needed; request the permission
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                            0);
+                }
+            }
+        }
     }
 
 

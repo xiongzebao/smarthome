@@ -200,6 +200,7 @@
 
         <service android:name=".appwidget.list.SampleRemoteService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service android:name=".service.TracingService" />
 
         <receiver
             android:name=".appwidget.common.ExampleCommonAppWidget"

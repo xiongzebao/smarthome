@@ -1,9 +1,14 @@
 package com.ihome.smarthome;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.method.LinkMovementMethod;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -20,6 +25,9 @@ import com.ihome.smarthome.module.base.LogFragment;
 import com.ihome.smarthome.module.base.SmartHomeFragment;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.utils.BitmapUtil;
+import com.ihome.smarthome.utils.CommonUtil;
+import com.ihome.smarthome.utils.Constants;
+import com.ihome.smarthome.utils.SharedPreferenceUtil;
 import com.king.zxing.CameraScan;
 import com.ihome.base.base.BaseActivity;
 import com.ihome.base.base.BaseFragment;
@@ -143,7 +151,11 @@ public class MainActivity extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initTab();
         BitmapUtil.init();
+
     }
+
+
+
 
     private void initTab() {
         binding.tabs
@@ -180,6 +192,23 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        CommonUtil.saveCurrentLocation(MyApplication.application);
+        if (MyApplication.application.trackConf.contains("is_trace_started")
+                && MyApplication.application.trackConf.getBoolean("is_trace_started", true)) {
+            // 退出app停止轨迹服务时，不再接收回调，将OnTraceListener置空
+            MyApplication.application.mClient.setOnTraceListener(null);
+            MyApplication.application.mClient.stopTrace(MyApplication.application.mTrace, null);
+        } else {
+            MyApplication.application.mClient.clear();
+        }
+        MyApplication.application.isTraceStarted = false;
+        MyApplication.application.isGatherStarted = false;
+        SharedPreferences.Editor editor = MyApplication.application.trackConf.edit();
+        editor.remove("is_trace_started");
+        editor.remove("is_gather_started");
+        editor.apply();
+        BitmapUtil.clear();
         MyApplication.mainActivity = null;
         BitmapUtil.clear();
     }

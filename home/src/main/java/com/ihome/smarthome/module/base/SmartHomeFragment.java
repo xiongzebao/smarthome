@@ -32,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.baidu.trace.LBSTraceService;
 import com.blankj.utilcode.util.GsonUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.erongdu.wireless.tools.log.MyLog;
@@ -58,6 +59,7 @@ import com.ihome.smarthome.receiver.BluetoothMonitorReceiver;
 import com.ihome.smarthome.service.AlarmService;
 import com.ihome.smarthome.service.ConnectionService;
 import com.ihome.smarthome.service.FloatingService;
+import com.ihome.smarthome.service.TracingService;
 import com.ihome.smarthome.utils.CrashHandlerUtils;
 import com.ihome.smarthome.utils.EventBusUtils;
 import com.ihome.smarthome.utils.SystemTTSUtils;
@@ -200,6 +202,7 @@ public class SmartHomeFragment extends BaseFragment {
         startBluetoothService();
        // startLockScreenService();
         startAlarmService();
+        startTraceService();
         init();
         // getAdminOwner();
         enableDeviceAdmin();
@@ -562,6 +565,10 @@ public class SmartHomeFragment extends BaseFragment {
         }
     }
 
+
+    public void startTraceService(){
+        TracingService.startService(getActivity());
+    }
 
     private void initFloatBar() {
 

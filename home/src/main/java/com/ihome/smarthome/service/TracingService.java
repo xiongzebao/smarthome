@@ -1,9 +1,12 @@
-package com.ihome.smarthome.module.base;
+package com.ihome.smarthome.service;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,19 +16,18 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
@@ -40,18 +42,22 @@ import com.baidu.trace.model.OnTraceListener;
 import com.baidu.trace.model.PushMessage;
 import com.baidu.trace.model.StatusCodes;
 import com.baidu.trace.model.TraceLocation;
-
 import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.base.base.BaseActivity;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.base.CurrentLocation;
 import com.ihome.smarthome.base.MyApplication;
+import com.ihome.smarthome.module.base.communicate.MySocketManager;
+import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.receiver.TrackReceiver;
 import com.ihome.smarthome.utils.CommonUtil;
 import com.ihome.smarthome.utils.Constants;
+import com.ihome.smarthome.utils.EventBusUtils;
 import com.ihome.smarthome.utils.MapUtil;
-import com.ihome.smarthome.utils.SharedPreferenceUtil;
+import com.ihome.smarthome.utils.NoticeUtils;
 import com.ihome.smarthome.utils.ViewUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,193 +65,77 @@ import java.util.List;
 /**
  * 轨迹追踪
  */
-public class TracingActivity extends BaseActivity implements View.OnClickListener {
+public class TracingService extends Service {
 
     private MyApplication trackApp = null;
-
-    private ViewUtil viewUtil = null;
-
-    private Button traceBtn = null;
-
-    private Button gatherBtn = null;
-
-    private NotificationManager notificationManager = null;
-
     private PowerManager powerManager = null;
-
     private PowerManager.WakeLock wakeLock = null;
-
     private TrackReceiver trackReceiver = null;
-
-    /**
-     * 地图工具
-     */
     private MapUtil mapUtil = null;
-
-    /**
-     * 轨迹服务监听器
-     */
     private OnTraceListener traceListener = null;
-
-    /**
-     * 轨迹监听器(用于接收纠偏后实时位置回调)
-     */
     private OnTrackListener trackListener = null;
-
-    /**
-     * Entity监听器(用于接收实时定位回调)
-     */
     private OnEntityListener entityListener = null;
-
-    /**
-     * 实时定位任务
-     */
     private RealTimeHandler realTimeHandler = new RealTimeHandler();
-
     private RealTimeLocRunnable realTimeLocRunnable = null;
-
     private boolean isRealTimeRunning = true;
+    public int packInterval = Constants.DEFAULT_PACK_INTERVAL;
 
-    private int notifyId = 0;
-
-    /**
-     * 打包周期
-     */
-    public int packInterval =  com.ihome.smarthome.utils.Constants.DEFAULT_PACK_INTERVAL;
+    public static void startService(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            activity.startForegroundService(new Intent(activity, TracingService.class));
+        } else {
+            activity.startService(new Intent(activity, TracingService.class));
+        }
+    }
 
     @Override
-    protected void bindView() {
-        setTitle("定位");
-        setContentView(R.layout.activity_tracing);
-       // setOnClickListener(this);
+    public void onCreate() {
+        super.onCreate();
+        Notification notification = NoticeUtils.createForegroundNotification(this,
+                "baidumap_trace_notice_channal",
+                "trace service",
+                "鹰眼轨迹服务",
+                "正在运行中"
+        );
+        //将服务置于启动状态 ,NOTIFICATION_ID指的是创建的通知的ID
+        startForeground(3, notification);
         init();
-
     }
 
     private void init() {
         initListener();
         trackApp = (MyApplication) getApplicationContext();
-        viewUtil = new ViewUtil();
-        mapUtil = MapUtil.getInstance();
-        mapUtil.init((MapView) findViewById(R.id.tracing_mapView));
-        mapUtil.setCenter(trackApp);
         startRealTimeLoc(Constants.LOC_INTERVAL);
         powerManager = (PowerManager) trackApp.getSystemService(Context.POWER_SERVICE);
-
-        traceBtn = (Button) findViewById(R.id.btn_trace);
-        gatherBtn = (Button) findViewById(R.id.btn_gather);
-
-        traceBtn.setOnClickListener(this);
-        gatherBtn.setOnClickListener(this);
-
-
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        IntentFilter intentFilter = new IntentFilter();
-        // 点击home键广播，由系统发出
-        intentFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        registerReceiver(mHomeAndLockReceiver, intentFilter);
+        startTrace();
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
+    private void startTrace() {
+        if (!trackApp.isTraceStarted) {
+            trackApp.mClient.startTrace(trackApp.mTrace, traceListener);
+            stopRealTimeLoc();
+            startRealTimeLoc(packInterval);
+        }
+    }
 
-            case R.id.btn_trace:
-           /*     boolean isAccessPermission = SharedPreferenceUtil.getBoolean(this,
-                        Constants.PERMISSIONS_DESC_KEY, false);
-                if (!isAccessPermission) {
-                    Toast.makeText(this, "需要同意隐私条款后才可以采集", Toast.LENGTH_LONG).show();
-                    return;
-                }*/
-                if (trackApp.isTraceStarted) {
-                    trackApp.mClient.stopTrace(trackApp.mTrace, traceListener);
-                    stopRealTimeLoc();
-                } else {
-                    trackApp.mClient.startTrace(trackApp.mTrace, traceListener);
-                    if (Constants.DEFAULT_PACK_INTERVAL != packInterval) {
-                        stopRealTimeLoc();
-                        startRealTimeLoc(packInterval);
-                    }
-                }
-                break;
 
-            case R.id.btn_gather:
-                if (trackApp.isGatherStarted) {
-                    trackApp.mClient.stopGather(traceListener);
-                } else {
-                    trackApp.mClient.startGather(traceListener);
-                }
-                break;
-
-            default:
-                break;
+    private void stopTrace() {
+        if (trackApp.isTraceStarted) {
+            trackApp.mClient.stopTrace(trackApp.mTrace, traceListener);
+            stopRealTimeLoc();
         }
 
     }
 
-    /**
-     * 设置服务按钮样式
-     */
-/*    private void setTraceBtnStyle() {
-        boolean isTraceStarted = trackApp.trackConf.getBoolean("is_trace_started", false);
-        if (isTraceStarted) {
-            traceBtn.setText(R.string.stop_trace);
-            traceBtn.setTextColor(ResourcesCompat.getColor(getResources(), R.color
-                    .white, null));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                traceBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.mipmap.bg_btn_sure, null));
-            } else {
-                traceBtn.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.mipmap.bg_btn_sure, null));
-            }
-        } else {
-            traceBtn.setText(R.string.start_trace);
-            traceBtn.setTextColor(ResourcesCompat.getColor(getResources(), R.color.layout_title, null));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                traceBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.mipmap.bg_btn_cancel, null));
-            } else {
-                traceBtn.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.mipmap.bg_btn_cancel, null));
-            }
-        }
+    private void stopGather() {
+        trackApp.mClient.stopGather(traceListener);
     }
 
-    *//**
-     * 设置采集按钮样式
-     *//*
-    private void setGatherBtnStyle() {
-        boolean isGatherStarted = trackApp.trackConf.getBoolean("is_gather_started", false);
-        if (isGatherStarted) {
-            gatherBtn.setText(R.string.stop_gather);
-            gatherBtn.setTextColor(ResourcesCompat.getColor(getResources(), R.color.white, null));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                gatherBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.mipmap.bg_btn_sure, null));
-            } else {
-                gatherBtn.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.mipmap.bg_btn_sure, null));
-            }
-        } else {
-            gatherBtn.setText(R.string.start_gather);
-            gatherBtn.setTextColor(ResourcesCompat.getColor(getResources(), R.color.layout_title, null));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                gatherBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.mipmap.bg_btn_cancel, null));
-            } else {
-                gatherBtn.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.mipmap.bg_btn_cancel, null));
-            }
-        }
-    }*/
+    private void startGather() {
+        trackApp.mClient.startGather(traceListener);
+    }
 
-    /**
-     * 实时定位任务
-     *
-     * @author baidu
-     */
+
     class RealTimeLocRunnable implements Runnable {
 
         private int interval = 0;
@@ -278,33 +168,6 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
         trackApp.mClient.stopRealTimeLoc();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (null == data) {
-            return;
-        }
-
-        if (data.hasExtra("locationMode")) {
-            LocationMode locationMode = LocationMode.valueOf(data.getStringExtra("locationMode"));
-            trackApp.mClient.setLocationMode(locationMode);
-        }
-
-        if (data.hasExtra("isNeedObjectStorage")) {
-            boolean isNeedObjectStorage = data.getBooleanExtra("isNeedObjectStorage", true);
-            trackApp.mTrace.setNeedObjectStorage(isNeedObjectStorage);
-        }
-
-        if (data.hasExtra("gatherInterval") || data.hasExtra("packInterval")) {
-            int gatherInterval = data.getIntExtra("gatherInterval", Constants.DEFAULT_GATHER_INTERVAL);
-            int packInterval = data.getIntExtra("packInterval", Constants.DEFAULT_PACK_INTERVAL);
-            TracingActivity.this.packInterval = packInterval;
-            trackApp.mClient.setInterval(gatherInterval, packInterval);
-        }
-
-        //        if (data.hasExtra("supplementMode")) {
-        //            mSupplementMode = SupplementMode.valueOf(data.getStringExtra("supplementMode"));
-        //        }
-    }
 
     private void initListener() {
 
@@ -330,9 +193,10 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
                 CurrentLocation.latitude = currentLatLng.latitude;
                 CurrentLocation.longitude = currentLatLng.longitude;
 
-                if (null != mapUtil) {
+               /* if (null != mapUtil) {
                     mapUtil.updateStatus(currentLatLng, true);
-                }
+                }*/
+                EventBusUtils.sendLog("trace", String.format("LatestPointResponse, currentLatLng:%s ", currentLatLng.toString()), LogEvent.LOG_FAILED, true);
             }
         };
 
@@ -340,7 +204,7 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public void onReceiveLocation(TraceLocation location) {
-                MyLog.d(String.format("%s ",  "onReceiveLocation"));
+                MyLog.d(String.format("%s ", "onReceiveLocation:"+location.getMessage()));
                 if (StatusCodes.SUCCESS != location.getStatus() || CommonUtil.isZeroPoint(location.getLatitude(),
                         location.getLongitude())) {
                     return;
@@ -373,8 +237,7 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
              */
             @Override
             public void onBindServiceCallback(int errorNo, String message) {
-                viewUtil.showToast(TracingActivity.this,
-                        String.format("onBindServiceCallback, errorNo:%d, message:%s ", errorNo, message));
+                EventBusUtils.sendLog("trace", String.format("onBindServiceCallback, errorNo:%d, message:%s ", errorNo, message), LogEvent.LOG_FAILED, true);
             }
 
             /**
@@ -391,6 +254,7 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
              *                <pre>10005：服务正在开启</pre>
              *                <pre>10006：服务已开启</pre>
              */
+            @SuppressLint("DefaultLocale")
             @Override
             public void onStartTraceCallback(int errorNo, String message) {
                 if (StatusCodes.SUCCESS == errorNo || StatusCodes.START_TRACE_NETWORK_CONNECT_FAILED <= errorNo) {
@@ -398,11 +262,11 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
                     SharedPreferences.Editor editor = trackApp.trackConf.edit();
                     editor.putBoolean("is_trace_started", true);
                     editor.apply();
-
                     registerReceiver();
+
                 }
-                viewUtil.showToast(TracingActivity.this,
-                        String.format("onStartTraceCallback, errorNo:%d, message:%s ", errorNo, message));
+                startGather();
+                EventBusUtils.sendLog("trace", String.format("onStartTraceCallback, errorNo:%d, message:%s ", errorNo, message), LogEvent.LOG_FAILED, true);
             }
 
             /**
@@ -426,11 +290,9 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
                     editor.remove("is_trace_started");
                     editor.remove("is_gather_started");
                     editor.apply();
-
                     unregisterPowerReceiver();
                 }
-                viewUtil.showToast(TracingActivity.this,
-                        String.format("onStopTraceCallback, errorNo:%d, message:%s ", errorNo, message));
+                EventBusUtils.sendLog("trace", String.format("onStopTraceCallback, errorNo:%d, message:%s ", errorNo, message), LogEvent.LOG_FAILED, true);
             }
 
             /**
@@ -452,8 +314,7 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
                     editor.apply();
 
                 }
-                viewUtil.showToast(TracingActivity.this,
-                        String.format("onStartGatherCallback, errorNo:%d, message:%s ", errorNo, message));
+                EventBusUtils.sendLog("trace", String.format("onStartGatherCallback, errorNo:%d, message:%s ", errorNo, message), LogEvent.LOG_FAILED, true);
             }
 
             /**
@@ -475,8 +336,9 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
                     editor.apply();
 
                 }
-                viewUtil.showToast(TracingActivity.this,
-                        String.format("onStopGatherCallback, errorNo:%d, message:%s ", errorNo, message));
+
+
+                EventBusUtils.sendLog("trace", String.format("onStopGatherCallback, errorNo:%d, message:%s ", errorNo, message), LogEvent.LOG_FAILED, true);
             }
 
             /**
@@ -494,13 +356,15 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
              */
             @Override
             public void onPushCallback(byte messageType, PushMessage pushMessage) {
-                if (messageType < 0x03 || messageType > 0x04) {
-                    viewUtil.showToast(TracingActivity.this, pushMessage.getMessage());
+
+                EventBusUtils.sendLog("trace", String.format("onPushCallback, message:%s ", pushMessage.getMessage()), LogEvent.LOG_FAILED, true);
+            /*    if (messageType < 0x03 || messageType > 0x04) {
+                    viewUtil.showToast(TracingService.this, pushMessage.getMessage());
                     return;
                 }
                 FenceAlarmPushInfo alarmPushInfo = pushMessage.getFenceAlarmPushInfo();
                 if (null == alarmPushInfo) {
-                    viewUtil.showToast(TracingActivity.this,
+                    viewUtil.showToast(TracingService.this,
                             String.format("onPushCallback, messageType:%d, messageContent:%s ", messageType,
                                     pushMessage));
                     return;
@@ -519,13 +383,14 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
                             .setSmallIcon(R.mipmap.icon_tracing)
                             .setWhen(System.currentTimeMillis()).build();
                     notificationManager.notify(notifyId++, notification);
-                }
+                }*/
             }
 
             @Override
             public void onInitBOSCallback(int errorNo, String message) {
-                viewUtil.showToast( TracingActivity.this,
-                        String.format("onInitBOSCallback, errorNo:%d, message:%s ", errorNo, message));
+
+                EventBusUtils.sendLog("trace", String.format("onInitBOSCallback, errorNo:%d, message:%s ", errorNo, message), LogEvent.LOG_FAILED, true);
+
             }
         };
 
@@ -547,7 +412,7 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
         }
 
         if (null == wakeLock) {
-            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "track upload");
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getString(R.string.pm_tag3));
         }
         if (null == trackReceiver) {
             trackReceiver = new TrackReceiver(wakeLock);
@@ -573,16 +438,6 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
         trackApp.isRegisterReceiver = false;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // 适配android M，检查权限
-        List<String> permissions = new ArrayList<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isNeedRequestPermissions(permissions)) {
-            requestPermissions(permissions.toArray(new String[permissions.size()]), 0);
-        }
-        startRealTimeLoc(packInterval);
-    }
 
     private boolean isNeedRequestPermissions(List<String> permissions) {
         // 定位精确位置
@@ -604,131 +459,20 @@ public class TracingActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mapUtil.onResume();
-        requestBackgroundLocationPermission();
-        // 在Android 6.0及以上系统，若定制手机使用到doze模式，请求将应用添加到白名单。
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String packageName = trackApp.getPackageName();
-            boolean isIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName);
-            if (!isIgnoring) {
-                Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                intent.setData(Uri.parse("package:" + packageName));
-                try {
-                    startActivity(intent);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void requestBackgroundLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-                    // No explanation needed; request the permission
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
-                            0);
-                }
-            }
-        }
-    }
 
     @Override
-    public void onBackPressed() {
-        if (trackApp.isGatherStarted) {
-            showDialog("miaoshu");
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    /**
-     * 显示提示信息
-     */
-    private void showDialog(String message) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提示: ");
-        builder.setMessage(message);
-
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-              TracingActivity.super.onBackPressed();
-            }
-        });
-
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (trackApp.isGatherStarted) {
-                    trackApp.mClient.stopGather(traceListener);
-                    trackApp.mClient.stopTrace(trackApp.mTrace, traceListener);
-                    stopRealTimeLoc();
-                    dialog.cancel();
-                    TracingActivity.super.onBackPressed();
-                }
-            }
-        });
-
-        builder.setCancelable(false);
-        builder.show();
-    }
-
-    /**
-     * 监听是否点击了home键将客户端退到后台
-     */
-    private BroadcastReceiver mHomeAndLockReceiver = new BroadcastReceiver() {
-        final String SYSTEM_DIALOG_REASON_KEY = "reason";
-        final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
-        final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
-        final String MESSAGE = " 根据相关法律法规规定，切换到后台后，若无必要可不必收集用户信息。" ;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
-                String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
-                if (TextUtils.equals(reason, SYSTEM_DIALOG_REASON_HOME_KEY)) {
-                    if (trackApp.isGatherStarted) {
-                        viewUtil.showToast(TracingActivity.this, MESSAGE);
-                    }
-                } else if (reason.equals(SYSTEM_DIALOG_REASON_RECENT_APPS)) {
-                    if (trackApp.isGatherStarted) {
-                        viewUtil.showToast(TracingActivity.this, MESSAGE);
-                    }
-                }
-            }
-        }
-    };
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapUtil.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopRealTimeLoc();
-    }
-
-    @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
-        mapUtil.clear();
-        unregisterReceiver(mHomeAndLockReceiver);
         stopRealTimeLoc();
+        stopTrace();
+        stopGather();
     }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
 
 }

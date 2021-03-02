@@ -11,8 +11,16 @@
     <string name="login_failed">"Login failed"</string>
     <string name="pm_tag1">PowerManager1</string>
     <string name="pm_tag2">PowerManager2</string>
-
-
+    <string name="pm_tag3">PowerManager3</string>
+    <!-- 隐私权限申请说明 -->
+    <string name="privacy_permission_desc">开发者使用鹰眼SDK时，需申请以下权限。授权方式由设备系统开发方及开发者应用决定，当最终用户同意向开发者应用授予该权时开启。
+        \n 1、精确定位权限，用于访问GPS数据。
+        \n 2、存储权限，用于写入对象存储BOS数据。
+        \n 3、前台服务权限，用于前台服务通知，Android 8.0之后需动态申请。
+        \n 4、后台定位权限，用于后台定位，Android 10.0 之后需动态申请</string>
+    <!-- 退到后台隐私合规说明 -->
+    <string name="background_privacy_desc">根据相关监管要求，在静默状态下或在后台运行时，如非服务所必需或无合理应用场景，不得收集用户信息。
+        开发者需遵循以上监管要求，仅在必需和合理的应用场景时进行静默状态和后台运行时的信息采集。</string>
 
 
     <string name="intro_message">
