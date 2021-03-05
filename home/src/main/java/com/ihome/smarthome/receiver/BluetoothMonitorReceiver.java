@@ -25,7 +25,7 @@ import java.util.TimerTask;
 
 
 public class BluetoothMonitorReceiver extends BroadcastReceiver {
-
+  private final  String tag = "BluetoothMonitorReceiver";
 
 
     @Override
@@ -38,20 +38,20 @@ public class BluetoothMonitorReceiver extends BroadcastReceiver {
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_ON:
                             Toast.makeText(context,"蓝牙正在打开",Toast.LENGTH_SHORT).show();
-                           // EventBusUtils.sendDeBugLog("蓝牙正在打开");
                             break;
                         case BluetoothAdapter.STATE_ON:
                             Toast.makeText(context,"蓝牙已经打开",Toast.LENGTH_SHORT).show();
-                            //EventBusUtils.sendDeBugLog("蓝牙已经打开");
+                            EventBusUtils.sendLog(tag,"蓝牙已经打开",LogEvent.LOG_FAILED,true);
+
                             MyBluetoothManager.getInstance().connectCurrentBT();
                             break;
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             Toast.makeText(context,"蓝牙正在关闭",Toast.LENGTH_SHORT).show();
-                           // EventBusUtils.sendDeBugLog("蓝牙正在关闭");
                             break;
                         case BluetoothAdapter.STATE_OFF:
                             Toast.makeText(context,"蓝牙已经关闭",Toast.LENGTH_SHORT).show();
-                          //  EventBusUtils.sendDeBugLog("蓝牙已经关闭");
+                            MyBluetoothManager.getInstance().disconnectCurrentBT();
+                            EventBusUtils.sendLog(tag,"蓝牙已经关闭",LogEvent.LOG_FAILED,true);
                             break;
                     }
                     break;

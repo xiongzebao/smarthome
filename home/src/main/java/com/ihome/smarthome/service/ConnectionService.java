@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.module.base.STConstants;
-import com.ihome.smarthome.module.base.NoticeManager;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
 import com.ihome.smarthome.module.base.communicate.MySocketManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
@@ -72,8 +71,9 @@ public class ConnectionService extends Service {
         startForeground(2, notification);
         EventBus.getDefault().register(this);
         registerEvent();
-        MySocketManager.getInstance().connect();
         wakeLock();
+        startStartWirelessServer();
+        startBluetoothService();
     }
 
 //saveToDatabase(String tag,String msg,int type,String event){
@@ -152,7 +152,7 @@ public class ConnectionService extends Service {
         if(isAlive){
             return;
         }
-        initCommunicateDevice();
+        initBluetoothDevice();
         isAlive = true;
     }
 
@@ -161,7 +161,7 @@ public class ConnectionService extends Service {
        socketManager=MySocketManager.getInstance();
     }
 
-    private void initCommunicateDevice() {
+    private void initBluetoothDevice() {
         bluetoothManager = MyBluetoothManager.getInstance();
         bluetoothManager.startBluetoothServer();
     }

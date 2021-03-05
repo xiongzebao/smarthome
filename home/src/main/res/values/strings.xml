@@ -53,4 +53,11 @@
     <string name="activity_not_found">No app can handle this intent.</string>
     <string name="cleared">Cleared.</string>
 
+    <string name="text_title">微信</string>
+    <string name="text_group">Ble Scan</string>
+    <string name="text_add">blemainactivity</string>
+    <string name="text_sweep">扫一扫</string>
+    <string name="text_collect">收付款</string>
+    <string name="text_help">帮助与反馈</string>
+
 </resources>

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
 
@@ -36,8 +37,13 @@ dependencies {
     implementation rootProject.ext.dependencies["support-v4"]
     implementation rootProject.ext.dependencies["gson"]
     implementation 'com.orhanobut:logger:2.2.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 tasks.withType(JavaCompile){
     options.encoding = "UTF-8"
+}
+repositories {
+    mavenCentral()
 }

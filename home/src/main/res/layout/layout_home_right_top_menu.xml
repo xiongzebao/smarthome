@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="right">
+    <!--菜单发起群聊-->
+    <Button
+        android:id="@+id/btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:background="#333333"
+        android:drawableLeft="@drawable/ic_image_delete"
+        android:drawablePadding="10dp"
+        android:paddingLeft="20dp"
+        android:padding="10dp"
+        android:text="@string/text_group"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"></Button>
+
+    <!--菜单添加好友-->
+    <Button
+        android:id="@+id/btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+       
+        android:background="#333333"
+        android:drawableLeft="@drawable/ic_down_arrow"
+        android:drawablePadding="10dp"
+        android:paddingLeft="20dp"
+        android:padding="10dp"
+        android:text="@string/text_add"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"></Button>
+
+    <!--菜单扫一扫-->
+    <Button
+        android:id="@+id/btn3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+       
+        android:background="#333333"
+        android:drawableLeft="@drawable/ic_image_delete"
+        android:drawablePadding="10dp"
+        android:paddingLeft="20dp"
+        android:padding="10dp"
+        android:text="@string/text_sweep"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"></Button>
+
+    <!--菜单首付款-->
+    <Button
+        android:id="@+id/btn4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+      
+        android:background="#333333"
+        android:drawableLeft="@drawable/ic_down_arrow"
+        android:drawablePadding="10dp"
+        android:paddingLeft="20dp"
+        android:padding="10dp"
+        android:text="@string/text_collect"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"></Button>
+
+    <!--菜单帮助与反馈-->
+    <Button
+        android:id="@+id/btn5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+      
+        android:background="#333333"
+        android:drawableLeft="@drawable/ic_image_delete"
+        android:drawablePadding="10dp"
+        android:paddingLeft="20dp"
+        android:padding="10dp"
+        android:text="@string/text_help"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"></Button>
+
+
+</LinearLayout>

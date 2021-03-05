@@ -1,7 +1,6 @@
 package com.ihome.smarthome.module.base;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -41,7 +40,6 @@ import com.ihome.base.base.BaseActivity;
 import com.ihome.base.utils.DialogUtils;
 import com.ihome.base.utils.ScenceUtils;
 import com.ihome.smarthome.applockscreen.service.LockScreenService;
-import com.ihome.smarthome.basicmanagedprofile.ProfileActivity;
 import com.ihome.smarthome.module.adapter.DeviceListAdapter;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
 import com.ihome.smarthome.module.base.communicate.MySocketManager;
@@ -181,7 +179,7 @@ public class HomeActivity extends BaseActivity {
     protected void bindView() {
 
         EventBusUtils.sendLog(getTAG(), "LoginActivity bindView", LogEvent.LOG_IMPORTANT, true);
-        setContentView(R.layout.activity_login1);
+        setContentView(R.layout.fragment_home);
         EventBus.getDefault().register(this);
         initView();
         initFloatBar();

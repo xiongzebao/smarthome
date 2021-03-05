@@ -1,6 +1,7 @@
 package com.ihome.smarthome.module.base;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -19,10 +20,11 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +34,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.baidu.trace.LBSTraceService;
 import com.blankj.utilcode.util.GsonUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.erongdu.wireless.tools.log.MyLog;
@@ -46,14 +47,13 @@ import com.ihome.base.utils.DialogUtils;
 import com.ihome.base.utils.ScenceUtils;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.applockscreen.service.LockScreenService;
+import com.ihome.smarthome.bleaction.BleMainActivity;
 import com.ihome.smarthome.module.adapter.DeviceListAdapter;
 import com.ihome.smarthome.module.base.communicate.ICommunicate;
 import com.ihome.smarthome.module.base.communicate.MyBluetoothManager;
-import com.ihome.smarthome.module.base.communicate.MySocketManager;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
-import com.ihome.smarthome.module.main.view.JobFragment;
 import com.ihome.smarthome.receiver.AdminReceiver;
 import com.ihome.smarthome.receiver.BluetoothMonitorReceiver;
 import com.ihome.smarthome.service.AlarmService;
@@ -71,7 +71,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.Inflater;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -90,6 +89,8 @@ public class SmartHomeFragment extends BaseFragment {
     private FloatingToolbar mFloatingToolbar;
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
+    private ImageView iv_right;
+    private PopupWindow popupWindow;
 
     private HomeActivity.HomeKeyEventBroadCastReceiver homeReceiver;
     private BluetoothMonitorReceiver bleListenerReceiver = null;
@@ -176,10 +177,26 @@ public class SmartHomeFragment extends BaseFragment {
         SmartHomeFragment homeFrag = new SmartHomeFragment();
         return homeFrag;
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BTMessageEvent event) {
         switch (event.getMessageType()) {
             case BTMessageEvent.ON_CONNECT_FAILED:
+                adapter.refreshItem(event.getMacAddress(), 2);
+                ToastUtil.toast(event.getMessage());
+                ScenceUtils.closeCutScence(getContext());
+                break;
+            case BTMessageEvent.ON_CONNECT_SUCCESS:
+                adapter.refreshItem(event.getMacAddress(), 1);
+                ToastUtil.toast(event.getMessage());
+                ScenceUtils.closeCutScence(getContext());
+                break;
+            case BTMessageEvent.ON_CONNECTED_SUCCESS:
+                adapter.refreshItem(event.getMacAddress(), 1);
+                ToastUtil.toast(event.getMessage());
+                ScenceUtils.closeCutScence(getContext());
+                break;
+            case BTMessageEvent.ON_DISCONNECTED:
                 adapter.refreshItem(event.getMacAddress(), 2);
                 ToastUtil.toast(event.getMessage());
                 ScenceUtils.closeCutScence(getContext());
@@ -192,7 +209,8 @@ public class SmartHomeFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-          rootView= LayoutInflater.from(getContext()).inflate(R.layout.activity_login1,null);
+        checkIsSupportBLE();
+        rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_home, null);
         EventBusUtils.sendLog(getTAG(), "HomeFragment onCreateView", LogEvent.LOG_IMPORTANT, true);
         EventBus.getDefault().register(this);
         initView();
@@ -200,28 +218,32 @@ public class SmartHomeFragment extends BaseFragment {
         initRecyclerview();
         startFloatingService();
         startBluetoothService();
-       // startLockScreenService();
+        // startLockScreenService();
         startAlarmService();
-        startTraceService();
+        //startTraceService();
         init();
         // getAdminOwner();
         enableDeviceAdmin();
         //  requestIgnoreBatteryOptimizationsSETTINGS();
         // ActivityManager.startActivity(ProfileActivity.class);
-
-
-        return  rootView;
+        return rootView;
     }
 
+    private void checkIsSupportBLE() {
+        if (!getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(getContext(), "不支持低功耗蓝牙", Toast.LENGTH_LONG).show();
+            getActivity().finish();
+        }
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-      //  SystemTTSUtils.installiFlyEnginSlice(getContext());
+        //  SystemTTSUtils.installiFlyEnginSlice(getContext());
     }
 
-    private void getAdminOwner(){
+    private void getAdminOwner() {
         Intent intent = new Intent(
                 DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
@@ -232,12 +254,9 @@ public class SmartHomeFragment extends BaseFragment {
     }
 
 
-
-    private void active(){
+    private void active() {
 
     }
-
-
 
 
     private void enableDeviceAdmin() {
@@ -253,7 +272,6 @@ public class SmartHomeFragment extends BaseFragment {
             Toast.makeText(this, "此App已激活设备管理器", Toast.LENGTH_SHORT).show()
         }
         */
-
 
 
         // First of all, to access anything you must be device owner
@@ -277,13 +295,13 @@ public class SmartHomeFragment extends BaseFragment {
                 devicePolicyManager.setLockTaskPackages(deviceAdmin, new String[]{
                         getActivity().getPackageName(), /* PUT OTHER PACKAGE NAMES HERE! */
                 });
-               // startLockTask();
+                // startLockTask();
             }
         }
         // Not device owner - can't access anything
         else {
             Log.v(getTAG(), "Not device owner");
-            Toast.makeText( getActivity(), "Not device owner", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Not device owner", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -292,13 +310,59 @@ public class SmartHomeFragment extends BaseFragment {
         recyclerView = rootView.findViewById(R.id.recycler_view);
         fab = rootView.findViewById(R.id.fab);
         mFloatingToolbar = rootView.findViewById(R.id.floatingToolbar);
+        iv_right = rootView.findViewById(R.id.iv_right);
+        iv_right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OnMenu(v);
+            }
+        });
 
     }
 
 
 
+    //菜单按钮的单机事件
+    public void OnMenu(View v){
+        //获取自定义菜单的布局文件
+        View popupWindow_view=getLayoutInflater().inflate(R.layout.layout_home_right_top_menu,null,false);
+        //创建popupWindow实例，设置菜单的宽度和高度
+        popupWindow=new PopupWindow(popupWindow_view, ActionBar.LayoutParams.WRAP_CONTENT,ActionBar.LayoutParams.WRAP_CONTENT,true);
+        //设置菜单显示在按钮的下面
+        popupWindow.showAsDropDown(iv_right,0,0);
+        //单机其它位置隐藏菜单
+        popupWindow_view.setOnTouchListener(new View.OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                //如果菜单存在并且处于显示状态
+                if (popupWindow!=null&&popupWindow.isShowing()){
+                    popupWindow.dismiss();//关闭菜单
+                    popupWindow=null;
+                }
+                return false;
+            }
+        });
+
+        popupWindow_view.findViewById(R.id.btn1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyBluetoothManager.getInstance().startLeScanning();
+            }
+        });
+
+        popupWindow_view.findViewById(R.id.btn2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityManager.startActivity(BleMainActivity.class);
+            }
+        });
+    }
+
+
+
     private void initRecyclerview() {
-        recyclerView.setLayoutManager(new GridLayoutManager( getActivity(), 4));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
         recyclerView.setAdapter(adapter);
         adapter.setSpanSizeLookup(new BaseQuickAdapter.SpanSizeLookup() {
             @Override
@@ -315,11 +379,9 @@ public class SmartHomeFragment extends BaseFragment {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-                //  DeviceItem deviceItem = (DeviceItem) adapter.getData().get(position);
-                //  connectDevice(deviceItem);
-                if (position == 0) {
-                    ActivityManager.startActivity(LogActivity.class);
-                }
+                DeviceItem deviceItem = (DeviceItem) adapter.getData().get(position);
+                connectDevice(deviceItem);
+
             }
         });
         setDeviceList();
@@ -445,6 +507,7 @@ public class SmartHomeFragment extends BaseFragment {
             e.printStackTrace();
         }
     }
+
     public void requestIgnoreBatteryOptimizationsSETTINGS() {
         try {
             Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
@@ -454,7 +517,6 @@ public class SmartHomeFragment extends BaseFragment {
             e.printStackTrace();
         }
     }
-
 
 
     private boolean isIgnoringBatteryOptimizations() {
@@ -566,7 +628,7 @@ public class SmartHomeFragment extends BaseFragment {
     }
 
 
-    public void startTraceService(){
+    public void startTraceService() {
         TracingService.startService(getActivity());
     }
 
@@ -580,7 +642,7 @@ public class SmartHomeFragment extends BaseFragment {
                     case R.id.action1:
                        /*  MyBluetoothManager.getInstance().registerDiscoveryReceiver(LoginActivity.this);
                         MyBluetoothManager.getInstance().startScan();*/
-                       // MySocketManager.getInstance().sendMessage(" android client test");
+                        // MySocketManager.getInstance().sendMessage(" android client test");
                         ActivityManager.startActivity(TracingActivity.class);
                         break;
                     case R.id.action2:
@@ -592,7 +654,7 @@ public class SmartHomeFragment extends BaseFragment {
                         stopFloatingService();
                         stopScreenLockService();
                         finish();*/
-                        MyLog.e("todaylogs:---"+ CrashHandlerUtils.getTodayLogs());
+                        MyLog.e("todaylogs:---" + CrashHandlerUtils.getTodayLogs());
                         ToastUtil.toast(CrashHandlerUtils.getTodayLogs());
                         break;
                 }
@@ -651,10 +713,6 @@ public class SmartHomeFragment extends BaseFragment {
         EventBusUtils.sendLog(getTAG(), getTAG() + "   onDestroyed!", LogEvent.LOG_IMPORTANT, true);
 
     }
-
-
-
-
 
 
     @Override
