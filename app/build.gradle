@@ -52,7 +52,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
+    implementation 'com.inuker.bluetooth:library:1.4.0'
+    implementation 'com.vise.xiaoyaoyou:baseble:2.0.5'
 
 }
 repositories {

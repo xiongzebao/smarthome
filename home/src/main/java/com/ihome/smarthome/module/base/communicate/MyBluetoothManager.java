@@ -208,6 +208,7 @@ public class MyBluetoothManager implements ICommunicate {
         if (!isAvailable()) {
             return false;
         }
+
         return mBluetoothAdapter.isEnabled();
     }
 
@@ -570,6 +571,7 @@ public class MyBluetoothManager implements ICommunicate {
             //ToastUtils.showShort("蓝牙不可用");
             return;
         }
+
 
         if (mBluetoothAdapter.isDiscovering()) {
             mBluetoothAdapter.cancelDiscovery();
