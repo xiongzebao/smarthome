@@ -12,18 +12,11 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.erongdu.wireless.tools.log.MyLog;
-import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.king.zxing.CaptureActivity;
 import com.ihome.base.base.BaseFragment;
-import com.ihome.base.utils.SharedInfo;
 import com.ihome.smarthome.R;
-import com.ihome.smarthome.databinding.FragHomeBinding;
 import com.ihome.smarthome.databinding.FragMineBinding;
-import com.ihome.smarthome.module.mine.model.LoginBean;
-import com.ihome.smarthome.module.mine.view.ExceptionActivity;
-import com.ihome.smarthome.module.mine.view.FeedBackActivity;
-import com.ihome.smarthome.utils.ActivityUtils;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -99,14 +92,7 @@ public class MineFragment extends BaseFragment {
 
 
 
-    private void setUserInfo(){
-        LoginBean loginBean =  SharedInfo.getInstance().getEntity(LoginBean.class);
-        if(loginBean!=null){
-            binding.tvName.setText(loginBean.getStaffName());
-            binding.tvPhone.setText(loginBean.getStaffPhone());
-        }
 
-    }
 
     private void setBinding(){
 
@@ -165,6 +151,6 @@ public class MineFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        setUserInfo();
+
     }
 }

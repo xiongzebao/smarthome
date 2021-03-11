@@ -744,7 +744,7 @@ public class MyBluetoothManager implements ICommunicate {
                 Log.e("xiong", result.getDevice().getName() + ":" + result.getDevice().getAddress() + "-->rssi:" + result.getRssi());
                 if(result.getDevice().getAddress().equals(autoMacAddress)&&result.getRssi()>=-70);{
                     stopScanning();
-                    if(autoConnectBle(autoMacAddress))
+
                 }
                 if(result.getDevice().getName().equals("xb")){
 

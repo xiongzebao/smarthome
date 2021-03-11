@@ -1,14 +1,10 @@
 package com.ihome.smarthome;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
-import android.text.method.LinkMovementMethod;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -20,25 +16,17 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.erongdu.wireless.tools.log.MyLog;
 import com.ihome.smarthome.module.base.LogFragment;
 import com.ihome.smarthome.module.base.SmartHomeFragment;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.utils.BitmapUtil;
 import com.ihome.smarthome.utils.CommonUtil;
-import com.ihome.smarthome.utils.Constants;
-import com.ihome.smarthome.utils.SharedPreferenceUtil;
-import com.king.zxing.CameraScan;
 import com.ihome.base.base.BaseActivity;
 import com.ihome.base.base.BaseFragment;
 import com.ihome.smarthome.base.MyApplication;
-import com.ihome.smarthome.common.KTConstant;
 import com.ihome.smarthome.databinding.ActivityMainBinding;
 
-import com.ihome.smarthome.module.main.view.JobFragment;
 import com.ihome.smarthome.module.main.view.MineFragment;
-import com.ihome.smarthome.utils.ApiUtils;
-import com.ihome.smarthome.utils.CommenSetUtils;
 
 public class MainActivity extends BaseActivity {
 

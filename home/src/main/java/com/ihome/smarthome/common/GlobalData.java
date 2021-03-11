@@ -1,6 +1,6 @@
 package com.ihome.smarthome.common;
 
-import com.ihome.smarthome.module.home.model.ProjectItem;
+
 
 import java.util.List;
 
@@ -11,7 +11,5 @@ import java.util.List;
  */
 
 public class GlobalData {
-    public static List<ProjectItem> recruits;
-
 
 }

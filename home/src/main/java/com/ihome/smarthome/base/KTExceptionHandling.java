@@ -2,7 +2,6 @@ package com.ihome.smarthome.base;
 
 import com.erongdu.wireless.tools.utils.ActivityManager;
 import com.ihome.base.common.SingletonDialog;
-import com.ihome.smarthome.utils.ActivityUtils;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -23,11 +22,10 @@ public class KTExceptionHandling {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
 
-                        ActivityUtils.signOutloginNoTip(ActivityManager.peek());
+
                         sweetAlertDialog.dismiss();
                     }
                 }, false);
-
 
                 return true;
         }

@@ -9,7 +9,7 @@ import com.erongdu.wireless.tools.utils.ToastUtil;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.module.adapter.DeviceListAdapter;
 import com.ihome.smarthome.module.base.DeviceItem;
-import com.ihome.smarthome.module.model.ImageMessage;
+
 import com.ihome.smarthome.utils.SpanUtils;
 
 /**

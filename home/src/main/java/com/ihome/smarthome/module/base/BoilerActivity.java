@@ -123,6 +123,13 @@ public class BoilerActivity extends BaseActivity {
     }
 
 
+    @Override
+    public void onReload(View v) {
 
+    }
 
+    @Override
+    public void onApply(View v) {
+
+    }
 }

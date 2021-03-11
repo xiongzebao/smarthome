@@ -13,14 +13,17 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/bottom-navigation-bar" />
-            <option value="$PROJECT_DIR$/kuaitui" />
+            <option value="$PROJECT_DIR$/home" />
+            <option value="$PROJECT_DIR$/lib" />
             <option value="$PROJECT_DIR$/network" />
             <option value="$PROJECT_DIR$/searchview" />
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/views" />
+            <option value="$PROJECT_DIR$/zxinglite" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>
   </component>
