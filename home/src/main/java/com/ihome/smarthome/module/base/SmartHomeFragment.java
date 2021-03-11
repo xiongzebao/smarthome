@@ -60,6 +60,7 @@ import com.ihome.smarthome.service.AlarmService;
 import com.ihome.smarthome.service.ConnectionService;
 import com.ihome.smarthome.service.FloatingService;
 import com.ihome.smarthome.service.TracingService;
+import com.ihome.smarthome.utils.BleManager;
 import com.ihome.smarthome.utils.CrashHandlerUtils;
 import com.ihome.smarthome.utils.EventBusUtils;
 import com.ihome.smarthome.utils.SystemTTSUtils;
@@ -226,6 +227,8 @@ public class SmartHomeFragment extends BaseFragment {
         enableDeviceAdmin();
         //  requestIgnoreBatteryOptimizationsSETTINGS();
         // ActivityManager.startActivity(ProfileActivity.class);
+
+
         return rootView;
     }
 
@@ -357,6 +360,16 @@ public class SmartHomeFragment extends BaseFragment {
                 ActivityManager.startActivity(BleMainActivity.class);
             }
         });
+
+        popupWindow_view.findViewById(R.id.btn3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //ActivityManager.startActivity(BleMainActivity.class);
+                MyBluetoothManager.getInstance().startAdvertising();
+            }
+        });
+
+
     }
 
 

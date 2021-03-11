@@ -105,6 +105,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.inuker.bluetooth:library:1.4.0'
+    implementation 'com.vise.xiaoyaoyou:baseble:2.0.5'
 }
 repositories {
     mavenCentral()

@@ -153,8 +153,14 @@ public class ConnectionService extends Service {
             return;
         }
         initBluetoothDevice();
+
         isAlive = true;
+
+        MyBluetoothManager.getInstance().startLeScanning();
+       // MyBluetoothManager.getInstance().autoConnectBle("4C:4F:EE:16:AB:8D");
     }
+
+
 
 
     public void startStartWirelessServer(){

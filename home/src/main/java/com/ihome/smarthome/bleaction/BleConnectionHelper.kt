@@ -85,10 +85,10 @@ class BleConnectionHelper(var mContext: Context,val macAddress:String) {
             //连接设备
             mHandler.post{
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mBluetoothGatt = mBluetoothDevice.connectGatt(mContext, false,
+                    mBluetoothGatt = mBluetoothDevice.connectGatt(mContext, true,
                         mGattCallback, BluetoothDevice.TRANSPORT_LE)
                 } else {
-                    mBluetoothGatt = mBluetoothDevice.connectGatt(mContext, false, mGattCallback)
+                    mBluetoothGatt = mBluetoothDevice.connectGatt(mContext, true, mGattCallback)
                 }
             }
         }

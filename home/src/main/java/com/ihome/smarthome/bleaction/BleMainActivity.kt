@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.ihome.smarthome.R
+import com.ihome.smarthome.module.base.communicate.BleServerUtils
 import kotlinx.android.synthetic.main.activity_main_ble.*
 
 class BleMainActivity : AppCompatActivity() {
@@ -34,6 +35,8 @@ class BleMainActivity : AppCompatActivity() {
         mFragments = ArrayList()
         mFragments.add(BleScanPageFragment.newInstance())
         mFragments.add(BleServerPageFragment.newInstance())
+
+
         //初始化ViewPager
         mViewPager.adapter = object :FragmentPagerAdapter(supportFragmentManager){
             override fun getItem(position: Int): Fragment {

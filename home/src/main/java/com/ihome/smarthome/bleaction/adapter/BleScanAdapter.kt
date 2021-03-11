@@ -287,7 +287,7 @@ class BleScanAdapter(val context: Context): RecyclerView.Adapter<BleScanAdapter.
             //原始数据点击事件
             rawData.setOnClickListener {
                 val clipboard = mContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("daqi",rawData.text)
+                val clip = ClipData.newPlainText("xb",rawData.text)
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(mContext,"复制成功",Toast.LENGTH_SHORT).show()
             }

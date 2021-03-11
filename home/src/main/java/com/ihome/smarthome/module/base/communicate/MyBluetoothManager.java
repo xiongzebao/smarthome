@@ -34,24 +34,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.JsonUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.erongdu.wireless.tools.log.MyLog;
 import com.erongdu.wireless.tools.utils.ActivityManager;
 
 import com.erongdu.wireless.tools.utils.ToastUtil;
-import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.ihome.smarthome.R;
 import com.ihome.smarthome.base.MyApplication;
+import com.ihome.smarthome.bleaction.BleConnectionHelper;
 import com.ihome.smarthome.module.base.eventbusmodel.BTMessageEvent;
-import com.ihome.smarthome.module.base.eventbusmodel.BaseMessageEvent;
 import com.ihome.smarthome.module.base.eventbusmodel.LogEvent;
 import com.ihome.smarthome.utils.ClsUtils;
 import com.ihome.smarthome.utils.EventBusUtils;
 
 
-import org.greenrobot.eventbus.EventBus;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -61,6 +58,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -69,8 +67,6 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 public class MyBluetoothManager implements ICommunicate {
-
-
     final public int REQUEST_ENABLE_BT = 100;
     final public int REQUEST_DISCOVERABLE = 101;
     final public int MESSAGE_FOUND_DEVICE = 102;
@@ -82,28 +78,26 @@ public class MyBluetoothManager implements ICommunicate {
     private ScanCallback mScanCallback;
     boolean isRegisterDiscoveryReceiver = false;
     private AlertListView.MyAdapter mAdapter = new AlertListView.MyAdapter();
-
     private int times = 0;
     HashMap<String, Timer> retryTimer = new HashMap<>();
-
     HashMap<String, ConnectedThread> connectedBTThreads = new HashMap<>();
     AcceptThread serverAcceptThread;
-
     String str_uuid = "00001101-0000-1000-8000-00805F9B34FB";
     public String NAME = "smart_home";
     public UUID MY_UUID = UUID.fromString(str_uuid);
     public final ParcelUuid Service_UUID = ParcelUuid.fromString(str_uuid);
     private BluetoothManager btManager;
-
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-
     private BroadcastReceiver mFoundDeviceReceiver = null;
     private AlertListView alertListView;
     private ArrayList<BluetoothDevice> scannedDevices = new ArrayList<>();
     private Context context;
+    private ArrayList<Pair<String, Listener>> listeners = new ArrayList<>();
+    private BleServerUtils bleServerUtils =BleServerUtils.Companion.newInstance();
 
-    ArrayList<Pair<String, Listener>> listeners = new ArrayList<>();
+
+
+
 
 
     public void addListener(Pair<String, Listener> listenerPair) {
@@ -111,6 +105,8 @@ public class MyBluetoothManager implements ICommunicate {
     }
 
     public void removeListener(Pair<String, Listener> listenerPair) {
+
+
         listeners.remove(listenerPair);
     }
 
@@ -171,6 +167,7 @@ public class MyBluetoothManager implements ICommunicate {
         if (bluetoothManager == null) {
             bluetoothManager = new MyBluetoothManager(MyApplication.getInstance());
         }
+
         return bluetoothManager;
     }
 
@@ -181,6 +178,11 @@ public class MyBluetoothManager implements ICommunicate {
 
     public MyBluetoothManager(Context context) {
         this.context = context;
+        bleServerUtils.init(context);
+    }
+
+    public void startAdvertising(){
+        bleServerUtils.startAdvertising();
     }
 
 
@@ -583,7 +585,7 @@ public class MyBluetoothManager implements ICommunicate {
             //ToastUtils.showShort("startDiscovery failed!");
         }
     }
-    int SCAN_PERIOD=10000;
+    int SCAN_PERIOD=1000000000;
     public void startLeScanning() {
         if(!isHasBleFeature()){
             ToastUtil.toast("此设备不支持BLE");
@@ -603,12 +605,79 @@ public class MyBluetoothManager implements ICommunicate {
 
             // Kick off a new scan.
             mScanCallback = new SampleScanCallback();
-            mBluetoothLeScanner.startScan(null, buildScanSettings(), mScanCallback);
+             ScanFilter filter=  new ScanFilter.Builder().build();
+            mBluetoothLeScanner.startScan(Collections.singletonList(filter), buildScanSettings(), mScanCallback);
 
         } else {
             Toast.makeText(context, "正在扫描", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
+
+
+    String autoMacAddress;
+    public void autoConnectBle(String macAddress){
+        autoMacAddress = macAddress;
+        BleConnectionHelper  bleConnectionHelper=new BleConnectionHelper(context,macAddress);
+        bleConnectionHelper.setBleConnectionListener(new BleConnectionHelper.BleConnectionListener(){
+
+            @Override
+            public void characteristicChange(@NotNull String data) {
+
+            }
+
+            @Override
+            public void writeDescriptor(@NotNull String data) {
+
+            }
+
+            @Override
+            public void readDescriptor(@NotNull String data) {
+
+            }
+
+            @Override
+            public void writeCharacteristic(@NotNull String data) {
+
+            }
+
+            @Override
+            public void readCharacteristic(@NotNull String data) {
+
+            }
+
+            @Override
+            public void discoveredServices() {
+
+            }
+
+            @Override
+            public void disConnection() {
+                EventBusUtils.sendLog(getTag(),macAddress+":disConnection",LogEvent.LOG_FAILED,true);
+                autoConnectBle(macAddress);
+            }
+
+            @Override
+            public void onConnectionFail() {
+                EventBusUtils.sendLog(getTag(),macAddress+":onConnectionFail",LogEvent.LOG_FAILED,true);
+                autoConnectBle(macAddress);
+            }
+
+            @Override
+            public void onConnectionSuccess() {
+                EventBusUtils.sendLog(getTag(),macAddress+":onConnectionSuccess",LogEvent.LOG_SUCCESS,true);
+                startLeScanning();
+            }
+        });
+
+        bleConnectionHelper.connection();
+    }
+
+
+
+
 
 
     /**
@@ -659,12 +728,11 @@ public class MyBluetoothManager implements ICommunicate {
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
-
-
-            for (ScanResult result : results) {
+          /*  for (ScanResult result : results) {
                 //  mAdapter.add(result);
                 MyLog.e(result.getDevice().getName());
-            }
+
+            }*/
             //  mAdapter.notifyDataSetChanged();
         }
 
@@ -674,6 +742,13 @@ public class MyBluetoothManager implements ICommunicate {
             if (result != null && result.getDevice() != null && result.getDevice().getName() != null) {
                 MyLog.e(result.getDevice().getName());
                 Log.e("xiong", result.getDevice().getName() + ":" + result.getDevice().getAddress() + "-->rssi:" + result.getRssi());
+                if(result.getDevice().getAddress().equals(autoMacAddress)&&result.getRssi()>=-70);{
+                    stopScanning();
+                    if(autoConnectBle(autoMacAddress))
+                }
+                if(result.getDevice().getName().equals("xb")){
+
+                }
             }
 
 
